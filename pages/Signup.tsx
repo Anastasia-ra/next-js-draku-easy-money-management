@@ -5,10 +5,12 @@ export default function Signup() {
         Email
         <input type="Email"></input>
       </label>
+      <br />
       <label>
         Username
         <input></input>
       </label>
+      <br />
       <label>
         Password
         <input type="password"></input>

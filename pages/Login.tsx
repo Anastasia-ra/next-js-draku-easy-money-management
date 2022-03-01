@@ -5,6 +5,7 @@ export default function Login() {
         Username
         <input></input>
       </label>
+      <br />
       <label>
         Password
         <input type="password"></input>
