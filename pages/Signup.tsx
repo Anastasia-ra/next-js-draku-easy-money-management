@@ -3,6 +3,8 @@ import Layout from '../components/Layout';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { RegisterResponseBody } from './api/register';
+
 
 const errorStyles = css`
   color: red;
@@ -28,7 +30,7 @@ export default function Signup() {
       <form
         onSubmit={async (event) => {
           event.preventDefault();
-          const createUserResponse = await fetch('/api/register', {
+          const registerResponse = await fetch('/api/register', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -40,10 +42,11 @@ export default function Signup() {
             }),
           }).catch((error) => console.error(error));
 
-          const createUserResponseBody = await createUserResponse.json();
+          const registerResponseBody =
+            (await registerResponse.json()) as RegisterResponseBody;
 
-          if ('errors' in createUserResponseBody) {
-            setErrors(createUserResponseBody.errors);
+          if ('errors' in registerResponseBody) {
+            setErrors(registerResponseBody.errors);
             return;
           }
 
