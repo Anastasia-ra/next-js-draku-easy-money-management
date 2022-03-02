@@ -1,6 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcrypt';
-import { createUser, getUserByUsername, User } from '../../util/database';
+import {
+  createUser,
+  getUserByUsername,
+  User,
+  createSession,
+} from '../../util/database';
+import crypto from 'node:crypto';
+import { createSerializedRegisterSessionTokenCookie } from '../../util/cookies';
 
 type RegisterRequestBody = {
   username: string;
@@ -55,7 +62,18 @@ export default async function registerHandler(
       request.body.username,
       passwordHash,
     );
-    response.status(201).json({ user: user });
+
+    const token = crypto.randomBytes(64).toString('base64');
+
+    const session = await createSession(token, user.id);
+
+    const serializedCookie = await createSerializedRegisterSessionTokenCookie(
+      session.token,
+    );
+
+    response.status(201).setHeader('Set-Cookie', serializedCookie).json({
+      user: user,
+    });
     return;
   }
   response.status(405).json({

@@ -4,6 +4,20 @@ import camelcaseKeys from 'camelcase-keys';
 
 config();
 
+export type User = {
+  id: number;
+  username: string;
+};
+
+export type UserWithPasswordHash = User & {
+  passwordHash: string;
+};
+
+type Session = {
+  id: number;
+  token: string;
+};
+
 declare module globalThis {
   let postgresSqlClient: ReturnType<typeof postgres> | undefined;
 }
@@ -30,33 +44,6 @@ function connectOneTimeToDatabase() {
 
 const sql = connectOneTimeToDatabase();
 
-export type User = {
-  id: number;
-  username: string;
-};
-
-export type UserWithPasswordHash = User & {
-  passwordHash: string;
-};
-
-export async function createUser(
-  email: string,
-  username: string,
-  passwordHash: string,
-) {
-  const [user] = await sql<[User]>`
-  INSERT INTO users
-  (email, username, password_hash)
-  VALUES
-  (${email}, ${username}, ${passwordHash})
-  RETURNING
-  id,
-  email,
-  username
-  `;
-  return camelcaseKeys(user);
-}
-
 export async function getUserByUsername(username: string) {
   const [user] = await sql<[{ id: number } | undefined]>`
   SELECT id FROM users WHERE username = ${username}
@@ -76,4 +63,60 @@ export async function getUserById(id: number) {
   SELECT id, username FROM users WHERE id = ${id}
   `;
   return user && camelcaseKeys(user);
+}
+
+export async function createUser(
+  email: string,
+  username: string,
+  passwordHash: string,
+) {
+  const [user] = await sql<[User]>`
+  INSERT INTO users
+  (email, username, password_hash)
+  VALUES
+  (${email}, ${username}, ${passwordHash})
+  RETURNING
+  id,
+  email,
+  username
+  `;
+  return camelcaseKeys(user);
+}
+
+export async function createSession(token: string, userId: number) {
+  const [session] = await sql<[Session]>`
+  INSERT INTO sessions
+  (token, user_id)
+  VALUES
+  (${token}, ${userId})
+  RETURNING
+  id,
+  token
+  `;
+  await deleteExpiredSessions();
+
+  return camelcaseKeys(session);
+}
+
+export async function deleteExpiredSessions() {
+  const sessions = await sql<Session[]>`
+    DELETE FROM
+      sessions
+    WHERE
+      expiry_timestamp < NOW()
+    RETURNING *
+  `;
+
+  return sessions.map((session) => camelcaseKeys(session));
+}
+
+export async function deleteSessionByToken(token: string) {
+  const [session] = await sql<[Session | undefined]>`
+  DELETE FROM
+  sessions
+  WHERE
+    token = ${token}
+  RETURNING *
+`;
+  return session && camelcaseKeys(session);
 }

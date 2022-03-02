@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { RegisterResponseBody } from './api/register';
 
-
 const errorStyles = css`
   color: red;
 `;
@@ -40,7 +39,7 @@ export default function Signup() {
               username: username,
               password: password,
             }),
-          }).catch((error) => console.error(error));
+          });
 
           const registerResponseBody =
             (await registerResponse.json()) as RegisterResponseBody;

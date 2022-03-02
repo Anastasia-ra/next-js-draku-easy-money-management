@@ -37,7 +37,7 @@ export default function Login() {
               username: username,
               password: password,
             }),
-          }).catch((error) => console.error(error));
+          });
 
           const loginResponseBody =
             (await loginResponse.json()) as RegisterResponseBody;
@@ -80,7 +80,7 @@ export default function Login() {
               onChange={(event) => setPassword(event.currentTarget.value)}
             />
           </label>
-          <button>Sign-up</button>
+          <button>Log-in</button>
         </div>
       </form>
       <div css={errorStyles}>
