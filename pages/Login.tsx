@@ -2,8 +2,10 @@ import Head from 'next/head';
 import Layout from '../components/Layout';
 import { css } from '@emotion/react';
 import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next';
 import { useState } from 'react';
 import { RegisterResponseBody } from './api/register';
+import { getValidSessionByToken } from '../util/database';
 
 const errorStyles = css`
   color: red;
@@ -48,19 +50,24 @@ export default function Login() {
           }
           const returnTo = router.query.returnTo;
 
-          if (
-            returnTo &&
-            !Array.isArray(returnTo) &&
-            /^\/[a-zA-Z0-9-?=]*$/.test(returnTo)
-          ) {
+          // if (
+          //   returnTo &&
+          //   !Array.isArray(returnTo) &&
+          //   /^\/[a-zA-Z0-9-?=]*$/.test(returnTo)
+          // ) {
+          //   await router.push(returnTo);
+          //   return;
+          // }
+
+          if (returnTo) {
             await router.push(returnTo);
             return;
           }
 
-          const userProfileUrl = `/users-overview/${loginResponseBody.user.id}`;
+          const userProfileUrl = `/users/${loginResponseBody.user.id}`;
           // Clear the errors when login worked
-          setErrors([]);
-          await router.push(userProfileUrl);
+          // setErrors([]);  not necessary with redirect
+          await router.push(`/`);
         }}
       >
         <div>
@@ -90,4 +97,24 @@ export default function Login() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = context.req.cookies.sessionToken;
+
+  if (token) {
+    const session = await getValidSessionByToken(token);
+    if (session) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
+  }
+
+  return {
+    props: {},
+  };
 }

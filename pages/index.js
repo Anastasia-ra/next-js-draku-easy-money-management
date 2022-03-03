@@ -30,16 +30,20 @@ export default function Home() {
         </Head>
         <h1>Welcome to Draku!</h1>
         <br />
-        <Link href="Expenses">
+        <Link href="/users/expenses">
           <a>Start saving here</a>
         </Link>
         <br />
-        <Link href="Signup">
+        <Link href="signup">
           <a>Sign up here</a>
         </Link>
         <br />
-        <Link href="Login">
+        <Link href="login">
           <a>Log in here</a>
+        </Link>
+        <br />
+        <Link href="logout">
+          <a>Log out here</a>
         </Link>
         <div css={chartDoughnutStyle}>
           <DoughnutCategories />

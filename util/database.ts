@@ -16,6 +16,7 @@ export type UserWithPasswordHash = User & {
 type Session = {
   id: number;
   token: string;
+  userId: number;
 };
 
 declare module globalThis {
@@ -118,5 +119,20 @@ export async function deleteSessionByToken(token: string) {
     token = ${token}
   RETURNING *
 `;
+  return session && camelcaseKeys(session);
+}
+
+export async function getValidSessionByToken(token: string) {
+  const [session] = await sql<[Session | undefined]>`
+  SELECT
+   *
+  FROM
+    sessions
+  WHERE
+  token = ${token}
+`;
+
+  await deleteExpiredSessions();
+
   return session && camelcaseKeys(session);
 }
