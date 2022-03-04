@@ -1,6 +1,6 @@
+import camelcaseKeys from 'camelcase-keys';
 import { config } from 'dotenv-safe';
 import postgres from 'postgres';
-import camelcaseKeys from 'camelcase-keys';
 
 config();
 
@@ -17,6 +17,13 @@ type Session = {
   id: number;
   token: string;
   userId: number;
+};
+
+export type Category = {
+  id: number;
+  userId: number;
+  categoryName: string;
+  budget: number;
 };
 
 declare module globalThis {
@@ -47,21 +54,56 @@ const sql = connectOneTimeToDatabase();
 
 export async function getUserByUsername(username: string) {
   const [user] = await sql<[{ id: number } | undefined]>`
-  SELECT id FROM users WHERE username = ${username}
+  SELECT
+    id
+  FROM
+    users
+  WHERE
+    username = ${username}
   `;
   return user && camelcaseKeys(user);
 }
 
 export async function getUserWithPasswordHashByUsername(username: string) {
   const [user] = await sql<[UserWithPasswordHash | undefined]>`
-  SELECT id, username, password_hash FROM users WHERE username = ${username}
+  SELECT
+    id,
+    username,
+    password_hash
+  FROM
+    users
+  WHERE
+    username = ${username}
   `;
   return user && camelcaseKeys(user);
 }
 
 export async function getUserById(id: number) {
   const [user] = await sql<[User | undefined]>`
-  SELECT id, username FROM users WHERE id = ${id}
+  SELECT
+    id,
+    username
+  FROM
+    users
+  WHERE
+    id = ${id}
+  `;
+  return user && camelcaseKeys(user);
+}
+
+export async function getUserByValidSessionToken(token: string | undefined) {
+  if (!token) return undefined;
+  const [user] = await sql<[User | undefined]>`
+    SELECT
+      users.id,
+      users.username
+    FROM
+      users,
+      sessions
+    WHERE
+      sessions.token = ${token} AND
+      sessions.user_id = users.id AND
+      sessions.expiry_timestamp > now()
   `;
   return user && camelcaseKeys(user);
 }
@@ -135,4 +177,48 @@ export async function getValidSessionByToken(token: string) {
   await deleteExpiredSessions();
 
   return session && camelcaseKeys(session);
+}
+
+export async function createCategory(
+  userId: number,
+  categoryName: string,
+  budget: number,
+) {
+  const [category] = await sql<[Category]>`
+    INSERT INTO categories
+      (user_id, category_name, monthly_budget)
+    VALUES
+      (${userId}, ${categoryName}, ${budget})
+    RETURNING *
+  `;
+  return camelcaseKeys(category);
+}
+
+export async function getCategorybyUserId(
+  userId: number,
+  categoryName: string,
+) {
+  const [category] = await sql<[Category | undefined]>`
+  SELECT
+  *
+  FROM
+  categories
+  WHERE
+  user_id = ${userId} AND
+  category_name = ${categoryName}
+  `;
+  return category && camelcaseKeys(category);
+}
+
+export async function getAllCategoriesbyUserId(userId: number) {
+  const categories = await sql<Category[]>`
+  SELECT
+  category_name,
+  monthly_budget
+  FROM
+  categories
+  WHERE
+  user_id = ${userId}
+  `;
+  return camelcaseKeys(categories);
 }
