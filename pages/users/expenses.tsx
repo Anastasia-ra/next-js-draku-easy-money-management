@@ -2,10 +2,11 @@ import Head from 'next/head';
 import Layout from '../../components/Layout';
 import AddExpense from '../../components/AddExpense';
 import { GetServerSidePropsContext } from 'next';
-import { getUserById, getValidSessionByToken, User } from '../../util/database';
+import { getUserByValidSessionToken } from '../../util/database';
 
 type Props = {
-  user?: User;
+  userObject: { username: string };
+  user: { id: number; username: string };
 };
 
 export default function Expenses(props: Props) {
@@ -17,7 +18,7 @@ export default function Expenses(props: Props) {
   console.log(currentMonth);
 
   return (
-    <Layout>
+    <Layout userObject={props.userObject}>
       <Head>
         <title>Draku</title>
         <meta name="description" content="Draku money management" />
@@ -33,15 +34,12 @@ export default function Expenses(props: Props) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const token = context.req.cookies.sessionToken;
+  const user = await getUserByValidSessionToken(token);
 
-  if (token) {
-    const session = await getValidSessionByToken(token);
-    if (session) {
-      const user = await getUserById(session.userId);
-      return {
-        props: { user: user },
-      };
-    }
+  if (user) {
+    return {
+      props: { user: user },
+    };
   }
 
   return {

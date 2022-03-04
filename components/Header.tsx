@@ -1,6 +1,11 @@
 import Link from 'next/link';
+import { User } from '../util/database';
 
-export default function Header() {
+type Props = {
+  userObject?: User;
+};
+
+export default function Header(props: Props) {
   return (
     <header>
       <Link href="/signup">
@@ -12,6 +17,7 @@ export default function Header() {
       <Link href="/logout">
         <a>Log out</a>
       </Link>
+      {props.userObject && <div>{props.userObject.username}</div>}
     </header>
   );
 }

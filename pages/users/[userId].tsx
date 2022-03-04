@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import { getUserById, User } from '../../util/database';
 
 type Props = {
+  userObject: { username: string };
   user?: User;
 };
 
@@ -21,7 +22,7 @@ export default function UserOverview(props: Props) {
   }
 
   return (
-    <Layout>
+    <Layout userObject={props.userObject}>
       <Head>
         <title>
           User # {props.user.id} (username: {props.user.username})

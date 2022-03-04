@@ -1,11 +1,11 @@
-import Head from 'next/head';
-import Layout from '../components/Layout';
 import { css } from '@emotion/react';
-import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { RegisterResponseBody } from './api/register';
+import Layout from '../components/Layout';
 import { getValidSessionByToken } from '../util/database';
+import { RegisterResponseBody } from './api/register';
 
 const errorStyles = css`
   color: red;
