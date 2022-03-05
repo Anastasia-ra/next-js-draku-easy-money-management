@@ -139,8 +139,8 @@ export default function CategoriesManagement(props: Props) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const token = context.req.cookies.sessionToken;
-  const user = await getUserByValidSessionToken(token);
+  const sessionToken = context.req.cookies.sessionToken;
+  const user = await getUserByValidSessionToken(sessionToken);
 
   if (user) {
     return {

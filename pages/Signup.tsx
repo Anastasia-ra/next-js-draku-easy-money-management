@@ -1,11 +1,12 @@
-import Head from 'next/head';
-import Layout from '../components/Layout';
 import { css } from '@emotion/react';
+import { GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { RegisterResponseBody } from './api/register';
-import { GetServerSidePropsContext } from 'next';
+import Layout from '../components/Layout';
+import { createCsrfToken } from '../util/auth';
 import { getValidSessionByToken } from '../util/database';
+import { RegisterResponseBody } from './api/register';
 
 const errorStyles = css`
   color: red;
@@ -13,7 +14,13 @@ const errorStyles = css`
 
 type Errors = { message: string }[];
 
-export default function Signup() {
+type Props = {
+  refreshUserProfile: () => void;
+  userObject: { username: string };
+  csrfToken: string;
+};
+
+export default function Signup(props: Props) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +29,7 @@ export default function Signup() {
   const router = useRouter();
 
   return (
-    <Layout>
+    <Layout userObject={props.userObject}>
       <Head>
         <title>Sign up at Draku</title>
         <meta name="description" content="Draku sign up" />
@@ -40,6 +47,7 @@ export default function Signup() {
               email: email,
               username: username,
               password: password,
+              csrfToken: props.csrfToken,
             }),
           });
 
@@ -50,7 +58,7 @@ export default function Signup() {
             setErrors(registerResponseBody.errors);
             return;
           }
-
+          props.refreshUserProfile();
           await router.push('/');
         }}
       >
@@ -93,6 +101,20 @@ export default function Signup() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  // Redirect from HTTP to HTTPS on Heroku
+  if (
+    context.req.headers.host &&
+    context.req.headers['x-forwarded-proto'] &&
+    context.req.headers['x-forwarded-proto'] !== 'https'
+  ) {
+    return {
+      redirect: {
+        destination: `https://${context.req.headers.host}/signup`,
+        permanent: true,
+      },
+    };
+  }
+
   const token = context.req.cookies.sessionToken;
 
   if (token) {
@@ -108,6 +130,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: {},
+    props: {
+      csrfToken: createCsrfToken(),
+    },
   };
 }

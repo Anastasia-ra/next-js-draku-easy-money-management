@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Layout from '../components/Layout';
+import { createCsrfToken } from '../util/auth';
 import { getValidSessionByToken } from '../util/database';
 import { RegisterResponseBody } from './api/register';
 
@@ -13,7 +14,13 @@ const errorStyles = css`
 
 type Errors = { message: string }[];
 
-export default function Login() {
+type Props = {
+  refreshUserProfile: () => void;
+  userObject: { username: string };
+  csrfToken: string;
+};
+
+export default function Login(props: Props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
@@ -21,7 +28,7 @@ export default function Login() {
   const router = useRouter();
 
   return (
-    <Layout>
+    <Layout userObject={props.userObject}>
       <Head>
         <title>Login at Draku</title>
         <meta name="description" content="Draku log in" />
@@ -38,6 +45,7 @@ export default function Login() {
             body: JSON.stringify({
               username: username,
               password: password,
+              csrfToken: props.csrfToken,
             }),
           });
 
@@ -49,24 +57,30 @@ export default function Login() {
             return;
           }
           const returnTo = router.query.returnTo;
+          console.log('returnTo', returnTo, typeof returnTo);
 
-          // if (
-          //   returnTo &&
-          //   !Array.isArray(returnTo) &&
-          //   /^\/[a-zA-Z0-9-?=]*$/.test(returnTo)
-          // ) {
-          //   await router.push(returnTo);
-          //   return;
-          // }
-
-          if (returnTo) {
+          if (
+            returnTo &&
+            !Array.isArray(returnTo) &&
+            // Security: Validate returnTo parameter against valid path
+            // (because this is untrusted user input)
+            /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
+          ) {
+            props.refreshUserProfile();
             await router.push(returnTo);
             return;
           }
 
-          const userProfileUrl = `/users/${loginResponseBody.user.id}`;
+          // if (returnTo) {
+          //   await router.push(returnTo);
+          //   return;
+          // }
+
+          // const userProfileUrl = `/users/${loginResponseBody.user.id}`;
+
           // Clear the errors when login worked
           // setErrors([]);  not necessary with redirect
+          props.refreshUserProfile();
           await router.push(`/`);
         }}
       >
@@ -100,10 +114,24 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const token = context.req.cookies.sessionToken;
+  // Redirect from HTTP to HTTPS on Heroku
+  if (
+    context.req.headers.host &&
+    context.req.headers['x-forwarded-proto'] &&
+    context.req.headers['x-forwarded-proto'] !== 'https'
+  ) {
+    return {
+      redirect: {
+        destination: `https://${context.req.headers.host}/login`,
+        permanent: true,
+      },
+    };
+  }
 
-  if (token) {
-    const session = await getValidSessionByToken(token);
+  const sesionToken = context.req.cookies.sessionToken;
+
+  if (sesionToken) {
+    const session = await getValidSessionByToken(sesionToken);
     if (session) {
       return {
         redirect: {
@@ -114,7 +142,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 
+  // If no valid token: generate CSRF token
+
   return {
-    props: {},
+    props: {
+      csrfToken: createCsrfToken(),
+    },
   };
 }

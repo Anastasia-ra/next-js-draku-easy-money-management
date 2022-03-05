@@ -4,9 +4,9 @@ exports.up = async (sql) => {
 		id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		user_id integer REFERENCES users (id) ON DELETE CASCADE,
 		category_id integer REFERENCES categories (id) ON DELETE CASCADE,
-		expense_name varchar(40) NOT NULL,
+		name varchar(40) NOT NULL,
 		price integer NOT NULL,
-    expense_date date NOT NULL
+    date date NOT NULL
 	);
 	`;
 };

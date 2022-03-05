@@ -114,14 +114,14 @@ export async function createUser(
   passwordHash: string,
 ) {
   const [user] = await sql<[User]>`
-  INSERT INTO users
-  (email, username, password_hash)
-  VALUES
-  (${email}, ${username}, ${passwordHash})
-  RETURNING
-  id,
-  email,
-  username
+    INSERT INTO users
+      (email, username, password_hash)
+    VALUES
+       (${email}, ${username}, ${passwordHash})
+    RETURNING
+       id,
+       email,
+       username
   `;
   return camelcaseKeys(user);
 }
@@ -171,7 +171,8 @@ export async function getValidSessionByToken(token: string) {
   FROM
     sessions
   WHERE
-  token = ${token}
+  token = ${token} AND
+  expiry_timestamp > now()
 `;
 
   await deleteExpiredSessions();
@@ -220,5 +221,5 @@ export async function getAllCategoriesbyUserId(userId: number) {
   WHERE
   user_id = ${userId}
   `;
-  return camelcaseKeys(categories);
+  return categories.map((category) => camelcaseKeys(category));
 }

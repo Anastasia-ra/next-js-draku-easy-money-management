@@ -3,7 +3,7 @@ exports.up = async (sql) => {
   CREATE TABLE categories (
 		id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 		user_id integer REFERENCES users (id) ON DELETE CASCADE,
-		category_name varchar(30) NOT NULL,
+		name varchar(30) NOT NULL,
 		monthly_budget integer NOT NULL,
     creation_date timestamp NOT NULL DEFAULT NOW()
 	);

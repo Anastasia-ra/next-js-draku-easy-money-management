@@ -36,7 +36,7 @@ export default function Home(props: Props) {
         <a>Start saving here</a>
       </Link>
       <br />
-      <Link href="signup">
+      {/* <Link href="signup">
         <a>Sign up here</a>
       </Link>
       <br />
@@ -46,7 +46,7 @@ export default function Home(props: Props) {
       <br />
       <Link href="logout">
         <a>Log out here</a>
-      </Link>
+      </Link> */}
       <Link href="/users/categoriesManagement">
         <a>Manage your categories</a>
       </Link>
