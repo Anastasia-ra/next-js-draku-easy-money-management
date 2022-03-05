@@ -12,7 +12,7 @@ type Props = {
 type Errors = { message: string }[];
 
 type Categories = {
-  categoryName: string;
+  name: string;
   monthlyBudget: number;
 };
 
@@ -126,10 +126,10 @@ export default function CategoriesManagement(props: Props) {
       </div> */}
       {/* <button onClick={() => getAllCategories()}>Display all categories</button> */}
       <div>
-        {categories.map((e) => {
+        {categories.map((category) => {
           return (
-            <div key={`category-${e.categoryName}`}>
-              {e.categoryName} {e.monthlyBudget}
+            <div key={`category-${category}`}>
+              {category.name} {category.monthlyBudget}
             </div>
           );
         })}

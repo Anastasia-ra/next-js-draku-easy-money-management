@@ -187,7 +187,7 @@ export async function createCategory(
 ) {
   const [category] = await sql<[Category]>`
     INSERT INTO categories
-      (user_id, category_name, monthly_budget)
+      (user_id, name, monthly_budget)
     VALUES
       (${userId}, ${categoryName}, ${budget})
     RETURNING *
@@ -206,7 +206,7 @@ export async function getCategorybyUserId(
   categories
   WHERE
   user_id = ${userId} AND
-  category_name = ${categoryName}
+  name = ${categoryName}
   `;
   return category && camelcaseKeys(category);
 }
@@ -214,7 +214,7 @@ export async function getCategorybyUserId(
 export async function getAllCategoriesbyUserId(userId: number) {
   const categories = await sql<Category[]>`
   SELECT
-  category_name,
+  name,
   monthly_budget
   FROM
   categories

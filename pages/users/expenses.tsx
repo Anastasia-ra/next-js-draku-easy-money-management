@@ -8,7 +8,7 @@ import {
   getUserByValidSessionToken,
 } from '../../util/database';
 
-type Category = { categoryName: string; monthly_budget: number };
+type Category = { name: string; monthly_budget: number };
 
 type Props =
   | {
@@ -88,11 +88,7 @@ export default function Expenses(props: Props) {
           <select>
             <option value="">Please choose a category</option>
             {props.categories.map((category) => {
-              return (
-                <option key={category.categoryName}>
-                  {category.categoryName}
-                </option>
-              );
+              return <option key={category.name}>{category.name}</option>;
             })}
           </select>
         </label>
