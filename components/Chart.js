@@ -35,9 +35,10 @@ const categories = [
   'Health',
 ];
 
+const categoriesData = [0.2, 0.3, 0.1, 0.25, 0.5, 0.1];
+
 const budgetLabels = ['Expenses', 'Budget left'];
 const budgetPercentage = 0.8;
-const budgetLeft = '300€';
 
 const months = [
   'Jan',
@@ -57,12 +58,12 @@ const expensesMonth = [
   1300, 1250, 1809, 890, 1502, 1400, 1950, 1700, 1600, 1600, 1200, 1150,
 ];
 
-export const dataCategories = {
+export const dataDoughnutCategories = {
   labels: categories,
   datasets: [
     {
       label: 'Expenses per category',
-      data: [0.2, 0.3, 0.1, 0.25, 0.5, 0.1],
+      data: categoriesData,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -84,7 +85,7 @@ export const dataCategories = {
   ],
 };
 
-export const optionsCategories = {
+export const optionsDoughnutCategories = {
   cutout: '60%',
   // radius: 800,
   // spacing: '5%',
@@ -165,7 +166,7 @@ export const optionsProgressCircle = {
     },
     datalabels: {
       color: '#36A2EB',
-      formatter: function (value, context) {
+      formatter: function (value) {
         return Math.round(value * 100) + '%';
       },
       display: [false, true],
@@ -263,8 +264,8 @@ export const optionsProgressBar = {
 export function DoughnutCategories() {
   return (
     <Doughnut
-      data={dataCategories}
-      options={optionsCategories}
+      data={dataDoughnutCategories}
+      options={optionsDoughnutCategories}
       // width={'300px'}
       // height={'400px'}
     />
