@@ -7,8 +7,8 @@ export default async function categoriesHandler(
 ) {
   if (request.method === 'POST') {
     if (
-      typeof request.body.category.categoryName !== 'string' ||
-      !request.body.category.categoryName ||
+      typeof request.body.category.name !== 'string' ||
+      !request.body.category.name ||
       typeof request.body.category.monthlyBudget !== 'number' ||
       !request.body.category.monthlyBudget ||
       Number.isNaN(request.body.category.budget)
@@ -22,13 +22,12 @@ export default async function categoriesHandler(
       });
       return;
     }
-
     const categoryFromRequest = request.body.category;
 
     // Checks if category already exists in database
     const categoryExists = await getCategorybyUserId(
       categoryFromRequest.userId,
-      categoryFromRequest.categoryName,
+      categoryFromRequest.name,
     );
     if (categoryExists) {
       response.status(409).json({
@@ -43,7 +42,7 @@ export default async function categoriesHandler(
 
     const newCategory = await createCategory(
       categoryFromRequest.userId,
-      categoryFromRequest.categoryName,
+      categoryFromRequest.name,
       categoryFromRequest.monthlyBudget,
     );
 

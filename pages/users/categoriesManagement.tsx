@@ -2,7 +2,8 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
-import { getUserByValidSessionToken } from '../../util/database';
+import { getCategoriesList } from '../../graph-functions/fetchApi';
+import { getUserByValidSessionToken, Category } from '../../util/database';
 
 type Props = {
   userObject: { username: string };
@@ -11,35 +12,26 @@ type Props = {
 
 type Errors = { message: string }[];
 
-type Categories = {
-  name: string;
-  monthlyBudget: number;
-};
+type Categories = Category[];
 
 export default function CategoriesManagement(props: Props) {
   const [newCategory, setNewCategory] = useState('');
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
-  const [categories, setCategories] = useState<Categories[]>([]);
+  const [categories, setCategories] = useState<Categories>([]);
 
-  async function getAllCategories() {
-    const categoriesListResponse = await fetch(
-      `/api/categories/getAllCategories`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: props.user.id,
-        }),
-      },
-    );
-    const categoriesListResponseBody = await categoriesListResponse.json();
+  // Display all categories on first render or when userId changes
+  useEffect(() => {
+    const fetchCategories = async () => await getAllCategories(props.user.id);
+    fetchCategories().catch(console.error);
+  }, [props.user.id]);
 
+  async function getAllCategories(userId: number) {
+    const categoriesListResponseBody = await getCategoriesList(userId);
     setCategories(categoriesListResponseBody.categoriesList);
   }
 
+  // Add category to database
   async function addCategory(userId: number, category: string, budget: string) {
     const categoryResponse = await fetch(`/api/categories/addCategories`, {
       method: 'POST',
@@ -49,7 +41,7 @@ export default function CategoriesManagement(props: Props) {
       body: JSON.stringify({
         category: {
           userId: userId,
-          categoryName: category.toLowerCase(),
+          name: category.toLowerCase(),
           monthlyBudget: Number(budget),
         },
       }),
@@ -65,17 +57,8 @@ export default function CategoriesManagement(props: Props) {
 
     console.log(categoryResponseBody);
     setErrors([]);
-    await getAllCategories();
-
-    // Update categories
-    // const newCategoriesList: ResponseBody[] = [
-    //   ...categories,
-    //   categoryResponseBody,
-    // ];
-    // setCategories(newCategoriesList);
+    await getAllCategories(userId);
   }
-
-  useEffect(() => getAllCategories(), []);
 
   return (
     <Layout userObject={props.userObject}>
@@ -104,31 +87,17 @@ export default function CategoriesManagement(props: Props) {
             onChange={(event) => setMonthlyBudget(event.currentTarget.value)}
           />
         </label>
-        <button
-        // onClick={() => addCategory(props.user.id, newCategory, monthlyBudget)}
-        >
-          Add a new category
-        </button>
+        <button>Add a new category</button>
       </form>
       <div>
         {errors.map((error) => {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })}
       </div>
-      {/* <div>
-        {categories.map((e) => {
-          return (
-            <div key={`category-${e.category.categoryName}`}>
-              {e.category.categoryName}
-            </div>
-          );
-        })}
-      </div> */}
-      {/* <button onClick={() => getAllCategories()}>Display all categories</button> */}
       <div>
         {categories.map((category) => {
           return (
-            <div key={`category-${category}`}>
+            <div key={`category-${category.name}`}>
               {category.name} {category.monthlyBudget}
             </div>
           );
