@@ -22,8 +22,17 @@ type Session = {
 export type Category = {
   id: number;
   userId: number;
-  categoryName: string;
-  budget: number;
+  name: string;
+  monthlyBudget: number;
+};
+
+export type Expense = {
+  id: number;
+  userId: number;
+  categoryId: number;
+  name: string;
+  price: number;
+  date: string;
 };
 
 declare module globalThis {
@@ -214,6 +223,8 @@ export async function getCategorybyUserId(
 export async function getAllCategoriesbyUserId(userId: number) {
   const categories = await sql<Category[]>`
   SELECT
+  id,
+  user_id,
   name,
   monthly_budget
   FROM
@@ -222,4 +233,37 @@ export async function getAllCategoriesbyUserId(userId: number) {
   user_id = ${userId}
   `;
   return categories.map((category) => camelcaseKeys(category));
+}
+
+export async function createExpense(
+  userId: number,
+  categoryId: number,
+  name: string,
+  price: number,
+  date: string,
+) {
+  const [expense] = await sql<[Expense]>`
+    INSERT INTO expenses
+      (user_id, category_id, name, price, date)
+    VALUES
+      (${userId}, ${categoryId}, ${name}, ${price}, ${date})
+    RETURNING *
+  `;
+  return camelcaseKeys(expense);
+}
+
+export async function getAllExpensesByUserId(userId: number) {
+  const expenses = await sql<Expense[]>`
+      SELECT
+        id,
+        category_id,
+        name,
+        price,
+        date
+    FROM
+        expenses
+    WHERE
+        user_id = ${userId}
+    `;
+  return expenses.map((expense) => camelcaseKeys(expense));
 }

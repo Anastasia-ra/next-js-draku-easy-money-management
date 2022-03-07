@@ -1,28 +1,45 @@
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
+import { getExpensesList } from '../../graph-functions/fetchApi';
 import {
   getAllCategoriesbyUserId,
   getUserByValidSessionToken,
+  Category,
+  Expense,
 } from '../../util/database';
-
-type Category = { name: string; monthly_budget: number };
 
 type Props =
   | {
       userObject: { username: string };
-      // user: { id: number; username: string };
       categories: Category[];
+      user: { id: number; username: string };
     }
-  | { userObject: { username: string }; error: string };
+  | {
+      userObject: { username: string };
+      error: string;
+      user: { id: number; username: string };
+    };
+
+type Errors = { message: string }[];
 
 export default function Expenses(props: Props) {
-  const [date, setDate] = useState<Date>();
-  const [price, setPrice] = useState('');
-  const [name, setName] = useState('');
+  const [inputDate, setInputDate] = useState('');
+  const [inputPrice, setInputPrice] = useState('');
+  const [inputName, setInputName] = useState('');
+  const [inputCategoryId, setInputCategoryId] = useState('');
+  const [errors, setErrors] = useState<Errors>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
+  // Display all expenses on first render or when userId changes
+  useEffect(() => {
+    const fetchExpenses = async () => await getAllExpenses(props.user.id);
+    fetchExpenses().catch(console.error);
+  }, [props.user.id]);
+
+  // Display in case user is not logged in
   if ('error' in props) {
     return (
       <Layout userObject={props.userObject}>
@@ -32,19 +49,62 @@ export default function Expenses(props: Props) {
         </Head>
         <h1>Expenses Error</h1>
         <p>Please login first to be able to add new expenses.</p>
-        <Link href="/login?returnTo=/users/categoriesManagement">
+        <Link href="/login?returnTo=/users/expenses">
           <a>Login</a>
         </Link>
       </Layout>
     );
   }
 
-  const optionsDate = { month: 'long', year: 'numeric' };
+  // Get current month
+  const optionsDate = { month: 'long', year: 'numeric' } as const;
   const currentMonth = new Intl.DateTimeFormat('en-US', optionsDate).format(
     new Date(),
   );
-  console.log(currentMonth);
-  console.log('props.categories', props.categories);
+  console.log(currentMonth, typeof currentMonth);
+
+  // Get all expenses
+  async function getAllExpenses(userId: number) {
+    const expensesListResponseBody = await getExpensesList(userId);
+
+    setExpenses(expensesListResponseBody.expensesList.reverse());
+  }
+
+  // Add expense in database
+  async function addExpense(
+    userId: number,
+    categoryId: number,
+    name: string,
+    price: number,
+    date: string,
+  ) {
+    const expenseResponse = await fetch(`/api/expenses/addExpenses`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        expense: {
+          userId,
+          categoryId,
+          name,
+          price,
+          date,
+        },
+      }),
+    });
+    console.log(expenseResponse);
+
+    const expenseResponseBody = await expenseResponse.json();
+
+    if ('errors' in expenseResponseBody) {
+      setErrors(expenseResponseBody.errors);
+      return;
+    }
+
+    setErrors([]);
+    await getAllExpenses(props.user.id);
+  }
 
   return (
     <Layout userObject={props.userObject}>
@@ -54,46 +114,87 @@ export default function Expenses(props: Props) {
       </Head>
       <h1>Add an expense </h1>
       <h2>{currentMonth}</h2>
-      {/* <h3>{props.user.id}</h3> */}
       <form
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault();
+          await getAllExpenses(props.user.id);
+          await addExpense(
+            props.user.id,
+            Number(inputCategoryId),
+            inputName,
+            Number(inputPrice),
+            inputDate,
+          );
         }}
       >
         <label>
           Date
           <input
             type="date"
-            value={date}
-            onChange={(event) => setDate(event.currentTarget.value)}
+            value={inputDate}
+            onChange={(event) => {
+              setInputDate(event.currentTarget.value);
+            }}
           />
         </label>
         <label>
           Price
           <input
             type="number"
-            value={price}
-            onChange={(event) => setPrice(event.currentTarget.value)}
+            value={inputPrice}
+            onChange={(event) => setInputPrice(event.currentTarget.value)}
           />
         </label>
         <label>
           Name
           <input
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
+            value={inputName}
+            onChange={(event) => setInputName(event.currentTarget.value)}
           />
         </label>
         <label>
           Category
-          <select>
+          <select
+            value={inputCategoryId}
+            onChange={(event) => {
+              setInputCategoryId(event.currentTarget.value);
+              console.log(
+                'categoryId',
+                inputCategoryId,
+                typeof inputCategoryId,
+              );
+            }}
+          >
             <option value="">Please choose a category</option>
             {props.categories.map((category) => {
-              return <option key={category.name}>{category.name}</option>;
+              return (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              );
             })}
           </select>
         </label>
         <button>Add</button>
       </form>
+      <div>
+        {errors.map((error) => {
+          return <div key={`error-${error.message}`}>{error.message}</div>;
+        })}
+      </div>
+      <h3>Latest expenses </h3>
+      <div>
+        {expenses.map((expense, index) => {
+          if (index < 5) {
+            return (
+              <div key={`expense-${expense.id}`}>
+                {expense.id} {expense.name} {expense.price} {expense.date}
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
     </Layout>
   );
 }
