@@ -267,3 +267,28 @@ export async function getAllExpensesByUserId(userId: number) {
     `;
   return expenses.map((expense) => camelcaseKeys(expense));
 }
+
+export async function getFirstExpenseByCategory(categoryId: number) {
+  const [expense] = await sql<[Expense | undefined]>`
+    SELECT
+      id,
+      name,
+      category_id
+    FROM
+      expenses
+    WHERE
+      category_id = ${categoryId}
+    LIMIT 1
+  `;
+  return expense && camelcaseKeys(expense);
+}
+
+export async function deleteCategoryById(categoryId: number) {
+  const [category] = await sql<Category>`
+    DELETE FROM
+      categories
+    WHERE
+      id = ${categoryId}
+  `;
+  return category;
+}

@@ -19,6 +19,7 @@ export default function CategoriesManagement(props: Props) {
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const [categories, setCategories] = useState<Categories>([]);
+  const [categoryHasExpense, setCategoryHasExpense] = useState(false);
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -56,6 +57,56 @@ export default function CategoriesManagement(props: Props) {
     }
 
     console.log(categoryResponseBody);
+    setErrors([]);
+    await getAllCategories(userId);
+  }
+
+  // Check if there is an expense in this category
+
+  async function checkIfExpenseInCategory(categoryId) {
+    const categoryResponse = await fetch(`/api/categories/checkCategory`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        category: {
+          categoryId: categoryId,
+        },
+      }),
+    });
+
+    const categoryResponseBody = await categoryResponse.json();
+    if ('errors' in categoryResponseBody) {
+      setErrors(categoryResponseBody.errors);
+      return;
+    }
+
+    setErrors([]);
+    return categoryResponseBody.category;
+  }
+
+  // Delete category
+
+  async function deleteCategory(categoryId, userId) {
+    const deleteResponse = await fetch(`/api/categories/deleteCategory`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        category: {
+          categoryId: categoryId,
+        },
+      }),
+    });
+
+    const deleteResponseBody = await deleteResponse.json();
+
+    if ('errors' in deleteResponseBody) {
+      setErrors(deleteResponseBody.errors);
+      return;
+    }
     setErrors([]);
     await getAllCategories(userId);
   }
@@ -98,7 +149,24 @@ export default function CategoriesManagement(props: Props) {
         {categories.map((category) => {
           return (
             <div key={`category-${category.name}`}>
-              {category.name} {category.monthlyBudget}
+              <div>
+                {category.name} {category.monthlyBudget}
+              </div>
+              <button
+                onClick={async () => {
+                  const categoryWithExpense = await checkIfExpenseInCategory(
+                    category.id,
+                  );
+                  if (!categoryWithExpense) {
+                    console.log('do I run?');
+                    await deleteCategory(category.id, props.user.id);
+                    return;
+                  }
+                }}
+              >
+                {' '}
+                Delete category{' '}
+              </button>
             </div>
           );
         })}
