@@ -26,17 +26,6 @@ ChartJS.register(
 );
 ChartJS.register(ChartDataLabels);
 
-const categories = [
-  'Food',
-  'Travel',
-  'Utilities',
-  'Clothes',
-  'Cakes',
-  'Health',
-];
-
-const categoriesData = [0.2, 0.3, 0.1, 0.25, 0.5, 0.1];
-
 const budgetLabels = ['Expenses', 'Budget left'];
 const budgetPercentage = 0.8;
 
@@ -58,6 +47,15 @@ const expensesMonth = [
   1300, 1250, 1809, 890, 1502, 1400, 1950, 1700, 1600, 1600, 1200, 1150,
 ];
 
+const categories = [
+  'Food',
+  'Travel',
+  'Utilities',
+  'Clothes',
+  'Cakes',
+  'Health',
+];
+const categoriesData = [];
 export const dataDoughnutCategories = {
   labels: categories,
   datasets: [
@@ -130,7 +128,7 @@ export const optionsDoughnutCategories = {
 };
 
 export const dataProgressCircle = {
-  labels: budgetLabels,
+  labels: ['Expenses', 'Budget left'],
   datasets: [
     {
       label: 'Budget',
@@ -261,10 +259,11 @@ export const optionsProgressBar = {
   },
 };
 
-export function DoughnutCategories() {
+export function DoughnutCategories(props) {
   return (
     <Doughnut
-      data={dataDoughnutCategories}
+      // data={dataDoughnutCategories}
+      data={props.data}
       options={optionsDoughnutCategories}
       // width={'300px'}
       // height={'400px'}
@@ -272,10 +271,10 @@ export function DoughnutCategories() {
   );
 }
 
-export function DoughnutProgress() {
+export function DoughnutProgress(props) {
   return (
     <Doughnut
-      data={dataProgressCircle}
+      data={props.data}
       options={optionsProgressCircle}
       // width={'300px'}
       // height={'400px'}

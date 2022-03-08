@@ -43,7 +43,7 @@ export function getSharePerCategory(categoryWithSum: CategoryWithSum[]) {
     if (totalSum === 0) {
       return {
         ...category,
-        percentageOfExpenses: 0,
+        shareOfExpenses: 0,
       };
     }
     const proportion = category.expensesSum / totalSum;
