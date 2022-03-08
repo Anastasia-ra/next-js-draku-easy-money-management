@@ -14,6 +14,7 @@ export default async function categoriesHandler(
           },
         ],
       });
+      return;
     }
 
     const categoriesList = await getAllCategoriesbyUserId(request.body.userId);

@@ -14,6 +14,7 @@ export default async function expensesHandler(
           },
         ],
       });
+      return;
     }
     const expensesList = await getAllExpensesByUserId(request.body.userId);
 
