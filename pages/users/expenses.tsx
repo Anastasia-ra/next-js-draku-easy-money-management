@@ -35,9 +35,11 @@ export default function Expenses(props: Props) {
 
   // Display all expenses on first render or when userId changes
   useEffect(() => {
-    const fetchExpenses = async () => await getAllExpenses(props.user.id);
-    fetchExpenses().catch(console.error);
-  }, [props.user.id]);
+    if (!('error' in props)) {
+      const fetchExpenses = async () => await getAllExpenses(props.user.id);
+      fetchExpenses().catch(console.error);
+    }
+  }, [props]);
 
   // Display in case user is not logged in
   if ('error' in props) {
@@ -67,7 +69,19 @@ export default function Expenses(props: Props) {
   async function getAllExpenses(userId: number) {
     const expensesListResponseBody = await getExpensesList(userId);
 
-    setExpenses(expensesListResponseBody.expensesList.reverse());
+    const splitted = expensesListResponseBody.expensesList.map((e: Expense) => {
+      const split = e.date.split('T');
+      return split[0];
+    });
+    console.log('splitted', splitted);
+
+    const expensesSortedByDate = expensesListResponseBody.expensesList.sort(
+      (a: Expense, b: Expense) => {
+        return a.date.localeCompare(b.date);
+      },
+    );
+    console.log('expensesSortedByDate', expensesSortedByDate);
+    setExpenses(expensesSortedByDate.reverse());
   }
 
   // Add expense in database
