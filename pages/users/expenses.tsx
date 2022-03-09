@@ -32,6 +32,9 @@ export default function Expenses(props: Props) {
   const [inputCategoryId, setInputCategoryId] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [deleteName, setDeleteName] = useState('');
+  const [deleteDate, setDeleteDate] = useState('');
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
 
   // Display all expenses on first render or when userId changes
   useEffect(() => {
@@ -113,10 +116,71 @@ export default function Expenses(props: Props) {
 
     if ('errors' in expenseResponseBody) {
       setErrors(expenseResponseBody.errors);
+      setInputDate('');
+      setInputPrice('');
+      setInputName('');
+      setInputCategoryId('');
       return;
     }
 
     setErrors([]);
+    setInputDate('');
+    setInputPrice('');
+    setInputName('');
+    setInputCategoryId('');
+    await getAllExpenses(props.user.id);
+  }
+
+  // Search through expenses
+
+  function findExpense(expenseName: string, expenseDate: string) {
+    if (expenseName !== '' && expenseDate === '') {
+      const filteredArray = expenses.filter((expense) =>
+        expense.name.toLowerCase().includes(expenseName.toLowerCase()),
+      );
+      setFilteredExpenses(filteredArray);
+      return filteredArray;
+    } else if (expenseName === '' && expenseDate !== '') {
+      const filteredArray = expenses.filter((expense) =>
+        expense.date.split('T')[0].split('-').join('-').includes(expenseDate),
+      );
+      setFilteredExpenses(filteredArray);
+      return filteredArray;
+    } else if (expenseName === '' && expenseDate === '') {
+      setFilteredExpenses([]);
+      return [];
+    }
+    const filteredArray = expenses.filter((expense) => {
+      return (
+        expense.name.toLowerCase().includes(expenseName.toLowerCase()) &&
+        expense.date.split('T')[0].split('-').join('-').includes(expenseDate)
+      );
+    });
+    setFilteredExpenses(filteredArray);
+    return filteredArray;
+  }
+
+  async function deleteExpense(expenseId: number) {
+    const deleteResponse = await fetch(`/api/expenses/deleteExpense`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        expense: {
+          expenseId: expenseId,
+        },
+      }),
+    });
+
+    const deleteResponseBody = await deleteResponse.json();
+
+    if ('errors' in deleteResponseBody) {
+      setErrors(deleteResponseBody.errors);
+      return;
+    }
+    setErrors([]);
+
     await getAllExpenses(props.user.id);
   }
 
@@ -146,8 +210,15 @@ export default function Expenses(props: Props) {
           <input
             type="date"
             value={inputDate}
+            min={
+              new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+                .toISOString()
+                .split('T')[0]
+            }
+            max={new Date().toISOString().split('T')[0]}
             onChange={(event) => {
               setInputDate(event.currentTarget.value);
+              console.log('date', event.currentTarget.value);
             }}
           />
         </label>
@@ -196,6 +267,55 @@ export default function Expenses(props: Props) {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })}
       </div>
+      <h2>Delete an expense</h2>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          const filteredArray = findExpense(deleteName, deleteDate);
+          console.log(filteredArray);
+          // setFilteredExpenses(filteredArray);
+        }}
+      >
+        <label>
+          Name
+          <input
+            value={deleteName}
+            onChange={(event) => setDeleteName(event.currentTarget.value)}
+          />
+        </label>
+        <label>
+          Date
+          <input
+            type="date"
+            max={new Date().toISOString().split('T')[0]}
+            value={deleteDate}
+            onChange={(event) => setDeleteDate(event.currentTarget.value)}
+          />
+        </label>
+        <button>Search</button>
+      </form>
+      {filteredExpenses.map((expense) => {
+        return (
+          <div key={`delete-${expense.id}`}>
+            <div>
+              {' '}
+              {expense.date} {expense.name} {expense.price}{' '}
+            </div>
+            <button
+              onClick={async () => {
+                await deleteExpense(expense.id);
+                setFilteredExpenses(
+                  filteredExpenses.filter((e) => e.id !== expense.id),
+                );
+              }}
+            >
+              {' '}
+              Delete
+            </button>
+          </div>
+        );
+      })}
+
       <h3>Latest expenses </h3>
       <div>
         {expenses.map((expense, index) => {

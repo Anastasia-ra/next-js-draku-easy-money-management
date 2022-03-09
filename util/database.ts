@@ -292,3 +292,13 @@ export async function deleteCategoryById(categoryId: number) {
   `;
   return category;
 }
+
+export async function deleteExpenseById(expenseId: number) {
+  const [expense] = await sql<[Expense]>`
+    DELETE FROM
+      expenses
+    WHERE
+      id = ${expenseId}
+  `;
+  return expense;
+}
