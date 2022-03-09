@@ -302,3 +302,26 @@ export async function deleteExpenseById(expenseId: number) {
   `;
   return expense;
 }
+
+export async function getExpensesPerCategory() {
+  const expenses = await sql<Expense[]>`
+    SELECT
+      DISTINCT category_id
+    FROM
+      expenses
+  `;
+  return expenses.map((expense) => camelcaseKeys(expense));
+}
+
+export async function getExpensesByMonth(month: number, year: number) {
+  const expenses = await sql<Expense[]>`
+    SELECT
+      *
+    FROM
+      expenses
+    WHERE
+      EXTRACT(MONTH FROM date) = ${month} AND
+      EXTRACT(YEAR FROM date) = ${year}
+  `;
+  return expenses.map((expense) => camelcaseKeys(expense));
+}
