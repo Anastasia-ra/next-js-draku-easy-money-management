@@ -273,7 +273,8 @@ export default function Expenses(props: Props) {
           event.preventDefault();
           const filteredArray = findExpense(deleteName, deleteDate);
           console.log(filteredArray);
-          // setFilteredExpenses(filteredArray);
+          setDeleteName('');
+          setDeleteDate('');
         }}
       >
         <label>
@@ -299,7 +300,11 @@ export default function Expenses(props: Props) {
           <div key={`delete-${expense.id}`}>
             <div>
               {' '}
-              {expense.date} {expense.name} {expense.price}{' '}
+              {new Intl.DateTimeFormat('en-GB', {
+                day: '2-digit',
+                month: 'short',
+              }).format(new Date(expense.date))}{' '}
+              {expense.name} {expense.price}{' '}
             </div>
             <button
               onClick={async () => {
@@ -322,7 +327,11 @@ export default function Expenses(props: Props) {
           if (index < 5) {
             return (
               <div key={`expense-${expense.id}`}>
-                {expense.id} {expense.name} {expense.price} {expense.date}
+                {new Intl.DateTimeFormat('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                }).format(new Date(expense.date))}{' '}
+                {expense.name} {expense.price}
               </div>
             );
           }
