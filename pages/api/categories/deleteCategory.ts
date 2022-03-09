@@ -5,7 +5,6 @@ export default async function categoriesHandler(
   request: NextApiRequest,
   response: NextApiResponse,
 ) {
-  console.log('here?');
   if (request.method === 'POST') {
     if (
       typeof request.body.category.categoryId !== 'number' ||
@@ -21,7 +20,6 @@ export default async function categoriesHandler(
       return;
     }
 
-    console.log('is it here?');
     await deleteCategoryById(request.body.category.categoryId);
 
     // if (!deletedCategory) {

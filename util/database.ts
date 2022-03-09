@@ -284,7 +284,7 @@ export async function getFirstExpenseByCategory(categoryId: number) {
 }
 
 export async function deleteCategoryById(categoryId: number) {
-  const [category] = await sql<Category>`
+  const [category] = await sql<[Category]>`
     DELETE FROM
       categories
     WHERE
