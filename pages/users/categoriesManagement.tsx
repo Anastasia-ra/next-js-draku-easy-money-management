@@ -20,8 +20,7 @@ export default function CategoriesManagement(props: Props) {
   const [errors, setErrors] = useState<Errors>([]);
   const [categories, setCategories] = useState<Categories>([]);
   const [maxCategory, setMaxCategory] = useState(false);
-  const [categoryHasExpense, setCategoryHasExpense] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
+  const [categoriesWithExpense, setCategoriesWithExpense] = useState([]);
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -33,6 +32,12 @@ export default function CategoriesManagement(props: Props) {
     setMaxCategory(categories.length > 9);
   }, [categories.length]);
 
+  useEffect(() => {
+    const fetchCategoriesWithExpense = async () =>
+      await getCategoriesWithExpensesList();
+    fetchCategoriesWithExpense().catch(console.error);
+  }, []);
+
   async function getAllCategories(userId: number) {
     const categoriesListResponseBody = await getCategoriesList(userId);
     setCategories(categoriesListResponseBody.categoriesList);
@@ -40,17 +45,6 @@ export default function CategoriesManagement(props: Props) {
 
   // Add category to database
   async function addCategory(userId: number, category: string, budget: string) {
-    // if (categories.length >= 10) {
-    //   console.log('categories', categories.length, categories);
-    //   setErrors([
-    //     {
-    //       message:
-    //         'You can have a maximum of 10 categories. Please delete a category if you want to add another one.',
-    //     },
-    //   ]);
-    //   return;
-    // }
-
     const categoryResponse = await fetch(`/api/categories/addCategories`, {
       method: 'POST',
       headers: {
@@ -70,6 +64,8 @@ export default function CategoriesManagement(props: Props) {
 
     if ('errors' in categoryResponseBody) {
       setErrors(categoryResponseBody.errors);
+      setNewCategory('');
+      setMonthlyBudget('');
       return;
     }
 
@@ -78,9 +74,8 @@ export default function CategoriesManagement(props: Props) {
     await getAllCategories(userId);
 
     console.log('categories', categories.length, categories);
-    // if (categories.length === 10) {
-    //   setMaxCategory(true);
-    // }
+    setNewCategory('');
+    setMonthlyBudget('');
   }
 
   // Check if there is an expense in this category
@@ -109,22 +104,6 @@ export default function CategoriesManagement(props: Props) {
     return categoryResponseBody.category;
   }
 
-  // Check for the whole array
-
-  // const categoryWithExpense = await checkIfExpenseInCategory(categories.map());
-
-  //   async function checkCategoryList() {
-  // for
-
-  //   }
-
-  // const filteredCategories = categories.filter(async (e) => {
-  //   const categoryWithExpense = await checkIfExpenseInCategory(e.id);
-  //   console.log('categoryWithExpense in filter', e.id, categoryWithExpense);
-  //   return categoryWithExpense;
-  // });
-  // console.log('filteredCategories', filteredCategories);
-
   // Delete category
 
   async function deleteCategory(categoryId: number, userId: number) {
@@ -148,6 +127,17 @@ export default function CategoriesManagement(props: Props) {
     }
     setErrors([]);
     await getAllCategories(userId);
+  }
+
+  async function getCategoriesWithExpensesList() {
+    const response = await fetch(`/api/categories/checkAllCategories`);
+    const data = await response.json();
+    console.log('data', data);
+    const categoryList = data.expensesPerCategories.map(
+      (expense: { categoryId: number }) => expense.categoryId,
+    );
+    console.log('categoryList', categoryList);
+    setCategoriesWithExpense(categoryList);
   }
 
   return (
@@ -189,37 +179,33 @@ export default function CategoriesManagement(props: Props) {
       </div>
       <div>
         {categories.map((category) => {
+          console.log('categoriesWithExpense', categoriesWithExpense);
+          const hasExpense = categoriesWithExpense.includes(category.id);
           return (
             <div key={`category-${category.name}`}>
               <div>
-                {category.name} {category.monthlyBudget}
+                {category.id} {category.name} {category.monthlyBudget}
               </div>
               <button
+                disabled={hasExpense}
                 onClick={async () => {
                   const categoryWithExpense = await checkIfExpenseInCategory(
                     category.id,
                   );
+                  await getCategoriesWithExpensesList();
                   if (!categoryWithExpense) {
                     await deleteCategory(category.id, props.user.id);
                     setMaxCategory(false);
                     return;
                   }
-                  // setIsClicked(true);
                 }}
-                // disabled={async () => {
-                //   const categoryWithExpense = await checkIfExpenseInCategory(
-                //     category.id,
-                //   );
-
-                //   return categoryWithExpense;
-                // }}
               >
                 {' '}
                 Delete category{' '}
               </button>
-              {/* {isClicked && category.id ? (
+              {hasExpense ? (
                 <p>You can only delete categoires without expenses</p>
-              ) : null} */}
+              ) : null}
             </div>
           );
         })}
