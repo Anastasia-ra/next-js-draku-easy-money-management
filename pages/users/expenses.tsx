@@ -9,18 +9,19 @@ import {
   getUserByValidSessionToken,
   Category,
   Expense,
+  getAllExpensesByUserId,
 } from '../../util/database';
 
 type Props =
   | {
       userObject: { username: string };
-      categories: Category[];
       user: { id: number; username: string };
+      categories: Category[];
+      expenses: Expense[];
     }
   | {
       userObject: { username: string };
       error: string;
-      user: { id: number; username: string };
     };
 
 type Errors = { message: string }[];
@@ -356,7 +357,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const categories = await getAllCategoriesbyUserId(user.id);
 
+  const expenses = await getAllExpensesByUserId(user.id);
+  const expensesDateToString = expenses.map((expense) => {
+    expense.date = expense.date.toISOString();
+    return expense;
+  });
+
   return {
-    props: { user: user, categories: categories },
+    props: {
+      user: user,
+      categories: categories,
+      expenses: expensesDateToString,
+    },
   };
 }
