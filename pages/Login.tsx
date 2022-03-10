@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Layout from '../components/Layout';
+import Link from 'next/link';
 import { createCsrfToken } from '../util/auth';
 import { getValidSessionByToken } from '../util/database';
 import { RegisterResponseBody } from './api/register';
@@ -34,6 +35,12 @@ export default function Login(props: Props) {
         <meta name="description" content="Draku log in" />
       </Head>
       <h1>Log in</h1>
+      <p>
+        No account yet? Sign-up here:{' '}
+        <Link href="/users/expenses">
+          <a>sign-up</a>
+        </Link>{' '}
+      </p>
       <form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -70,16 +77,6 @@ export default function Login(props: Props) {
             await router.push(returnTo);
             return;
           }
-
-          // if (returnTo) {
-          //   await router.push(returnTo);
-          //   return;
-          // }
-
-          // const userProfileUrl = `/users/${loginResponseBody.user.id}`;
-
-          // Clear the errors when login worked
-          // setErrors([]);  not necessary with redirect
           props.refreshUserProfile();
           await router.push(`/`);
         }}
