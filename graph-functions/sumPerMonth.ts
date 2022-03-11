@@ -1,20 +1,20 @@
-import { Category, Expense } from '../util/database';
+import { Expense } from '../util/database';
 
 export function getLastMonths() {
   const lastMonths = [];
   const monthName = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   const date = new Date();
@@ -32,9 +32,6 @@ export function sumPerMonth(
   expenses: Expense[],
   lastMonths: Array<{ monthId: number; month: string; year: number }>,
 ) {
-  console.log('expenses', expenses);
-  console.log('lastMonths', lastMonths);
-
   const expensesWithMonthId = expenses.map((expense) => {
     const month = new Date(expense.date).getMonth();
     return { ...expense, month };
@@ -43,7 +40,7 @@ export function sumPerMonth(
   // const monthExpenses: Array<number> = [];
 
   const lastMonthsWithExpenses = lastMonths.map((month) => {
-    return { ...month, monthExpenses: [] };
+    return { ...month, monthExpenses: [0] };
   });
 
   for (const month of lastMonthsWithExpenses) {
@@ -55,17 +52,13 @@ export function sumPerMonth(
     }
   }
 
-  console.log('lastMonthsWithExpense', lastMonthsWithExpenses);
-
   const lastMonthsWithTotalExpenses = lastMonthsWithExpenses.map((month) => {
-    console.log('check month total', month.monthId, month.monthExpenses);
     const total = month.monthExpenses.reduce(
       (previous, current) => previous + current,
       0,
     );
     return { ...month, totalExpenses: total };
   });
-  console.log('lastMonthWithTotalExpenses', lastMonthsWithTotalExpenses);
 
   return lastMonthsWithTotalExpenses;
 }
