@@ -26,6 +26,8 @@ type Props =
 
 type Errors = { message: string }[];
 
+type Currency = { name: string; exchangeRate: number };
+
 export default function Expenses(props: Props) {
   const [inputDate, setInputDate] = useState('');
   const [inputPrice, setInputPrice] = useState('');
@@ -36,6 +38,8 @@ export default function Expenses(props: Props) {
   const [deleteName, setDeleteName] = useState('');
   const [deleteDate, setDeleteDate] = useState('');
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
+  const [exchangeRate, setExchangeRate] = useState('1');
+  const [currencyList, setCurrencyList] = useState<Currency[]>([]);
 
   // Display all expenses on first render or when userId changes
   useEffect(() => {
@@ -44,6 +48,13 @@ export default function Expenses(props: Props) {
       fetchExpenses().catch(console.error);
     }
   }, [props]);
+
+  // Get current exchange rates
+
+  useEffect(() => {
+    const fetchExchangeRates = async () => await getExchangeRates();
+    fetchExchangeRates().catch(console.error);
+  }, []);
 
   // Display in case user is not logged in
   if ('error' in props) {
@@ -115,7 +126,7 @@ export default function Expenses(props: Props) {
 
     const expenseResponseBody = await expenseResponse.json();
 
-    if ('errors' in expenseResponseBody) {
+    if ('error' in expenseResponseBody) {
       setErrors(expenseResponseBody.errors);
       setInputDate('');
       setInputPrice('');
@@ -129,7 +140,9 @@ export default function Expenses(props: Props) {
     setInputPrice('');
     setInputName('');
     setInputCategoryId('');
-    await getAllExpenses(props.user.id);
+    if (!('error' in props)) {
+      await getAllExpenses(props.user.id);
+    }
   }
 
   // Search through expenses
@@ -181,8 +194,28 @@ export default function Expenses(props: Props) {
       return;
     }
     setErrors([]);
+    if (!('error' in props)) {
+      await getAllExpenses(props.user.id);
+    }
+  }
 
-    await getAllExpenses(props.user.id);
+  async function getExchangeRates() {
+    const exchangeRatesResponse = await fetch('/api/getExchangeRates');
+    const exchangeRatesResponseBody = await exchangeRatesResponse.json();
+
+    const currencyObject = exchangeRatesResponseBody.data.conversion_rates;
+    const currencyArray: Currency[] = [];
+
+    for (const currency in currencyObject) {
+      currencyArray.push({
+        name: currency,
+        exchangeRate: currencyObject[currency],
+      });
+    }
+
+    setCurrencyList(currencyArray);
+    console.log('currencyArray', currencyArray);
+    return exchangeRatesResponseBody;
   }
 
   return (
@@ -201,9 +234,10 @@ export default function Expenses(props: Props) {
             props.user.id,
             Number(inputCategoryId),
             inputName,
-            Number(inputPrice),
+            Math.round(Number(inputPrice) / Number(exchangeRate)),
             inputDate,
           );
+          console.log('currency', typeof exchangeRate, exchangeRate);
         }}
       >
         <label>
@@ -232,6 +266,22 @@ export default function Expenses(props: Props) {
           />
         </label>
         <label>
+          Currency
+          <select
+            value={exchangeRate}
+            onChange={(event) => setExchangeRate(event.currentTarget.value)}
+          >
+            {/* <option value="EUR">EUR</option> */}
+            {currencyList.map((curr) => {
+              return (
+                <option key={curr.name} value={curr.exchangeRate}>
+                  {curr.name}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        <label>
           Name
           <input
             value={inputName}
@@ -244,11 +294,6 @@ export default function Expenses(props: Props) {
             value={inputCategoryId}
             onChange={(event) => {
               setInputCategoryId(event.currentTarget.value);
-              console.log(
-                'categoryId',
-                inputCategoryId,
-                typeof inputCategoryId,
-              );
             }}
           >
             <option value="">Please choose a category</option>
@@ -358,16 +403,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const categories = await getAllCategoriesbyUserId(user.id);
 
   const expenses = await getAllExpensesByUserId(user.id);
+  // console.log('expenses', expenses, typeof expenses[1].date);
   const expensesDateToString = expenses.map((expense) => {
     expense.date = expense.date.toISOString();
+    // expense.date = new Date(expense.date);
     return expense;
   });
+
+  // console.log(
+  //   'expensesDateToString',
+  //   typeof expensesDateToString[0].date,
+  //   expensesDateToString,
+  // );
 
   return {
     props: {
       user: user,
       categories: categories,
       expenses: expensesDateToString,
+      // expenses: expenses,
     },
   };
 }
