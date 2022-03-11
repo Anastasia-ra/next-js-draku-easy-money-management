@@ -52,8 +52,12 @@ const chartDoughnutStyle = css`
 `;
 
 const chartLineStyle = css`
-  width: 450px;
+  width: 300px;
   height: 300px;
+`;
+
+const test = css`
+  background-color: red;
 `;
 
 type Props =
@@ -81,10 +85,6 @@ export default function Home(props: Props) {
     'Sep',
     'Oct',
     'Dec',
-  ];
-
-  const expensesMonth = [
-    1300, 1250, 1809, 890, 1502, 1400, 1950, 1700, 1600, 1600, 1200, 1150,
   ];
 
   if ('error' in props) {
@@ -403,29 +403,18 @@ export default function Home(props: Props) {
         </div>
       )}
 
-      {switchCategories ? (
-        <div css={chartDoughnutStyle}>
-          <Doughnut
-            data={getProgressChartData(props.categories, props.expenses).data}
-            options={
-              getProgressChartData(props.categories, props.expenses).options
-            }
-          />
-        </div>
-      ) : (
-        <div css={chartDoughnutStyle}>
-          <Doughnut
-            data={
-              getProgressChartData(props.categories, props.expensesCurrentMonth)
-                .data
-            }
-            options={
-              getProgressChartData(props.categories, props.expensesCurrentMonth)
-                .options
-            }
-          />
-        </div>
-      )}
+      <div css={chartDoughnutStyle}>
+        <Doughnut
+          data={
+            getProgressChartData(props.categories, props.expensesCurrentMonth)
+              .data
+          }
+          options={
+            getProgressChartData(props.categories, props.expensesCurrentMonth)
+              .options
+          }
+        />
+      </div>
 
       <div css={chartLineStyle}>
         <Line
