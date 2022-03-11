@@ -3,11 +3,16 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { getCategoriesList } from '../../graph-functions/fetchApi';
-import { getUserByValidSessionToken, Category } from '../../util/database';
+import {
+  getUserByValidSessionToken,
+  Category,
+  getAllCategoriesbyUserId,
+} from '../../util/database';
 
 type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
+  // categories: Category[];
 };
 
 type Errors = { message: string }[];
@@ -20,7 +25,9 @@ export default function CategoriesManagement(props: Props) {
   const [errors, setErrors] = useState<Errors>([]);
   const [categories, setCategories] = useState<Categories>([]);
   const [maxCategory, setMaxCategory] = useState(false);
-  const [categoriesWithExpense, setCategoriesWithExpense] = useState([]);
+  const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
+    [],
+  );
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -179,8 +186,8 @@ export default function CategoriesManagement(props: Props) {
       </div>
       <div>
         {categories.map((category) => {
-          console.log('categoriesWithExpense', categoriesWithExpense);
           const hasExpense = categoriesWithExpense.includes(category.id);
+          console.log('Category with expense', categoriesWithExpense);
           return (
             <div key={`category-${category.name}`}>
               <div>
@@ -218,16 +225,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const sessionToken = context.req.cookies.sessionToken;
   const user = await getUserByValidSessionToken(sessionToken);
 
-  if (user) {
+  if (!user) {
     return {
-      props: { user: user },
+      redirect: {
+        destination: '/login?returnTo=/users/categoriesManagement',
+        permanent: false,
+      },
     };
   }
 
+  const categories = await getAllCategoriesbyUserId(user.id);
+
   return {
-    redirect: {
-      destination: '/login?returnTo=/users/categoriesManagement',
-      permanent: false,
-    },
+    props: { user: user, categories: categories },
   };
 }
