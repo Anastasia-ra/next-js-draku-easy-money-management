@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
@@ -28,13 +27,13 @@ type Props =
     };
 
 export default function CategoriesManagement(props: Props) {
-  const currentMonth = new Intl.DateTimeFormat('en-US', {
-    month: 'numeric',
-  }).format(new Date());
+  // const currentMonth = new Intl.DateTimeFormat('en-US', {
+  //   month: 'numeric',
+  // }).format(new Date());
 
-  const currentYear = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-  }).format(new Date());
+  // const currentYear = new Intl.DateTimeFormat('en-US', {
+  //   year: 'numeric',
+  // }).format(new Date());
 
   if ('error' in props) {
     return <div>Please log-in first</div>;
@@ -86,6 +85,7 @@ export default function CategoriesManagement(props: Props) {
           // }
           return (
             <div key={`category-${category.id}`}>
+              {category.name}
               <ProgressBar completed={budgetProgress} bgColor={bgColor} />
             </div>
           );
