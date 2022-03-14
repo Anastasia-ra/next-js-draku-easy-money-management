@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { css, Global } from '@emotion/react';
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState();
@@ -21,11 +22,31 @@ function MyApp({ Component, pageProps }) {
   }, [refreshUserProfile]);
 
   return (
-    <Component
-      {...pageProps}
-      userObject={user}
-      refreshUserProfile={refreshUserProfile}
-    />
+    <>
+      <Global
+        styles={css`
+          html,
+          body {
+            margin: 0;
+            font-family: Gill Sans MT, Calibri, Arial, sans-serif;
+          }
+          a {
+            text-decoration: none;
+          }
+          a:hover {
+            cursor: pointer;
+          }
+          button:hover {
+            cursor: pointer;
+          }
+        `}
+      />
+      <Component
+        {...pageProps}
+        userObject={user}
+        refreshUserProfile={refreshUserProfile}
+      />
+    </>
   );
 }
 

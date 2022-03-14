@@ -22,7 +22,11 @@ export function getLastMonths() {
   for (let i = 0; i <= 11; i++) {
     const month = monthName[date.getMonth()];
     const year = date.getFullYear();
-    lastMonths.push({ monthId: date.getMonth(), month: month, year: year });
+    lastMonths.push({
+      monthId: date.getMonth(),
+      month: month,
+      year: year.toString().slice(2),
+    });
     date.setMonth(date.getMonth() - 1);
   }
   return lastMonths;
@@ -30,7 +34,7 @@ export function getLastMonths() {
 
 export function sumPerMonth(
   expenses: Expense[],
-  lastMonths: Array<{ monthId: number; month: string; year: number }>,
+  lastMonths: Array<{ monthId: number; month: string; year: string }>,
 ) {
   const expensesWithMonthId = expenses.map((expense) => {
     const month = new Date(expense.date).getMonth();

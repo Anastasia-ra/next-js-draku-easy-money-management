@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import Image from 'next/image';
 import Layout from '../components/Layout';
 import {
   getSharePerCategory,
@@ -32,6 +33,7 @@ import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
 import { getLastMonths, sumPerMonth } from '../graph-functions/sumPerMonth';
+// import Wallet from '../public/wallet-svgrepo-com.svg';
 
 ChartJS.register(
   ArcElement,
@@ -46,20 +48,6 @@ ChartJS.register(
 );
 ChartJS.register(ChartDataLabels);
 
-const chartDoughnutStyle = css`
-  width: 300px;
-  height: 300px;
-`;
-
-const chartLineStyle = css`
-  width: 300px;
-  height: 300px;
-`;
-
-const test = css`
-  background-color: red;
-`;
-
 type Props =
   | {
       userObject: { username: string };
@@ -69,6 +57,103 @@ type Props =
       expensesCurrentMonth: Expense[];
     }
   | { userObject: { username: string }; error: string };
+
+const mainStyle = css`
+  color: #26325b;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 700px;
+  h1 {
+    /* font-size: 26px;
+    margin: 40px 0; */
+  }
+  p {
+    font-size: 18px;
+    text-align: left;
+    margin: 30px 5vw;
+  }
+`;
+
+const welcomeHeaderStyle = css`
+  font-size: 26px;
+  margin: 40px 0;
+`;
+
+const imageStyle = css`
+  margin: 20px auto;
+`;
+
+const signUpLink = css`
+  background: #01aca3;
+  margin: 20px auto;
+  height: 30px;
+  width: 250px;
+  border-radius: 10px;
+
+  a {
+    color: white;
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  a:hover {
+    color: #04403d;
+  }
+`;
+
+const dougnhutsStyle = css`
+  margin: 30px 0;
+`;
+
+const chartDoughnutProgressStyle = css`
+  display: inline-block;
+  width: 180px;
+  height: 200px;
+`;
+const chartDoughnutCategoriesStyle = css`
+  display: inline-block;
+  width: 180px;
+  height: 200px;
+`;
+
+const categoriesStyle = css`
+  display: inline-flex;
+  flex-direction: column;
+`;
+
+const switchButtonStyle = css`
+  width: 100px;
+  height: 20px;
+  margin: 0 auto;
+  font-size: 12px;
+  background: #01aca3;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+`;
+
+const chartLineStyle = css`
+  width: 280px;
+  height: 180px;
+  margin: 0 auto;
+`;
+
+const linksStyle = css`
+  background: #01aca3;
+  width: 200px;
+  margin: auto;
+  text-align: left;
+
+  a {
+    color: white;
+    text-align: start;
+    padding-left: 15px;
+  }
+`;
+
+const chartsHeaderStyle = css`
+  margin: 10px 0;
+`;
 
 export default function Home(props: Props) {
   const [switchCategories, setSwitchCategories] = useState(false);
@@ -94,14 +179,27 @@ export default function Home(props: Props) {
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
         </Head>
-        <h1>Welcome to draku!</h1>
-        <p>Please create an account or login to start budgeting 😁</p>
-        <Link href="/signup">
-          <a>Sign up</a>
-        </Link>
-        <Link href="/login">
-          <a>Login</a>
-        </Link>
+        <div css={mainStyle}>
+          <h1 css={welcomeHeaderStyle}>
+            Welcome to Draku, your simple money management solution.
+          </h1>
+          <Image
+            src="/la-finance.png"
+            width="200px"
+            height="200px"
+            css={imageStyle}
+          />
+          <p>
+            Draku makes managing personal finances as easy as sleeping! With
+            Draku you can easily record your financial transactions, set budgets
+            and review your monthly and yearly spendings.
+          </p>
+          <div css={signUpLink}>
+            <Link href="/signup">
+              <a>Sign up here to start saving</a>
+            </Link>
+          </div>
+        </div>
       </Layout>
     );
   }
@@ -134,12 +232,16 @@ export default function Home(props: Props) {
           label: 'Expenses per category',
           data: categoriesData,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 99, 164, 0.2)',
             'rgba(54, 162, 235, 0.2)',
             'rgba(255, 206, 86, 0.2)',
             'rgba(75, 192, 192, 0.2)',
             'rgba(153, 102, 255, 0.2)',
             'rgba(255, 159, 64, 0.2)',
+            'rgba(86, 255, 86, 0.2)',
+            'rgba(68, 7, 97, 0.2)',
+            'rgba(224, 240, 10, 0.2)',
+            'rgba(44, 46, 46, 0.2)',
           ],
           borderColor: [
             'rgba(255, 99, 132, 1)',
@@ -148,6 +250,10 @@ export default function Home(props: Props) {
             'rgba(75, 192, 192, 1)',
             'rgba(153, 102, 255, 1)',
             'rgba(255, 159, 64, 1)',
+            ' rgba(86, 255, 86, 1)',
+            'rgba(68, 7, 97, 1)',
+            'rgba(224, 240, 10, 1)',
+            'rgba(44, 46, 46, 1)',
           ],
           borderWidth: 1,
         },
@@ -156,7 +262,7 @@ export default function Home(props: Props) {
 
     const optionsDoughnutCategories = {
       cutout: '60%',
-      // radius: 800,
+      radius: 60,
       // spacing: '5%',
       maintainAspectRatio: false,
       elements: {
@@ -185,7 +291,7 @@ export default function Home(props: Props) {
           display: false,
         },
         datalabels: {
-          color: '#36A2EB',
+          color: '#26325b',
           formatter: function (value: number, context) {
             return (
               categories[context.dataIndex] +
@@ -195,7 +301,7 @@ export default function Home(props: Props) {
             );
           },
           align: 'end',
-          offset: 20,
+          offset: 8,
           textAlign: 'center',
         },
       },
@@ -237,6 +343,7 @@ export default function Home(props: Props) {
 
     const optionsProgressCircle = {
       cutout: '85%',
+      radius: 60,
       rotation: 0,
       maintainAspectRatio: false,
       elements: {
@@ -262,7 +369,7 @@ export default function Home(props: Props) {
           formatter: function (value: number) {
             return Math.round(value * 100) + '%';
           },
-          display: [false, true],
+          display: [false, false],
           align: 'start',
           offset: 70,
           textAlign: 'center',
@@ -283,7 +390,7 @@ export default function Home(props: Props) {
       monthExpenses: Array<number>;
       monthId: number;
       month: string;
-      year: number;
+      year: string;
     }>,
   ) {
     console.log(
@@ -305,8 +412,8 @@ export default function Home(props: Props) {
           data: monthsWithExpenses
             .map((month) => month.totalExpenses)
             .reverse(),
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: '#01aca3',
+          backgroundColor: '#01aca3',
         },
       ],
     };
@@ -331,96 +438,131 @@ export default function Home(props: Props) {
       },
       scales: {
         xAxis: {
+          ticks: {
+            color: '#26325b',
+            font: {
+              size: 12,
+            },
+          },
           grid: {
             display: false,
           },
         },
         yAxis: {
+          ticks: {
+            color: '#26325b',
+            font: {
+              size: 12,
+            },
+            callback: (value: number) => {
+              return value + ' €';
+            },
+          },
           grid: {
             display: false,
           },
         },
       },
-      // layout: {
-      //   padding: 30,
-      // },
     };
     return { data: dataLine, options: optionsLine };
   }
 
   return (
-    <Layout userObject={props.userObject}>
+    <Layout userObject={props.userObject} css={mainStyle}>
       <Head>
         <title>Draku</title>
         <meta name="description" content="Draku money management" />
       </Head>
-      <h1>Welcome to Draku, {props.user.username}!</h1>
-      <br />
-      <Link href="/users/expenses">
-        <a>Start saving here</a>
-      </Link>
-      <br />
-      <Link href="/users/categoriesManagement">
-        <a>Manage your categories</a>
-      </Link>
-      <br />
-      <Link href="/users/budgetManagement">
-        <a>Manage your budget</a>
-      </Link>
-      <br />
-      <button onClick={() => setSwitchCategories(!switchCategories)}>
-        {switchCategories ? 'See this month' : 'See all'}
-      </button>
+      <div css={mainStyle}>
+        <h1 css={chartsHeaderStyle}>Welcome {props.user.username}!</h1>
 
-      {switchCategories ? (
-        <div css={chartDoughnutStyle}>
-          <Doughnut
-            data={
-              getDoughnutCategoriesData(props.categories, props.expenses).data
-            }
-            options={
-              getDoughnutCategoriesData(props.categories, props.expenses)
-                .options
-            }
+        <br />
+
+        <div css={chartLineStyle}>
+          <Line
+            data={getLineData(lastMonthsWithExpenses).data}
+            options={getLineData(lastMonthsWithExpenses).options}
           />
         </div>
-      ) : (
-        <div css={chartDoughnutStyle}>
-          <Doughnut
-            data={
-              getDoughnutCategoriesData(
-                props.categories,
-                props.expensesCurrentMonth,
-              ).data
-            }
-            options={
-              getDoughnutCategoriesData(
-                props.categories,
-                props.expensesCurrentMonth,
-              ).options
-            }
-          />
+        <div css={dougnhutsStyle}>
+          <div css={chartDoughnutProgressStyle}>
+            <Doughnut
+              // width="150"
+              // height="150"
+              data={
+                getProgressChartData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).data
+              }
+              options={
+                getProgressChartData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).options
+              }
+            />
+          </div>
+          <div css={categoriesStyle}>
+            {switchCategories ? (
+              <div css={chartDoughnutCategoriesStyle}>
+                <Doughnut
+                  // width="150"
+                  // height="150"
+                  data={
+                    getDoughnutCategoriesData(props.categories, props.expenses)
+                      .data
+                  }
+                  options={
+                    getDoughnutCategoriesData(props.categories, props.expenses)
+                      .options
+                  }
+                />
+              </div>
+            ) : (
+              <div css={chartDoughnutCategoriesStyle}>
+                <Doughnut
+                  // width="150"
+                  // height="150"
+                  data={
+                    getDoughnutCategoriesData(
+                      props.categories,
+                      props.expensesCurrentMonth,
+                    ).data
+                  }
+                  options={
+                    getDoughnutCategoriesData(
+                      props.categories,
+                      props.expensesCurrentMonth,
+                    ).options
+                  }
+                />
+              </div>
+            )}
+            <button
+              css={switchButtonStyle}
+              onClick={() => setSwitchCategories(!switchCategories)}
+            >
+              {switchCategories ? 'See this month' : 'See all'}
+            </button>
+          </div>
         </div>
-      )}
 
-      <div css={chartDoughnutStyle}>
-        <Doughnut
-          data={
-            getProgressChartData(props.categories, props.expensesCurrentMonth)
-              .data
-          }
-          options={
-            getProgressChartData(props.categories, props.expensesCurrentMonth)
-              .options
-          }
-        />
-      </div>
+        {/* <Wallet /> */}
 
-      <div css={chartLineStyle}>
-        <Line
-          data={getLineData(lastMonthsWithExpenses).data}
-          options={getLineData(lastMonthsWithExpenses).options}
-        />
+        <div css={linksStyle}>
+          <Link href="/users/expenses">
+            <a>Add new expenses</a>
+          </Link>
+          <br />
+          <Link href="/users/categoriesManagement">
+            <a>Manage your categories</a>
+          </Link>
+          <br />
+          <Link href="/users/budgetManagement">
+            <a>Manage your budget</a>
+          </Link>
+        </div>
       </div>
     </Layout>
   );
