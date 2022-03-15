@@ -28,9 +28,12 @@ import {
   LineElement,
   Title,
   BarElement,
+  ChartOptions,
 } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Context } from 'chartjs-plugin-datalabels';
+// import Options from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
 import { getLastMonths, sumPerMonth } from '../graph-functions/sumPerMonth';
 // import Wallet from '../public/wallet-svgrepo-com.svg';
@@ -45,8 +48,8 @@ ChartJS.register(
   LineElement,
   Title,
   BarElement,
+  ChartDataLabels,
 );
-ChartJS.register(ChartDataLabels);
 
 type Props =
   | {
@@ -260,7 +263,7 @@ export default function Home(props: Props) {
       ],
     };
 
-    const optionsDoughnutCategories = {
+    const optionsDoughnutCategories: ChartJS.ChartOptions = {
       cutout: '60%',
       radius: 60,
       // spacing: '5%',
@@ -292,7 +295,7 @@ export default function Home(props: Props) {
         },
         datalabels: {
           color: '#26325b',
-          formatter: function (value: number, context) {
+          formatter: function (value: number, context: Context) {
             return (
               categories[context.dataIndex] +
               '\n' +
@@ -393,15 +396,6 @@ export default function Home(props: Props) {
       year: string;
     }>,
   ) {
-    console.log(
-      'labels',
-      monthsWithExpenses.map((month) => `${month.month} ${month.year}`),
-    );
-    console.log(
-      'data',
-      monthsWithExpenses.map((month) => month.totalExpenses),
-    );
-
     const dataLine = {
       labels: monthsWithExpenses
         .map((month) => `${month.month} ${month.year}`)
@@ -410,7 +404,7 @@ export default function Home(props: Props) {
         {
           label: 'Months',
           data: monthsWithExpenses
-            .map((month) => month.totalExpenses)
+            .map((month) => month.totalExpenses / 100)
             .reverse(),
           borderColor: '#01aca3',
           backgroundColor: '#01aca3',
@@ -481,6 +475,7 @@ export default function Home(props: Props) {
         <div css={chartLineStyle}>
           <Line
             data={getLineData(lastMonthsWithExpenses).data}
+            plugins={[ChartDataLabels]}
             options={getLineData(lastMonthsWithExpenses).options}
           />
         </div>
