@@ -12,6 +12,7 @@ const mainStyle = css`
   justify-content: space-between;
   align-self: center;
   line-height: 34px;
+  box-shadow: 80px 0;
 
   a {
     margin: 0 10px;
