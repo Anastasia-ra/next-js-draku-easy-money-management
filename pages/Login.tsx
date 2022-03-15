@@ -9,10 +9,6 @@ import { createCsrfToken } from '../util/auth';
 import { getValidSessionByToken } from '../util/database';
 import { RegisterResponseBody } from './api/register';
 
-const errorStyles = css`
-  color: red;
-`;
-
 type Errors = { message: string }[];
 
 type Props = {
@@ -20,6 +16,48 @@ type Props = {
   userObject: { username: string };
   csrfToken: string;
 };
+
+const errorStyles = css`
+  color: #8a1010;
+  width: 200px;
+  text-align: center;
+  margin: 15px auto;
+`;
+const loginStyle = css`
+  position: relative;
+  top: 65px;
+  background: #01aca3;
+  color: white;
+  width: 280px;
+  height: 350px;
+  margin: auto;
+  padding: 10px 15px;
+  border-radius: 15%;
+  text-align: center;
+  /* h1 {
+    text-align: center;
+  } */
+  p {
+    text-align: center;
+  }
+  a {
+    color: white;
+  }
+  input {
+    margin: 10px;
+  }
+`;
+
+const buttonStyle = css`
+  width: 100px;
+  height: 25px;
+  margin: 0 auto;
+  font-size: 16px;
+  background: #f4ac40;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+`;
 
 export default function Login(props: Props) {
   const [username, setUsername] = useState('');
@@ -34,77 +72,86 @@ export default function Login(props: Props) {
         <title>Login at Draku</title>
         <meta name="description" content="Draku log in" />
       </Head>
-      <h1>Log in</h1>
-      <p>
-        No account yet? Sign-up here:{' '}
-        <Link href="/users/expenses">
-          <a>sign-up</a>
-        </Link>{' '}
-      </p>
-      <form
-        onSubmit={async (event) => {
-          event.preventDefault();
-          const loginResponse = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: username,
-              password: password,
-              csrfToken: props.csrfToken,
-            }),
-          });
+      <div css={loginStyle}>
+        <h1>Log in</h1>
+        <p>
+          No account yet?{'  '}
+          <Link href="/users/signup">
+            <a> Sign-up here</a>
+          </Link>{' '}
+        </p>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            const loginResponse = await fetch('/api/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username: username,
+                password: password,
+                csrfToken: props.csrfToken,
+              }),
+            });
 
-          const loginResponseBody =
-            (await loginResponse.json()) as RegisterResponseBody;
+            const loginResponseBody =
+              (await loginResponse.json()) as RegisterResponseBody;
 
-          if ('errors' in loginResponseBody) {
-            setErrors(loginResponseBody.errors);
-            return;
-          }
-          const returnTo = router.query.returnTo;
-          console.log('returnTo', returnTo, typeof returnTo);
+            if ('errors' in loginResponseBody) {
+              setErrors(loginResponseBody.errors);
+              return;
+            }
+            const returnTo = router.query.returnTo;
+            console.log('returnTo', returnTo, typeof returnTo);
 
-          if (
-            returnTo &&
-            !Array.isArray(returnTo) &&
-            // Security: Validate returnTo parameter against valid path
-            // (because this is untrusted user input)
-            /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
-          ) {
+            if (
+              returnTo &&
+              !Array.isArray(returnTo) &&
+              // Security: Validate returnTo parameter against valid path
+              // (because this is untrusted user input)
+              /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
+            ) {
+              props.refreshUserProfile();
+              await router.push(returnTo);
+              return;
+            }
             props.refreshUserProfile();
-            await router.push(returnTo);
-            return;
-          }
-          props.refreshUserProfile();
-          await router.push(`/`);
-        }}
-      >
-        <div>
-          <label>
-            Username
-            <input
-              value={username}
-              onChange={(event) => setUsername(event.currentTarget.value)}
-            />
-          </label>
-          <br />
-          <label>
-            Password
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.currentTarget.value)}
-            />
-          </label>
-          <button>Log-in</button>
-        </div>
-      </form>
-      <div css={errorStyles}>
-        {errors.map((error) => {
-          return <div key={`error-${error.message}`}>{error.message}</div>;
-        })}
+            await router.push(`/`);
+          }}
+        >
+          <div>
+            <label>
+              <span> Username {'  '} </span>
+              <br />
+              <input
+                value={username}
+                onChange={(event) => setUsername(event.currentTarget.value)}
+              />
+            </label>
+            <br />
+            <br />
+            <label>
+              <span> Password {'  '} </span>
+              <br />
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.currentTarget.value)}
+              />
+            </label>
+            <br />
+            <div css={errorStyles}>
+              {errors.map((error) => {
+                return (
+                  <div key={`error-${error.message}`}>{error.message}</div>
+                );
+              })}
+            </div>
+
+            <button css={buttonStyle}>Log-in</button>
+          </div>
+        </form>
       </div>
     </Layout>
   );
