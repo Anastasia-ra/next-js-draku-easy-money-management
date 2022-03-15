@@ -60,8 +60,8 @@ export default function CategoriesManagement(props: Props) {
       body: JSON.stringify({
         category: {
           userId: userId,
-          name: category.toLowerCase(),
-          monthlyBudget: Number(budget),
+          name: category[0].toUpperCase() + category.slice(1).toLowerCase(),
+          monthlyBudget: Number(budget) * 100,
         },
       }),
     });
@@ -191,7 +191,7 @@ export default function CategoriesManagement(props: Props) {
           return (
             <div key={`category-${category.name}`}>
               <div>
-                {category.id} {category.name} {category.monthlyBudget}
+                {category.name} {category.monthlyBudget / 100}€
               </div>
               <button
                 disabled={hasExpense}
@@ -211,7 +211,7 @@ export default function CategoriesManagement(props: Props) {
                 Delete category{' '}
               </button>
               {hasExpense ? (
-                <p>You can only delete categoires without expenses</p>
+                <p>You can only delete categories without expenses</p>
               ) : null}
             </div>
           );
