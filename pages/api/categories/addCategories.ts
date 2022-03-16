@@ -11,7 +11,7 @@ export default async function categoriesHandler(
       !request.body.category.name ||
       typeof request.body.category.monthlyBudget !== 'number' ||
       !request.body.category.monthlyBudget ||
-      Number.isNaN(request.body.category.budget)
+      Number.isNaN(request.body.category.monthlyBudget)
     ) {
       response.status(400).json({
         errors: [
