@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
@@ -26,6 +27,56 @@ type Props =
       error: string;
     };
 
+const mainStyle = css`
+  color: #26325b;
+`;
+
+const progressDivStyle = css`
+  width: 280px;
+  margin: 10px auto;
+`;
+
+const progressBarStyle = css`
+  margin: 5px 0;
+  /* width: 280px;
+  margin: auto; */
+`;
+
+const totalProgressDivStyle = css`
+  width: 280px;
+  margin: 20px auto;
+`;
+
+const progressInfosStyle = css`
+  width: 100px;
+  text-align: end;
+  font-size: 18px;
+  span {
+    font-size: 14px;
+  }
+`;
+
+const flexStyle = css`
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+`;
+
+const totalFlexStyle = css`
+  display: flex;
+  justify-content: space-between;
+  font-size: 21px;
+`;
+
+const totalInfosStyle = css`
+  width: 100px;
+  text-align: end;
+  font-size: 21px;
+  span {
+    font-size: 18px;
+  }
+`;
+
 export default function CategoriesManagement(props: Props) {
   // const currentMonth = new Intl.DateTimeFormat('en-US', {
   //   month: 'numeric',
@@ -42,7 +93,7 @@ export default function CategoriesManagement(props: Props) {
   const totalBudgetProgress = getTotalBudgetProgress(
     props.categories,
     props.expensesCurrentMonth,
-  );
+  ).progress;
 
   let bgColorTotal = '#07b335';
   if (0.7 < totalBudgetProgress && totalBudgetProgress < 0.9) {
@@ -58,45 +109,78 @@ export default function CategoriesManagement(props: Props) {
         <title>Your budget</title>
         <meta name="description" content="budget" />
       </Head>
-      <h1>Manage your budget</h1>
-      <div>
-        {props.categories.map((category) => {
-          const budgetProgress = Math.round(
-            getBudgetProgressByCategoryPerMonth(
-              props.user.id,
-              category.id,
-              props.expensesCurrentMonth,
-            ) * 100,
-          );
-          let bgColor = '#07b335';
-          if (0.7 < budgetProgress && budgetProgress < 0.9) {
-            bgColor = '#eb8305';
-          }
-          if (budgetProgress >= 0.9) {
-            bgColor = '#a81b0c';
-          }
-          // if (budgetProgress > 100) {
-          //   return (
-          //     <div key={`category-${category.id}`}>
-          //       <ProgressBar completed={100} bgColor={bgColor} />
-          //       <span>{`You're category ${category.name}  is over budget!`}</span>
-          //     </div>
-          //   );
-          // }
-          return (
-            <div key={`category-${category.id}`}>
-              {category.name}
-              <ProgressBar completed={budgetProgress} bgColor={bgColor} />
+      <div css={mainStyle}>
+        <h1>Manage your budget</h1>
+        <div>
+          <div css={totalProgressDivStyle}>
+            <div css={totalFlexStyle}>
+              Total
+              <div css={totalInfosStyle}>
+                {getTotalBudgetProgress(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).currentTotal / 100}
+                € <br />{' '}
+                <span>
+                  {' '}
+                  from{' '}
+                  {getTotalBudgetProgress(
+                    props.categories,
+                    props.expensesCurrentMonth,
+                  ).totalBudget / 100}
+                  €{' '}
+                </span>
+              </div>
             </div>
-          );
-        })}
-      </div>
-      <h2>Total</h2>
-      <div>
-        <ProgressBar
-          completed={Math.round(totalBudgetProgress * 100)}
-          bgColor={bgColorTotal}
-        />
+            <ProgressBar
+              completed={Math.round(totalBudgetProgress * 100)}
+              bgColor={bgColorTotal}
+              isLabelVisible={false}
+            />
+          </div>
+
+          {props.categories.map((category) => {
+            const budgetProgress = Math.round(
+              getBudgetProgressByCategoryPerMonth(
+                category.monthlyBudget,
+                category.id,
+                props.expensesCurrentMonth,
+              ).progress * 100,
+            );
+
+            let bgColor = '#07b335';
+            if (70 < budgetProgress && budgetProgress < 90) {
+              bgColor = '#eb8305';
+            }
+            if (budgetProgress >= 90) {
+              bgColor = '#a81b0c';
+            }
+
+            return (
+              <div css={progressDivStyle} key={`category-${category.id}`}>
+                <div css={flexStyle}>
+                  {category.name}
+                  <div css={progressInfosStyle}>
+                    {' '}
+                    {getBudgetProgressByCategoryPerMonth(
+                      category.monthlyBudget,
+                      category.id,
+                      props.expensesCurrentMonth,
+                    ).expensesSum / 100}
+                    € <br />
+                    <span>from {category.monthlyBudget / 100}€ </span>
+                  </div>
+                </div>
+                <ProgressBar
+                  css={progressBarStyle}
+                  completed={budgetProgress}
+                  bgColor={bgColor}
+                  isLabelVisible={false}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Layout>
   );
