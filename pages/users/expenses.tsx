@@ -350,21 +350,21 @@ export default function Expenses(props: Props) {
   }
 
   async function getExchangeRates() {
-    // const exchangeRatesResponse = await fetch('/api/getExchangeRates');
-    // const exchangeRatesResponseBody = await exchangeRatesResponse.json();
+    const exchangeRatesResponse = await fetch('/api/getExchangeRates');
+    const exchangeRatesResponseBody = await exchangeRatesResponse.json();
 
-    // const currencyObject = exchangeRatesResponseBody.data.conversion_rates;
-    // const currencyArray: Currency[] = [];
+    const currencyObject = exchangeRatesResponseBody.data.conversion_rates;
+    const currencyArray: Currency[] = [];
 
-    // for (const currency in currencyObject) {
-    //   currencyArray.push({
-    //     name: currency,
-    //     exchangeRate: currencyObject[currency],
-    //   });
-    // }
+    for (const currency in currencyObject) {
+      currencyArray.push({
+        name: currency,
+        exchangeRate: currencyObject[currency],
+      });
+    }
 
-    // setCurrencyList(currencyArray);
-    // console.log('currencyArray', currencyArray);
+    setCurrencyList(currencyArray);
+    console.log('currencyArray', currencyArray);
     return exchangeRatesResponseBody;
   }
 
@@ -391,8 +391,8 @@ export default function Expenses(props: Props) {
                     Number(inputCategoryId),
                     inputName,
                     Math.round(
-                      ((Number(inputPrice) * 100) / Number(exchangeRate)) * 100,
-                    ) / 100,
+                      (Number(inputPrice) * 100) / Number(exchangeRate),
+                    ),
                     inputDate,
                   );
                   console.log('currency', typeof exchangeRate, exchangeRate);
