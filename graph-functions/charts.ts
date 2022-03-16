@@ -6,6 +6,19 @@ import {
 import { Context } from 'chartjs-plugin-datalabels';
 import { getTotalBudgetProgress } from './budgetProgress';
 
+export const colors = [
+  'rgba(255, 99, 164, 0.8)',
+  'rgba(54, 162, 235, 0.8)',
+  'rgba(255, 206, 86, 0.8)',
+  'rgba(75, 192, 192, 0.8)',
+  'rgba(153, 102, 255, 0.8)',
+  'rgba(255, 159, 64, 0.8)',
+  'rgba(86, 255, 86, 0.8)',
+  'rgba(68, 7, 97, 0.8)',
+  'rgba(224, 240, 10, 0.8)',
+  'rgba(44, 46, 46, 0.8)',
+];
+
 export function getDoughnutCategoriesData(
   categoriesArray: Category[],
   expensesArray: Expense[],
@@ -31,18 +44,7 @@ export function getDoughnutCategoriesData(
       {
         label: 'Expenses per category',
         data: categoriesData,
-        backgroundColor: [
-          'rgba(255, 99, 164, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(86, 255, 86, 0.2)',
-          'rgba(68, 7, 97, 0.2)',
-          'rgba(224, 240, 10, 0.2)',
-          'rgba(44, 46, 46, 0.2)',
-        ],
+        backgroundColor: colors,
         borderColor: [
           'rgba(255, 99, 132, 1)',
           'rgba(54, 162, 235, 1)',
@@ -110,7 +112,10 @@ export function getProgressChartData(
   categoriesArray: Category[],
   expensesArray: Expense[],
 ) {
-  const budgetProgress = getTotalBudgetProgress(categoriesArray, expensesArray);
+  const budgetProgress = getTotalBudgetProgress(
+    categoriesArray,
+    expensesArray,
+  ).progress;
 
   let bgColorProgress = '#07b335';
   if (0.7 < budgetProgress && budgetProgress < 0.9) {
