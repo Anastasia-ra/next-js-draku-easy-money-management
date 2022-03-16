@@ -11,7 +11,10 @@ import {
   getAllCategoriesbyUserId,
   getExpensesByMonthByUser,
 } from '../../util/database';
-import { getDoughnutCategoriesData } from '../../graph-functions/charts';
+import {
+  getDoughnutCategoriesData,
+  colors,
+} from '../../graph-functions/charts';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -51,34 +54,41 @@ type Errors = { message: string }[];
 
 type Categories = Category[];
 
+const mainStyle = css`
+  color: #26325b;
+  h1 {
+    font-size: 26px;
+  }
+`;
+
 const formStyle = css`
   background: #01aca3;
   color: white;
   width: 250px;
-  height: 190px;
+  height: 95px;
   margin: auto;
   padding: 10px 15px;
-  border-radius: 15%;
+  border-radius: 15px;
   text-align: center;
-  /* h1 {
-    text-align: center;
-  } */
-  p {
+
+  /* p {
     text-align: center;
   }
   a {
     color: white;
-  }
+  } */
   input {
-    margin: 10px;
+    margin: 10px 10px 0 10px;
     width: 100px;
+    border-radius: 8px;
+    border-style: none;
   }
 `;
 
 const addButtonStyle = css`
   width: 180px;
-  height: 28px;
-  margin: 25px auto;
+  height: 21px;
+  margin: auto;
   font-size: 16px;
   background: #f4ac40;
   color: white;
@@ -86,28 +96,35 @@ const addButtonStyle = css`
   border-style: none;
 `;
 
-const singleCategoryStyle = css`
-  display: flex;
-  flex-wrap: nowrap;
-`;
-
 const deleteButtonStyle = css`
-  width: 80px;
+  width: 55px;
   height: 15px;
   font-size: 12px;
-  margin-left: 20px;
-  background: #eb584476;
-  border: solid #e4361f76;
+  margin-left: 15px;
+  background: #e77b8e;
+  /* border: solid #e4361f76; */
   color: white;
-  /* border-radius: 10px; */
+  border-radius: 50px;
   border-style: none;
   :disabled {
-    background: #aca9a9;
+    background: #e2b3bc;
   }
 `;
 
+const editButtonStyle = css`
+  width: 55px;
+  height: 15px;
+  font-size: 12px;
+  margin-left: 5px;
+  background: #9c858a;
+  border: solid #e4361f76;
+  color: white;
+  border-radius: 50px;
+  border-style: none;
+`;
+
 const chartDoughnutCategoriesStyle = css`
-  width: 180px;
+  width: 250px;
   height: 200px;
   margin: auto;
 `;
@@ -120,6 +137,80 @@ const formBlocksStyle = css`
   display: flex;
 `;
 
+const singleCategoryStyle = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const singleLineStyle = css`
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+`;
+
+const categoriesListStyle = css`
+  width: 280px;
+  margin: 20px auto;
+`;
+
+function getColorDot(index: number) {
+  const colorDotStyle = css`
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    background: ${colors[index]};
+  `;
+  return colorDotStyle;
+}
+
+const categoryNameStyle = css`
+  padding: 0 20px;
+  width: 100px;
+`;
+
+const categoryBudgetStyle = css`
+  width: 40px;
+`;
+
+const changeFormStyle = css`
+  background: #2cada7;
+  color: white;
+  width: 250px;
+  height: 80px;
+  margin: auto;
+  padding: 5px 5px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 14px;
+
+  input {
+    margin: 5px 5px 0 5px;
+    width: 80px;
+    border-radius: 8px;
+    border-style: none;
+  }
+`;
+
+const newInfos = css`
+  display: flex;
+`;
+
+const changeButtonStyle = css`
+  width: 90px;
+  height: 21px;
+  margin: 0 auto;
+  font-size: 14px;
+  background: #f4ac40;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+`;
+
+const newNameInputStyle = css``;
+
+const newBudgetInputStyle = css``;
+
 export default function CategoriesManagement(props: Props) {
   const [newCategory, setNewCategory] = useState('');
   const [monthlyBudget, setMonthlyBudget] = useState('');
@@ -129,7 +220,10 @@ export default function CategoriesManagement(props: Props) {
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
     [],
   );
-  const [addNewCategory, setAddNewCategory] = useState(false);
+  const [updateCategoryId, setUpdateCategoryId] = useState('');
+  const [updateCategoryName, setUpdateCategoryName] = useState('');
+  const [updateCategoryBudget, setUpdateCategoryBudget] = useState('');
+  const [editIsClicked, setEditIsClicked] = useState(0);
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -149,7 +243,12 @@ export default function CategoriesManagement(props: Props) {
 
   async function getAllCategories(userId: number) {
     const categoriesListResponseBody = await getCategoriesList(userId);
-    setCategories(categoriesListResponseBody.categoriesList);
+
+    const sortedCategoriesList = categoriesListResponseBody.categoriesList.sort(
+      (a: Category, b: Category) => a.id - b.id,
+    );
+
+    setCategories(sortedCategoriesList);
   }
 
   // Add category to database
@@ -249,115 +348,196 @@ export default function CategoriesManagement(props: Props) {
     setCategoriesWithExpense(categoryList);
   }
 
+  // Update categories
+
+  async function updateCategoryNameBudget(
+    categoryId: number,
+    categoryName: string,
+    categoryBudget: number,
+  ) {
+    const updatedResponse = await fetch(`/api/categories/updateCategories`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        category: {
+          userId: props.user.id,
+          categoryId: categoryId,
+          newCategoryName: categoryName,
+          newCategoryBudget: categoryBudget,
+        },
+      }),
+    });
+
+    const updatedResponseBody = await updatedResponse.json();
+
+    console.log('updatedResponseBody', updatedResponseBody);
+  }
+
   return (
     <Layout userObject={props.userObject}>
       <Head>
         <title>Your categories</title>
         <meta name="description" content="categories management" />
       </Head>
-      <h1>Manage your categories</h1>
+      <div css={mainStyle}>
+        <h1>Manage your categories</h1>
 
-      <div css={chartDoughnutCategoriesStyle}>
-        <Doughnut
-          // width="150"
-          // height="150"
-          data={
-            getDoughnutCategoriesData(
-              props.categories,
-              props.expensesCurrentMonth,
-            ).data
-          }
-          options={
-            getDoughnutCategoriesData(
-              props.categories,
-              props.expensesCurrentMonth,
-            ).options
-          }
-        />
-      </div>
+        <div css={chartDoughnutCategoriesStyle}>
+          <Doughnut
+            // width="150"
+            // height="150"
+            data={
+              getDoughnutCategoriesData(
+                props.categories,
+                props.expensesCurrentMonth,
+              ).data
+            }
+            options={
+              getDoughnutCategoriesData(
+                props.categories,
+                props.expensesCurrentMonth,
+              ).options
+            }
+          />
+        </div>
 
-      {/* <button> Add a new category </button> */}
+        {/* <button> Add a new category </button> */}
 
-      <div css={formStyle}>
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault();
-            await addCategory(props.user.id, newCategory, monthlyBudget);
-          }}
-        >
-          <div css={formBlocksStyle}>
-            <div css={categoryBlockStyle}>
-              <label>
-                Category
-                <br />
-                <input
-                  value={newCategory}
-                  onChange={(event) =>
-                    setNewCategory(event.currentTarget.value)
-                  }
-                />
-              </label>
-            </div>
-            <div css={budgetBlockStyle}>
-              <label>
-                Monthly budget
-                <br />
-                <input
-                  value={monthlyBudget}
-                  onChange={(event) =>
-                    setMonthlyBudget(event.currentTarget.value)
-                  }
-                />
-              </label>
-            </div>
-          </div>
-          <br />
-          <button css={addButtonStyle} disabled={maxCategory}>
-            Add a new category
-          </button>
-        </form>
-      </div>
-      {maxCategory ? (
-        <div>You've reached the maximum number of categories.</div>
-      ) : null}
-      <div>
-        {errors.map((error) => {
-          return <div key={`error-${error.message}`}>{error.message}</div>;
-        })}
-      </div>
-      <div>
-        {categories.map((category) => {
-          const hasExpense = categoriesWithExpense.includes(category.id);
-          console.log('Category with expense', categoriesWithExpense);
-          return (
-            <div css={singleCategoryStyle} key={`category-${category.name}`}>
-              <div>
-                {category.name} {category.monthlyBudget / 100}€
+        <div css={formStyle}>
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              await addCategory(props.user.id, newCategory, monthlyBudget);
+            }}
+          >
+            <div css={formBlocksStyle}>
+              <div css={categoryBlockStyle}>
+                <label>
+                  Category
+                  <br />
+                  <input
+                    value={newCategory}
+                    onChange={(event) =>
+                      setNewCategory(event.currentTarget.value)
+                    }
+                  />
+                </label>
               </div>
-              <button
-                css={deleteButtonStyle}
-                disabled={hasExpense}
-                onClick={async () => {
-                  const categoryWithExpense = await checkIfExpenseInCategory(
-                    category.id,
-                  );
-                  await getCategoriesWithExpensesList();
-                  if (!categoryWithExpense) {
-                    await deleteCategory(category.id, props.user.id);
-                    setMaxCategory(false);
-                    return;
-                  }
-                }}
-              >
-                {' '}
-                Delete category{' '}
-              </button>
-              {hasExpense ? (
-                <p>You can only delete categories without expenses</p>
-              ) : null}
+              <div css={budgetBlockStyle}>
+                <label>
+                  Monthly budget
+                  <br />
+                  <input
+                    type="number"
+                    value={monthlyBudget}
+                    onChange={(event) =>
+                      setMonthlyBudget(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
             </div>
-          );
-        })}
+            <br />
+            <button css={addButtonStyle} disabled={maxCategory}>
+              Add a new category
+            </button>
+          </form>
+        </div>
+        {maxCategory ? (
+          <div>You've reached the maximum number of categories.</div>
+        ) : null}
+        <div>
+          {errors.map((error) => {
+            return <div key={`error-${error.message}`}>{error.message}</div>;
+          })}
+        </div>
+        <div css={categoriesListStyle}>
+          {categories.map((category, index) => {
+            const hasExpense = categoriesWithExpense.includes(category.id);
+            console.log('Category with expense', categoriesWithExpense);
+            return (
+              <div css={singleCategoryStyle} key={`category-${category.name}`}>
+                <div css={singleLineStyle}>
+                  <div css={getColorDot(index)} />
+                  <div css={categoryNameStyle}>{category.name}</div>
+                  <div css={categoryBudgetStyle}>
+                    {category.monthlyBudget / 100}€
+                  </div>
+                  <button
+                    css={deleteButtonStyle}
+                    disabled={hasExpense}
+                    onClick={async () => {
+                      const categoryWithExpense =
+                        await checkIfExpenseInCategory(category.id);
+                      await getCategoriesWithExpensesList();
+                      if (!categoryWithExpense) {
+                        await deleteCategory(category.id, props.user.id);
+                        setMaxCategory(false);
+                        return;
+                      }
+                    }}
+                  >
+                    {' '}
+                    Delete category{' '}
+                  </button>
+                  {editIsClicked === 0 && (
+                    <button
+                      css={editButtonStyle}
+                      onClick={() => setEditIsClicked(category.id)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
+                {editIsClicked === category.id && (
+                  <form
+                    css={changeFormStyle}
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      await updateCategoryNameBudget(
+                        category.id,
+                        updateCategoryName,
+                        Number(updateCategoryBudget) * 100,
+                      );
+                      await getAllCategories(props.user.id);
+                      setUpdateCategoryName('');
+                      setUpdateCategoryBudget('');
+                      setEditIsClicked(0);
+                    }}
+                  >
+                    <div css={newInfos}>
+                      <label>
+                        New name
+                        <input
+                          css={newNameInputStyle}
+                          value={updateCategoryName}
+                          onChange={(event) =>
+                            setUpdateCategoryName(event.currentTarget.value)
+                          }
+                        />
+                      </label>
+                      <label>
+                        New budget
+                        <input
+                          css={newBudgetInputStyle}
+                          type="number"
+                          value={updateCategoryBudget}
+                          onChange={(event) =>
+                            setUpdateCategoryBudget(event.currentTarget.value)
+                          }
+                        />
+                      </label>
+                    </div>
+                    <br />
+                    <button css={changeButtonStyle}>Change</button>
+                  </form>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Layout>
   );

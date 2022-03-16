@@ -331,3 +331,50 @@ export async function getExpensesByMonthByUser(
   `;
   return expenses.map((expense) => camelcaseKeys(expense));
 }
+
+export async function updateCategoryNameAndBudget(
+  categoryId: number,
+  newCategoryName: string,
+  newCategoryBudget: number,
+) {
+  const [category] = await sql<Category[]>`
+    UPDATE
+      categories
+    SET
+      name = ${newCategoryName},
+      monthly_budget = ${newCategoryBudget}
+    WHERE
+      id = ${categoryId}
+  `;
+  return camelcaseKeys(category);
+}
+
+export async function updateCategoryName(
+  categoryId: number,
+  newCategoryName: string,
+) {
+  const [category] = await sql<Category[]>`
+    UPDATE
+      categories
+    SET
+      name = ${newCategoryName}
+    WHERE
+      id = ${categoryId}
+  `;
+  return camelcaseKeys(category);
+}
+
+export async function updateCategoryBudget(
+  categoryId: number,
+  newCategoryBudget: number,
+) {
+  const [category] = await sql<Category[]>`
+    UPDATE
+      categories
+    SET
+      monthly_budget = ${newCategoryBudget}
+    WHERE
+      id = ${categoryId}
+  `;
+  return camelcaseKeys(category);
+}
