@@ -14,7 +14,11 @@ export function getTotalBudgetProgress(
     0,
   );
 
-  return currentTotal / totalBudget;
+  return {
+    totalBudget: totalBudget,
+    currentTotal: currentTotal,
+    progress: currentTotal / totalBudget,
+  };
 }
 
 export function getBudgetProgressByCategoryPerMonth(
@@ -25,10 +29,12 @@ export function getBudgetProgressByCategoryPerMonth(
   const expensesByCategory = expenses.filter(
     (expense) => categoryId === expense.categoryId,
   );
+  console.log('expensesByCategory', expensesByCategory);
   const expensesSum = expensesByCategory.reduce(
     (previous, current) => previous + current.price,
     0,
   );
+  console.log('expensesSum', expensesSum);
 
-  return expensesSum / monthlyBudget;
+  return { expensesSum: expensesSum, progress: expensesSum / monthlyBudget };
 }
