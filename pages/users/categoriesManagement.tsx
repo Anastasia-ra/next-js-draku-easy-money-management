@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -6,18 +7,118 @@ import { getCategoriesList } from '../../graph-functions/fetchApi';
 import {
   getUserByValidSessionToken,
   Category,
+  Expense,
   getAllCategoriesbyUserId,
+  getExpensesByMonthByUser,
 } from '../../util/database';
+import { getDoughnutCategoriesData } from '../../graph-functions/charts';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+} from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+  ChartDataLabels,
+);
 
 type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
-  // categories: Category[];
+  expensesCurrentMonth: Expense[];
+  categories: Category[];
 };
 
 type Errors = { message: string }[];
 
 type Categories = Category[];
+
+const formStyle = css`
+  background: #01aca3;
+  color: white;
+  width: 250px;
+  height: 190px;
+  margin: auto;
+  padding: 10px 15px;
+  border-radius: 15%;
+  text-align: center;
+  /* h1 {
+    text-align: center;
+  } */
+  p {
+    text-align: center;
+  }
+  a {
+    color: white;
+  }
+  input {
+    margin: 10px;
+    width: 100px;
+  }
+`;
+
+const addButtonStyle = css`
+  width: 180px;
+  height: 28px;
+  margin: 25px auto;
+  font-size: 16px;
+  background: #f4ac40;
+  color: white;
+  border-radius: 10px;
+  border-style: none;
+`;
+
+const singleCategoryStyle = css`
+  display: flex;
+  flex-wrap: nowrap;
+`;
+
+const deleteButtonStyle = css`
+  width: 80px;
+  height: 15px;
+  font-size: 12px;
+  margin-left: 20px;
+  background: #eb584476;
+  border: solid #e4361f76;
+  color: white;
+  /* border-radius: 10px; */
+  border-style: none;
+  :disabled {
+    background: #aca9a9;
+  }
+`;
+
+const chartDoughnutCategoriesStyle = css`
+  width: 180px;
+  height: 200px;
+  margin: auto;
+`;
+
+const categoryBlockStyle = css``;
+
+const budgetBlockStyle = css``;
+
+const formBlocksStyle = css`
+  display: flex;
+`;
 
 export default function CategoriesManagement(props: Props) {
   const [newCategory, setNewCategory] = useState('');
@@ -28,6 +129,7 @@ export default function CategoriesManagement(props: Props) {
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
     [],
   );
+  const [addNewCategory, setAddNewCategory] = useState(false);
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -153,29 +255,68 @@ export default function CategoriesManagement(props: Props) {
         <title>Your categories</title>
         <meta name="description" content="categories management" />
       </Head>
-      <h1>Your categories</h1>
-      <form
-        onSubmit={async (event) => {
-          event.preventDefault();
-          await addCategory(props.user.id, newCategory, monthlyBudget);
-        }}
-      >
-        <label>
-          Category
-          <input
-            value={newCategory}
-            onChange={(event) => setNewCategory(event.currentTarget.value)}
-          />
-        </label>
-        <label>
-          Monthly budget
-          <input
-            value={monthlyBudget}
-            onChange={(event) => setMonthlyBudget(event.currentTarget.value)}
-          />
-        </label>
-        <button disabled={maxCategory}>Add a new category</button>
-      </form>
+      <h1>Manage your categories</h1>
+
+      <div css={chartDoughnutCategoriesStyle}>
+        <Doughnut
+          // width="150"
+          // height="150"
+          data={
+            getDoughnutCategoriesData(
+              props.categories,
+              props.expensesCurrentMonth,
+            ).data
+          }
+          options={
+            getDoughnutCategoriesData(
+              props.categories,
+              props.expensesCurrentMonth,
+            ).options
+          }
+        />
+      </div>
+
+      {/* <button> Add a new category </button> */}
+
+      <div css={formStyle}>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            await addCategory(props.user.id, newCategory, monthlyBudget);
+          }}
+        >
+          <div css={formBlocksStyle}>
+            <div css={categoryBlockStyle}>
+              <label>
+                Category
+                <br />
+                <input
+                  value={newCategory}
+                  onChange={(event) =>
+                    setNewCategory(event.currentTarget.value)
+                  }
+                />
+              </label>
+            </div>
+            <div css={budgetBlockStyle}>
+              <label>
+                Monthly budget
+                <br />
+                <input
+                  value={monthlyBudget}
+                  onChange={(event) =>
+                    setMonthlyBudget(event.currentTarget.value)
+                  }
+                />
+              </label>
+            </div>
+          </div>
+          <br />
+          <button css={addButtonStyle} disabled={maxCategory}>
+            Add a new category
+          </button>
+        </form>
+      </div>
       {maxCategory ? (
         <div>You've reached the maximum number of categories.</div>
       ) : null}
@@ -189,11 +330,12 @@ export default function CategoriesManagement(props: Props) {
           const hasExpense = categoriesWithExpense.includes(category.id);
           console.log('Category with expense', categoriesWithExpense);
           return (
-            <div key={`category-${category.name}`}>
+            <div css={singleCategoryStyle} key={`category-${category.name}`}>
               <div>
                 {category.name} {category.monthlyBudget / 100}€
               </div>
               <button
+                css={deleteButtonStyle}
                 disabled={hasExpense}
                 onClick={async () => {
                   const categoryWithExpense = await checkIfExpenseInCategory(
@@ -236,7 +378,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const categories = await getAllCategoriesbyUserId(user.id);
 
+  const currentMonth = new Intl.DateTimeFormat('en-US', {
+    month: 'numeric',
+  }).format(new Date());
+
+  const currentYear = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+  }).format(new Date());
+
+  const expensesCurrentMonth = await getExpensesByMonthByUser(
+    Number(currentMonth),
+    Number(currentYear),
+    user.id,
+  );
+
+  const expensesCurrentMonthDateToString = expensesCurrentMonth.map(
+    (expense) => {
+      expense.date = expense.date.toISOString();
+      return expense;
+    },
+  );
+
   return {
-    props: { user: user, categories: categories },
+    props: {
+      user: user,
+      categories: categories,
+      expensesCurrentMonth: expensesCurrentMonthDateToString,
+    },
   };
 }
