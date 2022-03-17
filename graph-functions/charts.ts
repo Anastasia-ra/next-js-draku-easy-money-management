@@ -81,18 +81,32 @@ export function getDoughnutCategoriesData(
       },
     },
     layout: {
-      padding: 50,
+      // padding: 10,
     },
     plugins: {
-      tooltip: {
-        enabled: false,
-      },
+      // tooltip: {
+      //   enabled: false,
+      // },
       legend: {
-        // position: 'left',
-        // align: 'end',
-        display: false,
+        position: 'bottom' as 'bottom',
+        // align: 'start' as 'start',
+        display: true,
+        // maxHeight: 20,
+        // maxWidth: 300,
+        // fullSize: true,
+        labels: {
+          boxWidth: 7,
+          usePointStyle: true,
+          pointStyle: 'circle' as 'circle',
+          color: '#26325b',
+          padding: 5,
+          font: {
+            size: 12,
+          },
+        },
       },
       datalabels: {
+        display: false,
         color: '#26325b',
         formatter: function (value: number, context: Context) {
           return (
@@ -117,6 +131,8 @@ export function getProgressChartData(
     expensesArray,
   ).progress;
 
+  const budgetLeft = budgetProgress > 1 ? 0 : 1 - budgetProgress;
+
   let bgColorProgress = '#07b335';
   if (0.7 < budgetProgress && budgetProgress < 0.9) {
     bgColorProgress = '#eb8305';
@@ -130,7 +146,7 @@ export function getProgressChartData(
     datasets: [
       {
         label: 'Budget',
-        data: [1 - budgetProgress, budgetProgress],
+        data: [budgetLeft, budgetProgress],
         backgroundColor: ['white', bgColorProgress],
         borderColor: [bgColorProgress, bgColorProgress],
         borderWidth: 1,
@@ -140,7 +156,7 @@ export function getProgressChartData(
 
   const optionsProgressCircle = {
     cutout: '85%',
-    radius: 60,
+    radius: 70,
     rotation: 0,
     maintainAspectRatio: false,
     elements: {
@@ -152,7 +168,7 @@ export function getProgressChartData(
       // },
     },
     layout: {
-      padding: 50,
+      padding: 0,
     },
     plugins: {
       tooltip: {
@@ -162,19 +178,28 @@ export function getProgressChartData(
         display: false,
       },
       datalabels: {
-        color: '#36A2EB',
+        color: bgColorProgress,
         formatter: function (value: number) {
           return Math.round(value * 100) + '%';
         },
         display: [false, false],
         align: 'start' as 'start',
-        offset: 70,
+        offset: 80,
         textAlign: 'center' as 'center',
+        font: {
+          weight: 'bold' as 'bold',
+          size: 16,
+        },
       },
     },
   };
 
-  return { data: dataProgressCircle, options: optionsProgressCircle };
+  return {
+    data: dataProgressCircle,
+    options: optionsProgressCircle,
+    budgetProgress: budgetProgress,
+    bgColor: bgColorProgress,
+  };
 }
 
 export function getLineData(
@@ -192,10 +217,107 @@ export function getLineData(
       .reverse(),
     datasets: [
       {
-        label: 'Months',
+        label: 'Expenses',
         data: monthsWithExpenses
           .map((month) => month.totalExpenses / 100)
           .reverse(),
+        borderColor: '#01aca3',
+        backgroundColor: '#01aca3',
+      },
+    ],
+  };
+
+  const optionsLine = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    elements: {
+      point: {
+        radius: 0,
+      },
+      line: {
+        tension: 0.3,
+      },
+    },
+    scales: {
+      xAxis: {
+        ticks: {
+          color: '#26325b',
+          font: {
+            size: 12,
+          },
+        },
+        grid: {
+          display: false,
+        },
+      },
+      yAxis: {
+        ticks: {
+          color: '#26325b',
+          font: {
+            size: 12,
+          },
+          callback: (value: number | string) => {
+            return value + ' €';
+          },
+        },
+        grid: {
+          display: false,
+        },
+      },
+    },
+  };
+  return { data: dataLine, options: optionsLine };
+}
+
+export function getLineDataByDay(
+  expensesCurrentMonth: Array<{
+    id: number;
+    userId: number;
+    categoryId: number;
+    name: string;
+    price: number;
+    date: string;
+  }>,
+) {
+  const expensesSorted = expensesCurrentMonth.sort((a, b) => {
+    return a.date.localeCompare(b.date);
+  });
+
+  const numberDaysCurrentMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + 1,
+    0,
+  ).getDate();
+
+  function getDaysCurrentMonth() {
+    const days = [];
+    const currentMonth = new Date().getMonth();
+
+    for (let i = 0; i < numberDaysCurrentMonth; i++) {
+      if (currentMonth < 9) {
+        days.push(`${i + 1}/0${currentMonth + 1}`);
+      } else {
+        days.push(`${i + 1}/${currentMonth + 1}`);
+      }
+    }
+    return days;
+  }
+
+  console.log('days', getDaysCurrentMonth());
+
+  const dataLine = {
+    labels: getDaysCurrentMonth(),
+    datasets: [
+      {
+        label: 'Expenses',
+        data: expensesSorted.map((expense) => expense.price / 100),
         borderColor: '#01aca3',
         backgroundColor: '#01aca3',
       },
