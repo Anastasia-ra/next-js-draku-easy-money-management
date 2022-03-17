@@ -4,11 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../components/Layout';
-// import {
-//   getSharePerCategory,
-//   getSumExpensesCategory,
-// } from '../graph-functions/sum-per-category';
-// import { getTotalBudgetProgress } from '../graph-functions/budgetProgress';
+import Switch from 'react-switch';
 import {
   getUserByValidSessionToken,
   Expense,
@@ -39,6 +35,7 @@ import { getLastMonths, sumPerMonth } from '../graph-functions/sumPerMonth';
 import {
   getDoughnutCategoriesData,
   getLineData,
+  getLineDataByDay,
   getProgressChartData,
 } from '../graph-functions/charts';
 // import Wallet from '../public/wallet-svgrepo-com.svg';
@@ -111,12 +108,16 @@ const signUpLink = css`
 
 const dougnhutsStyle = css`
   margin: 30px 0;
+  display: flex;
+  justify-content: center;
 `;
 
 const chartDoughnutProgressStyle = css`
   display: inline-block;
   width: 180px;
   height: 200px;
+  position: relative;
+  bottom: 60px;
 `;
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
@@ -127,17 +128,6 @@ const chartDoughnutCategoriesStyle = css`
 const categoriesStyle = css`
   display: inline-flex;
   flex-direction: column;
-`;
-
-const switchButtonStyle = css`
-  width: 100px;
-  height: 20px;
-  margin: 0 auto;
-  font-size: 12px;
-  background: #01aca3;
-  color: white;
-  border-radius: 10px;
-  border-style: none;
 `;
 
 const chartLineStyle = css`
@@ -163,8 +153,26 @@ const chartsHeaderStyle = css`
   margin: 10px 0;
 `;
 
+const percentageStyle = css`
+  position: relative;
+  margin: auto;
+  z-index: 2;
+  top: 120px;
+  height: 40px;
+  font-size: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const doughnutSwitchStyle = css`
+  display: flex;
+  justify-content: center;
+`;
+
 export default function Home(props: Props) {
-  const [switchCategories, setSwitchCategories] = useState(false);
+  const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
+  const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
 
   if ('error' in props) {
     return (
@@ -208,17 +216,53 @@ export default function Home(props: Props) {
       </Head>
       <div css={mainStyle}>
         <h1 css={chartsHeaderStyle}>Welcome {props.user.username}!</h1>
-
         <br />
+        {isCheckedLineChart ? (
+          <div css={chartLineStyle}>
+            <Line
+              data={getLineDataByDay(props.expensesCurrentMonth).data}
+              options={getLineDataByDay(props.expensesCurrentMonth).options}
+            />
+          </div>
+        ) : (
+          <div css={chartLineStyle}>
+            <Line
+              data={getLineData(lastMonthsWithExpenses).data}
+              options={getLineData(lastMonthsWithExpenses).options}
+            />
+          </div>
+        )}
+        <span>Year</span>
+        <Switch
+          onChange={() => setIsCheckedLineChart(!isCheckedLineChart)}
+          checked={isCheckedLineChart}
+          uncheckedIcon={false}
+          checkedIcon={false}
+          onColor="#01aca3"
+          offColor="#f4ac40"
+          handleDiameter={0}
+          height={15}
+          width={30}
+        />
+        <span>Month</span>
 
-        <div css={chartLineStyle}>
-          <Line
-            data={getLineData(lastMonthsWithExpenses).data}
-            options={getLineData(lastMonthsWithExpenses).options}
-          />
-        </div>
         <div css={dougnhutsStyle}>
           <div css={chartDoughnutProgressStyle}>
+            <div
+              css={css`
+                ${percentageStyle} color: ${getProgressChartData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).bgColor}
+              `}
+            >
+              {`${Math.round(
+                getProgressChartData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).budgetProgress * 100,
+              )}%`}{' '}
+            </div>
             <Doughnut
               // width="150"
               // height="150"
@@ -237,22 +281,7 @@ export default function Home(props: Props) {
             />
           </div>
           <div css={categoriesStyle}>
-            {switchCategories ? (
-              <div css={chartDoughnutCategoriesStyle}>
-                <Doughnut
-                  // width="150"
-                  // height="150"
-                  data={
-                    getDoughnutCategoriesData(props.categories, props.expenses)
-                      .data
-                  }
-                  options={
-                    getDoughnutCategoriesData(props.categories, props.expenses)
-                      .options
-                  }
-                />
-              </div>
-            ) : (
+            {isCheckedDoughnut ? (
               <div css={chartDoughnutCategoriesStyle}>
                 <Doughnut
                   // width="150"
@@ -271,18 +300,40 @@ export default function Home(props: Props) {
                   }
                 />
               </div>
+            ) : (
+              <div css={chartDoughnutCategoriesStyle}>
+                <Doughnut
+                  // width="150"
+                  // height="150"
+                  data={
+                    getDoughnutCategoriesData(props.categories, props.expenses)
+                      .data
+                  }
+                  options={
+                    getDoughnutCategoriesData(props.categories, props.expenses)
+                      .options
+                  }
+                />
+              </div>
             )}
-            <button
-              css={switchButtonStyle}
-              onClick={() => setSwitchCategories(!switchCategories)}
-            >
-              {switchCategories ? 'See this month' : 'See all'}
-            </button>
+            <div css={doughnutSwitchStyle}>
+              <span>Year</span>
+              <Switch
+                onChange={() => setIsCheckedDoughnut(!isCheckedDoughnut)}
+                checked={isCheckedDoughnut}
+                uncheckedIcon={false}
+                checkedIcon={false}
+                onColor="#01aca3"
+                offColor="#f4ac40"
+                handleDiameter={0}
+                height={15}
+                width={30}
+              />
+              <span>Month</span>
+            </div>
           </div>
         </div>
-
         {/* <Wallet /> */}
-
         <div css={linksStyle}>
           <Link href="/users/expenses">
             <a>Add new expenses</a>
@@ -341,6 +392,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       expense.date = expense.date.toISOString();
       return expense;
     },
+  );
+
+  console.log(
+    'expensesCurrentMonthDateToString:',
+    expensesCurrentMonthDateToString,
   );
 
   return {
