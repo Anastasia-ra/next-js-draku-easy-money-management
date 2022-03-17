@@ -65,7 +65,7 @@ const formStyle = css`
   background: #01aca3;
   color: white;
   width: 250px;
-  height: 95px;
+  height: 100px;
   margin: auto;
   padding: 10px 15px;
   border-radius: 15px;
@@ -83,6 +83,10 @@ const formStyle = css`
     border-radius: 8px;
     border-style: none;
   }
+`;
+
+const errorMaxStyle = css`
+  width: 200px;
 `;
 
 const addButtonStyle = css`
@@ -389,16 +393,12 @@ export default function CategoriesManagement(props: Props) {
             // width="150"
             // height="150"
             data={
-              getDoughnutCategoriesData(
-                props.categories,
-                props.expensesCurrentMonth,
-              ).data
+              getDoughnutCategoriesData(categories, props.expensesCurrentMonth)
+                .data
             }
             options={
-              getDoughnutCategoriesData(
-                props.categories,
-                props.expensesCurrentMonth,
-              ).options
+              getDoughnutCategoriesData(categories, props.expensesCurrentMonth)
+                .options
             }
           />
         </div>
@@ -443,11 +443,14 @@ export default function CategoriesManagement(props: Props) {
             <button css={addButtonStyle} disabled={maxCategory}>
               Add a new category
             </button>
+            {maxCategory ? (
+              <div css={errorMaxStyle}>
+                You've reached the maximum number of categories.
+              </div>
+            ) : null}
           </form>
         </div>
-        {maxCategory ? (
-          <div>You've reached the maximum number of categories.</div>
-        ) : null}
+
         <div>
           {errors.map((error) => {
             return <div key={`error-${error.message}`}>{error.message}</div>;
