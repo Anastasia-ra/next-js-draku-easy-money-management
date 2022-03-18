@@ -368,10 +368,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const expenses = await getAllExpensesByUserId(user.id);
 
-  const expensesDateToString = expenses.map((expense) => {
-    expense.date = expense.date.toISOString();
-    return expense;
-  });
+  const expensesDateToString = JSON.parse(JSON.stringify(expenses));
 
   const currentMonth = new Intl.DateTimeFormat('en-US', {
     month: 'numeric',
@@ -387,11 +384,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     user.id,
   );
 
-  const expensesCurrentMonthDateToString = expensesCurrentMonth.map(
-    (expense) => {
-      expense.date = expense.date.toISOString();
-      return expense;
-    },
+  const expensesCurrentMonthDateToString = JSON.parse(
+    JSON.stringify(expensesCurrentMonth),
   );
 
   console.log(

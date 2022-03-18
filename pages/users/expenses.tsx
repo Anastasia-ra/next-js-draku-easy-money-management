@@ -620,8 +620,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (!user) {
     return {
-      props: {
-        error: 'Please login',
+      redirect: {
+        destination: `/login?returnTo=/users/expenses`,
+        permanent: false,
       },
     };
   }
@@ -630,13 +631,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const expenses = await getAllExpensesByUserId(user.id);
   // console.log('expenses', expenses, typeof expenses[1].date);
-  const expensesDateToString = expenses.map((expense) => {
-    expense.date = expense.date.toISOString();
-    // expense.date = new Date(expense.date);
-    return expense;
-  });
+  // const expensesDateToString = expenses.map((expense) => {
+  //   expense.date = expense.date.toISOString();
+  //   // expense.date = new Date(expense.date);
+  //   return expense;
+  // });
 
-  console.log('expensesDateToString', expensesDateToString);
+  // To avoid issue with serializing object
+  const expensesDateToString = JSON.parse(JSON.stringify(expenses));
+
+  // console.log('expensesDateToString', expensesDateToString);
 
   const expensesSortedByDate = expensesDateToString.sort(
     (a: Expense, b: Expense) => {
@@ -644,7 +648,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   );
 
-  console.log('expensesSortedByDate', expensesSortedByDate);
+  console.log(
+    'expensesSortedByDate',
+    expensesSortedByDate,
+    typeof expensesSortedByDate[1].date,
+  );
 
   return {
     props: {
