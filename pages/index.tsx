@@ -138,14 +138,25 @@ const chartLineStyle = css`
 
 const linksStyle = css`
   background: #01aca3;
-  width: 200px;
+  width: 230px;
   margin: auto;
   text-align: left;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+`;
 
-  a {
-    color: white;
+const singleLinkStyle = css`
+  font-size: 18px;
+  /* padding-left: 10px; */
+  margin: 0 auto;
+  color: white;
+  display: flex;
+  /* padding: 10px; */
+  span {
     text-align: start;
     padding-left: 15px;
+    align-self: flex-end;
   }
 `;
 
@@ -163,6 +174,14 @@ const percentageStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const lineChartSwitchStyle = css`
+  display: flex;
+  justify-content: center;
+  span {
+    margin: 0 5px;
+  }
 `;
 
 const doughnutSwitchStyle = css`
@@ -186,8 +205,8 @@ export default function Home(props: Props) {
             Welcome to Draku, your simple money management solution.
           </h1>
           <Image
-            src="/la-finance.png"
-            width="200px"
+            src="/draku_logo.png"
+            width="295px"
             height="200px"
             css={imageStyle}
           />
@@ -232,19 +251,21 @@ export default function Home(props: Props) {
             />
           </div>
         )}
-        <span>Year</span>
-        <Switch
-          onChange={() => setIsCheckedLineChart(!isCheckedLineChart)}
-          checked={isCheckedLineChart}
-          uncheckedIcon={false}
-          checkedIcon={false}
-          onColor="#01aca3"
-          offColor="#f4ac40"
-          handleDiameter={0}
-          height={15}
-          width={30}
-        />
-        <span>Month</span>
+        <div css={lineChartSwitchStyle}>
+          <span>This year</span>
+          <Switch
+            onChange={() => setIsCheckedLineChart(!isCheckedLineChart)}
+            checked={isCheckedLineChart}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            onColor="#01aca3"
+            offColor="#f4ac40"
+            handleDiameter={0}
+            height={15}
+            width={30}
+          />
+          <span>This month</span>
+        </div>
 
         <div css={dougnhutsStyle}>
           <div css={chartDoughnutProgressStyle}>
@@ -336,15 +357,42 @@ export default function Home(props: Props) {
         {/* <Wallet /> */}
         <div css={linksStyle}>
           <Link href="/users/expenses">
-            <a>Add new expenses</a>
+            <a css={singleLinkStyle}>
+              {' '}
+              <Image
+                src="/expense2.png"
+                width="25px"
+                height="25px"
+                alt="expense"
+              />
+              <span> Manage your expenses </span>
+            </a>
           </Link>
           <br />
           <Link href="/users/categoriesManagement">
-            <a>Manage your categories</a>
+            <a css={singleLinkStyle}>
+              {' '}
+              <Image
+                src="/wallet.png"
+                width="25px"
+                height="25px"
+                alt="wallet"
+              />{' '}
+              <span> Manage your categories </span>
+            </a>
           </Link>
           <br />
           <Link href="/users/budgetManagement">
-            <a>Manage your budget</a>
+            <a css={singleLinkStyle}>
+              {' '}
+              <Image
+                src="/piggy.png"
+                width="25px"
+                height="25px"
+                alt="piggy"
+              />{' '}
+              <span> Check your budget </span>
+            </a>
           </Link>
         </div>
       </div>
