@@ -1,18 +1,19 @@
 import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { getCategoriesList } from '../../graph-functions/fetchApi';
 import {
   getUserByValidSessionToken,
   Category,
-  Expense,
+  // Expense,
   getAllCategoriesbyUserId,
-  getExpensesByMonthByUser,
+  // getExpensesByMonthByUser,
 } from '../../util/database';
 import {
-  getDoughnutCategoriesData,
+  // getDoughnutCategoriesData,
   colors,
   getDoughnutCategoriesBudgetData,
 } from '../../graph-functions/charts';
@@ -53,21 +54,26 @@ type Props = {
 
 type Errors = { message: string }[];
 
+type UpdateErrors = { message: string; categoryId: number }[];
+
 type Categories = Category[];
 
 const mainStyle = css`
   color: #26325b;
   h1 {
     font-size: 26px;
+    text-align: center;
+    /* margin: 20px auto;
+    width: */
   }
 `;
 
 const formStyle = css`
   background: #01aca3;
   color: white;
-  width: 250px;
-  height: 100px;
-  margin: auto;
+  width: 280px;
+  height: 90px;
+  margin: 10px auto;
   padding: 10px 15px;
   border-radius: 15px;
   text-align: center;
@@ -87,50 +93,67 @@ const formStyle = css`
 `;
 
 const errorMaxStyle = css`
-  width: 200px;
+  width: 280px;
+  margin: auto;
+  color: #26325b;
+  font-size: 16px;
 `;
 
 const addButtonStyle = css`
   width: 180px;
   height: 21px;
-  margin: auto;
+  margin: 4px auto 5px auto;
   font-size: 16px;
   background: #f4ac40;
   color: white;
   border-radius: 10px;
   border-style: none;
-`;
 
-const deleteButtonStyle = css`
-  width: 55px;
-  height: 15px;
-  font-size: 12px;
-  margin-left: 15px;
-  background: #e77b8e;
-  /* border: solid #e4361f76; */
-  color: white;
-  border-radius: 50px;
-  border-style: none;
   :disabled {
-    background: #e2b3bc;
+    background: #8b8889;
   }
 `;
 
+const errorsStyle = css`
+  margin: 3px 0;
+  font-size: 14px;
+`;
+
+const deleteButtonStyle = css`
+  width: 25px;
+  height: 20px;
+  font-size: 12px;
+  /* margin-left: 15px; */
+  background: #e0415e;
+  /* border: solid #e4361f76; */
+  color: white;
+  border-radius: 10%;
+  border-style: none;
+  :disabled {
+    background: #8b8889;
+  }
+`;
+
+// const deleteImageStyle = css`
+//   width: 25px;
+//   height: 25px;
+// `;
+
 const editButtonStyle = css`
-  width: 55px;
-  height: 15px;
+  width: 25px;
+  height: 20px;
   font-size: 12px;
   margin-left: 5px;
-  background: #9c858a;
+  background: #977279;
   border: solid #e4361f76;
   color: white;
-  border-radius: 50px;
+  border-radius: 10%;
   border-style: none;
 `;
 
 const chartDoughnutCategoriesStyle = css`
   width: 250px;
-  height: 200px;
+  height: 180px;
   margin: auto;
 `;
 
@@ -140,10 +163,12 @@ const budgetBlockStyle = css``;
 
 const formBlocksStyle = css`
   display: flex;
+  justify-content: space-around;
 `;
 
 const singleCategoryStyle = css`
   display: flex;
+  margin: 8px 0;
   flex-direction: column;
 `;
 
@@ -155,14 +180,14 @@ const singleLineStyle = css`
 
 const categoriesListStyle = css`
   width: 280px;
-  margin: 20px auto;
+  margin: 0 auto 20px auto;
 `;
 
 function getColorDot(index: number) {
   const colorDotStyle = css`
     border-radius: 50%;
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     flex-shrink: 0;
     background: ${colors[index]};
   `;
@@ -171,19 +196,19 @@ function getColorDot(index: number) {
 
 const categoryNameStyle = css`
   padding: 0 20px;
-  width: 100px;
+  width: 120px;
 `;
 
 const categoryBudgetStyle = css`
-  width: 40px;
+  width: 60px;
 `;
 
 const changeFormStyle = css`
-  background: #2cada7;
+  background: #2cada6;
   color: white;
   width: 250px;
-  height: 80px;
-  margin: auto;
+  height: 85px;
+  margin: 10px auto;
   padding: 5px 5px;
   border-radius: 15px;
   text-align: center;
@@ -199,12 +224,16 @@ const changeFormStyle = css`
 
 const newInfos = css`
   display: flex;
+  position: relative;
+  top: -20px;
 `;
 
 const changeButtonStyle = css`
+  position: relative;
+  top: -20px;
   width: 90px;
   height: 21px;
-  margin: 0 auto;
+  margin: 4px auto 5px auto;
   font-size: 14px;
   background: #f4ac40;
   color: white;
@@ -212,9 +241,24 @@ const changeButtonStyle = css`
   border-style: none;
 `;
 
+const closeChangeFormStyle = css`
+  background: none;
+  border-style: none;
+  position: relative;
+  right: -115px;
+  top: -2px;
+  z-index: 2;
+`;
+
 const newNameInputStyle = css``;
 
 const newBudgetInputStyle = css``;
+
+const updateErrorMessageStyle = css`
+  margin: 3px 0;
+  position: relative;
+  top: -20px;
+`;
 
 export default function CategoriesManagement(props: Props) {
   const [newCategory, setNewCategory] = useState('');
@@ -225,10 +269,10 @@ export default function CategoriesManagement(props: Props) {
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
     [],
   );
-  // const [updateCategoryId, setUpdateCategoryId] = useState('');
   const [updateCategoryName, setUpdateCategoryName] = useState('');
   const [updateCategoryBudget, setUpdateCategoryBudget] = useState('');
   const [editIsClicked, setEditIsClicked] = useState(0);
+  const [updateErrors, setUpdateErrors] = useState<UpdateErrors>([]);
 
   // Display all categories on first render or when userId changes
   useEffect(() => {
@@ -266,7 +310,9 @@ export default function CategoriesManagement(props: Props) {
       body: JSON.stringify({
         category: {
           userId: userId,
-          name: category[0].toUpperCase() + category.slice(1).toLowerCase(),
+          name:
+            category &&
+            category[0].toUpperCase() + category.slice(1).toLowerCase(),
           monthlyBudget: Number(budget) * 100,
         },
       }),
@@ -291,8 +337,6 @@ export default function CategoriesManagement(props: Props) {
     setMonthlyBudget('');
   }
 
-  // Check if there is an expense in this category
-
   async function checkIfExpenseInCategory(categoryId: Number) {
     const categoryResponse = await fetch(`/api/categories/checkCategory`, {
       method: 'POST',
@@ -316,8 +360,6 @@ export default function CategoriesManagement(props: Props) {
     console.log('categoryResponseBody.category', categoryResponseBody.category);
     return categoryResponseBody.category;
   }
-
-  // Delete category
 
   async function deleteCategory(categoryId: number, userId: number) {
     const deleteResponse = await fetch(`/api/categories/deleteCategory`, {
@@ -345,15 +387,11 @@ export default function CategoriesManagement(props: Props) {
   async function getCategoriesWithExpensesList() {
     const response = await fetch(`/api/categories/checkAllCategories`);
     const data = await response.json();
-    console.log('data', data);
     const categoryList = data.expensesPerCategories.map(
       (expense: { categoryId: number }) => expense.categoryId,
     );
-    console.log('categoryList', categoryList);
     setCategoriesWithExpense(categoryList);
   }
-
-  // Update categories
 
   async function updateCategoryNameBudget(
     categoryId: number,
@@ -369,7 +407,9 @@ export default function CategoriesManagement(props: Props) {
         category: {
           userId: props.user.id,
           categoryId: categoryId,
-          newCategoryName: categoryName,
+          newCategoryName:
+            categoryName &&
+            categoryName[0].toUpperCase() + categoryName.slice(1).toLowerCase(),
           newCategoryBudget: categoryBudget,
         },
       }),
@@ -377,6 +417,12 @@ export default function CategoriesManagement(props: Props) {
 
     const updatedResponseBody = await updatedResponse.json();
 
+    if ('errors' in updatedResponseBody) {
+      setUpdateErrors(updatedResponseBody.errors);
+      return updatedResponseBody.errors;
+    }
+    setUpdateErrors([]);
+    setEditIsClicked(0);
     console.log('updatedResponseBody', updatedResponseBody);
   }
 
@@ -397,64 +443,9 @@ export default function CategoriesManagement(props: Props) {
             options={getDoughnutCategoriesBudgetData(categories).options}
           />
         </div>
-
-        {/* <button> Add a new category </button> */}
-
-        <div css={formStyle}>
-          <form
-            onSubmit={async (event) => {
-              event.preventDefault();
-              await addCategory(props.user.id, newCategory, monthlyBudget);
-            }}
-          >
-            <div css={formBlocksStyle}>
-              <div css={categoryBlockStyle}>
-                <label>
-                  Category
-                  <br />
-                  <input
-                    value={newCategory}
-                    onChange={(event) =>
-                      setNewCategory(event.currentTarget.value)
-                    }
-                  />
-                </label>
-              </div>
-              <div css={budgetBlockStyle}>
-                <label>
-                  Monthly budget
-                  <br />
-                  <input
-                    type="number"
-                    value={monthlyBudget}
-                    onChange={(event) =>
-                      setMonthlyBudget(event.currentTarget.value)
-                    }
-                  />
-                </label>
-              </div>
-            </div>
-            <br />
-            <button css={addButtonStyle} disabled={maxCategory}>
-              Add a new category
-            </button>
-            {maxCategory ? (
-              <div css={errorMaxStyle}>
-                You've reached the maximum number of categories.
-              </div>
-            ) : null}
-          </form>
-        </div>
-
-        <div>
-          {errors.map((error) => {
-            return <div key={`error-${error.message}`}>{error.message}</div>;
-          })}
-        </div>
         <div css={categoriesListStyle}>
           {categories.map((category, index) => {
             const hasExpense = categoriesWithExpense.includes(category.id);
-            console.log('Category with expense', categoriesWithExpense);
             return (
               <div css={singleCategoryStyle} key={`category-${category.name}`}>
                 <div css={singleLineStyle}>
@@ -464,6 +455,7 @@ export default function CategoriesManagement(props: Props) {
                     {category.monthlyBudget / 100}€
                   </div>
                   <button
+                    aria-label="delete category"
                     css={deleteButtonStyle}
                     disabled={hasExpense}
                     onClick={async () => {
@@ -477,17 +469,27 @@ export default function CategoriesManagement(props: Props) {
                       }
                     }}
                   >
-                    {' '}
-                    Delete category{' '}
+                    <Image
+                      // css={deleteImageStyle}
+                      src="/delete.png"
+                      width="20px"
+                      height="20px"
+                      alt="garbage can"
+                    />
                   </button>
-                  {editIsClicked === 0 && (
-                    <button
-                      css={editButtonStyle}
-                      onClick={() => setEditIsClicked(category.id)}
-                    >
-                      Edit
-                    </button>
-                  )}
+
+                  <button
+                    aria-label="edit category"
+                    css={editButtonStyle}
+                    onClick={() => setEditIsClicked(category.id)}
+                  >
+                    <Image
+                      src="/editer.png"
+                      width="20px"
+                      height="20px"
+                      alt="pen"
+                    />
+                  </button>
                 </div>
                 {editIsClicked === category.id && (
                   <form
@@ -502,9 +504,22 @@ export default function CategoriesManagement(props: Props) {
                       await getAllCategories(props.user.id);
                       setUpdateCategoryName('');
                       setUpdateCategoryBudget('');
-                      setEditIsClicked(0);
                     }}
                   >
+                    {' '}
+                    <button
+                      css={closeChangeFormStyle}
+                      aria-label="close form"
+                      onClick={() => setEditIsClicked(0)}
+                    >
+                      <Image
+                        // title="Delete"
+                        src="/close3.png"
+                        width="15px"
+                        height="15px"
+                        alt="pen"
+                      />{' '}
+                    </button>
                     <div css={newInfos}>
                       <label>
                         New name
@@ -528,13 +543,77 @@ export default function CategoriesManagement(props: Props) {
                         />
                       </label>
                     </div>
-                    <br />
+                    <div css={updateErrorMessageStyle}>
+                      {updateErrors.map((error) => {
+                        if (error.categoryId === category.id) {
+                          return (
+                            <div key={`error-${error.message}`}>
+                              {error.message}
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
                     <button css={changeButtonStyle}>Change</button>
                   </form>
                 )}
               </div>
             );
           })}
+        </div>
+        {maxCategory && (
+          <div css={errorMaxStyle}>
+            You have reached the maximum number of categories.
+          </div>
+        )}
+        <div css={formStyle}>
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              await addCategory(props.user.id, newCategory, monthlyBudget);
+            }}
+          >
+            <div css={formBlocksStyle}>
+              <div css={categoryBlockStyle}>
+                <label>
+                  Category name
+                  <br />
+                  <input
+                    disabled={maxCategory}
+                    value={newCategory}
+                    onChange={(event) =>
+                      setNewCategory(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
+              <div css={budgetBlockStyle}>
+                <label>
+                  Monthly budget
+                  <br />
+                  <input
+                    disabled={maxCategory}
+                    type="number"
+                    value={monthlyBudget}
+                    onChange={(event) =>
+                      setMonthlyBudget(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+            <div css={errorsStyle}>
+              {errors.map((error) => {
+                return (
+                  <div key={`error-${error.message}`}>{error.message}</div>
+                );
+              })}
+            </div>
+            <button css={addButtonStyle} disabled={maxCategory}>
+              Add a new category
+            </button>
+          </form>
         </div>
       </div>
     </Layout>
