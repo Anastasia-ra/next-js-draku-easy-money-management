@@ -230,6 +230,15 @@ export function getLineData(
   const optionsLine = {
     maintainAspectRatio: false,
     plugins: {
+      title: {
+        display: true,
+        text: 'Your expenses this year',
+        color: '#26325b',
+        font: {
+          size: 16,
+          family: "'Gill Sans MT', 'Calibri', 'Arial', 'sans-serif'",
+        },
+      },
       legend: {
         display: false,
       },
@@ -327,6 +336,16 @@ export function getLineDataByDay(
   const optionsLine = {
     maintainAspectRatio: false,
     plugins: {
+      title: {
+        display: true,
+        text: 'Your expenses this month',
+        color: '#26325b',
+        // fullSize: false,
+        font: {
+          size: 16,
+          family: "'Gill Sans MT', 'Calibri', 'Arial', 'sans-serif'",
+        },
+      },
       legend: {
         display: false,
       },
@@ -339,7 +358,7 @@ export function getLineDataByDay(
         radius: 0,
       },
       line: {
-        tension: 0.3,
+        tension: 0.1,
       },
     },
     scales: {
@@ -400,7 +419,7 @@ export function getDoughnutCategoriesBudgetData(categoriesArray: Category[]) {
 
   const optionsDoughnutCategoriesBudget = {
     cutout: '60%',
-    radius: 60,
+    radius: 75,
     // spacing: '5%',
     maintainAspectRatio: false,
     elements: {
