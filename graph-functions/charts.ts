@@ -372,3 +372,96 @@ export function getLineDataByDay(
   };
   return { data: dataLine, options: optionsLine };
 }
+
+export function getDoughnutCategoriesBudgetData(categoriesArray: Category[]) {
+  const dataDoughnutCategoriesBudget = {
+    labels: categoriesArray.map((category) => category.name),
+    datasets: [
+      {
+        label: 'Expenses per category',
+        data: categoriesArray.map((category) => category.monthlyBudget),
+        backgroundColor: colors,
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          ' rgba(86, 255, 86, 1)',
+          'rgba(68, 7, 97, 1)',
+          'rgba(224, 240, 10, 1)',
+          'rgba(44, 46, 46, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const optionsDoughnutCategoriesBudget = {
+    cutout: '60%',
+    radius: 60,
+    // spacing: '5%',
+    maintainAspectRatio: false,
+    elements: {
+      arc: {
+        hoverBackgroundColor: [
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 206, 86, 0.7)',
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(153, 102, 255,0.7)',
+          'rgba(255, 159, 64, 0.7)',
+        ],
+        hoverOffset: 3,
+      },
+    },
+    layout: {
+      // padding: 10,
+    },
+    plugins: {
+      // tooltip: {
+      //   enabled: false,
+      // },
+      legend: {
+        position: 'bottom' as 'bottom',
+        // align: 'start' as 'start',
+        display: false,
+        // maxHeight: 20,
+        // maxWidth: 300,
+        // fullSize: true,
+        labels: {
+          boxWidth: 7,
+          usePointStyle: true,
+          pointStyle: 'circle' as 'circle',
+          color: '#26325b',
+          padding: 5,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      datalabels: {
+        display: false,
+        color: '#26325b',
+        formatter: function (value: number, context: Context) {
+          return (
+            categoriesArray.map((category) => category.name)[
+              context.dataIndex
+            ] +
+            '\n' +
+            Math.round(value * 100) +
+            '%'
+          );
+        },
+        align: 'end' as 'end',
+        offset: 8,
+        textAlign: 'center' as 'center',
+      },
+    },
+  };
+  return {
+    data: dataDoughnutCategoriesBudget,
+    options: optionsDoughnutCategoriesBudget,
+  };
+}

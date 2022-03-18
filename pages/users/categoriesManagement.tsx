@@ -14,6 +14,7 @@ import {
 import {
   getDoughnutCategoriesData,
   colors,
+  getDoughnutCategoriesBudgetData,
 } from '../../graph-functions/charts';
 import {
   Chart as ChartJS,
@@ -46,8 +47,8 @@ ChartJS.register(
 type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
-  expensesCurrentMonth: Expense[];
-  categories: Category[];
+  // expensesCurrentMonth: Expense[];
+  // categories: Category[];
 };
 
 type Errors = { message: string }[];
@@ -224,7 +225,7 @@ export default function CategoriesManagement(props: Props) {
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
     [],
   );
-  const [updateCategoryId, setUpdateCategoryId] = useState('');
+  // const [updateCategoryId, setUpdateCategoryId] = useState('');
   const [updateCategoryName, setUpdateCategoryName] = useState('');
   const [updateCategoryBudget, setUpdateCategoryBudget] = useState('');
   const [editIsClicked, setEditIsClicked] = useState(0);
@@ -392,14 +393,8 @@ export default function CategoriesManagement(props: Props) {
           <Doughnut
             // width="150"
             // height="150"
-            data={
-              getDoughnutCategoriesData(categories, props.expensesCurrentMonth)
-                .data
-            }
-            options={
-              getDoughnutCategoriesData(categories, props.expensesCurrentMonth)
-                .options
-            }
+            data={getDoughnutCategoriesBudgetData(categories).data}
+            options={getDoughnutCategoriesBudgetData(categories).options}
           />
         </div>
 
@@ -561,32 +556,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const categories = await getAllCategoriesbyUserId(user.id);
 
-  const currentMonth = new Intl.DateTimeFormat('en-US', {
-    month: 'numeric',
-  }).format(new Date());
+  // const currentMonth = new Intl.DateTimeFormat('en-US', {
+  //   month: 'numeric',
+  // }).format(new Date());
 
-  const currentYear = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-  }).format(new Date());
+  // const currentYear = new Intl.DateTimeFormat('en-US', {
+  //   year: 'numeric',
+  // }).format(new Date());
 
-  const expensesCurrentMonth = await getExpensesByMonthByUser(
-    Number(currentMonth),
-    Number(currentYear),
-    user.id,
-  );
+  // const expensesCurrentMonth = await getExpensesByMonthByUser(
+  //   Number(currentMonth),
+  //   Number(currentYear),
+  //   user.id,
+  // );
 
-  const expensesCurrentMonthDateToString = expensesCurrentMonth.map(
-    (expense) => {
-      expense.date = expense.date.toISOString();
-      return expense;
-    },
-  );
+  // const expensesCurrentMonthDateToString = expensesCurrentMonth.map(
+  //   (expense) => {
+  //     expense.date = expense.date.toISOString();
+  //     return expense;
+  //   },
+  // );
 
   return {
     props: {
       user: user,
       categories: categories,
-      expensesCurrentMonth: expensesCurrentMonthDateToString,
+      // expensesCurrentMonth: expensesCurrentMonthDateToString,
     },
   };
 }
