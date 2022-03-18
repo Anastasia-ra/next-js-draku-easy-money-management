@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
@@ -40,48 +41,36 @@ const mainStyle = css`
 const addExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 250px;
-  height: 300px;
+  width: 280px;
+  height: 270px;
   margin: auto;
   padding: 10px 15px;
   border-radius: 15%;
   text-align: center;
-  /* h1 {
-    text-align: center;
-  } */
-  p {
-    text-align: center;
-  }
-  a {
-    color: white;
-  }
-  input {
-    /* margin: 10px; */
-  }
 `;
 
 const dateInputStyle = css`
   width: 150px;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
 `;
 
 const priceInputStyle = css`
   width: 70px;
-  margin: 10px 10px 10px 0;
+  margin: 5px 10px 5px 0;
 `;
 
 const currencyInputStyle = css`
-  margin: 10px 0 10px 10px;
+  margin: 5px 0 5px 10px;
 `;
 
 const nameInputStyle = css`
   width: 150px;
-  margin: 10px;
+  margin: 5px;
 `;
 
 const categoryInputStyle = css`
   width: 150px;
-  margin: 10px;
+  margin: 5px;
 `;
 
 const flexPriceStyle = css`
@@ -91,10 +80,10 @@ const flexPriceStyle = css`
   margin: auto;
 `;
 
-const buttonStyle = css`
+const addButtonStyle = css`
   width: 100px;
   height: 25px;
-  margin: 25px auto;
+  margin: 15px auto;
   font-size: 16px;
   background: #f4ac40;
   color: white;
@@ -105,8 +94,8 @@ const buttonStyle = css`
 const deleteExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 250px;
-  height: 200px;
+  width: 280px;
+  height: 165px;
   margin: auto;
   padding: 10px 15px;
   border-radius: 15%;
@@ -121,7 +110,7 @@ const deleteExpenseStyle = css`
     color: white;
   }
   input {
-    margin: 10px;
+    margin: 5px;
     width: 150px;
   }
 `;
@@ -146,16 +135,31 @@ const anotherSearchButtonStyle = css`
   border-style: none;
 `;
 
+// const deleteButtonStyle = css`
+//   width: 80px;
+//   height: 15px;
+//   font-size: 12px;
+//   margin-left: 20px;
+//   background: #eb584476;
+//   border: solid #e4361f76;
+//   color: white;
+//   /* border-radius: 10px; */
+//   border-style: none;
+// `;
+
 const deleteButtonStyle = css`
-  width: 80px;
-  height: 15px;
+  width: 25px;
+  height: 20px;
   font-size: 12px;
   margin-left: 20px;
-  background: #eb584476;
-  border: solid #e4361f76;
+  background: #e0415e;
+  /* border: solid #e4361f76; */
   color: white;
-  /* border-radius: 10px; */
+  border-radius: 10%;
   border-style: none;
+  :disabled {
+    background: #8b8889;
+  }
 `;
 
 const latestExpensesListStyle = css`
@@ -165,7 +169,13 @@ const latestExpensesListStyle = css`
 
 const mainFlexStyle = css`
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+`;
+
+const addErrorStyle = css`
+  /* color: #26325b;
+ width: 2 */
 `;
 
 const addExpenseFlexStyle = css``;
@@ -274,7 +284,7 @@ export default function Expenses(props: Props) {
 
     const expenseResponseBody = await expenseResponse.json();
 
-    if ('error' in expenseResponseBody) {
+    if ('errors' in expenseResponseBody) {
       setErrors(expenseResponseBody.errors);
       setInputDate('');
       setInputPrice('');
@@ -488,16 +498,15 @@ export default function Expenses(props: Props) {
                     })}
                   </select>
                 </label>
-                <br />
-                <button css={buttonStyle}>Add</button>
+                <div css={addErrorStyle}>
+                  {errors.map((error) => {
+                    return (
+                      <div key={`error-${error.message}`}>{error.message}</div>
+                    );
+                  })}
+                </div>
+                <button css={addButtonStyle}>Add</button>
               </form>
-            </div>
-            <div>
-              {errors.map((error) => {
-                return (
-                  <div key={`error-${error.message}`}>{error.message}</div>
-                );
-              })}
             </div>
           </div>
           <div css={deleteExpenseFlexStyle}>
@@ -531,8 +540,13 @@ export default function Expenses(props: Props) {
                           );
                         }}
                       >
-                        {' '}
-                        Delete
+                        <Image
+                          // css={deleteImageStyle}
+                          src="/delete.png"
+                          width="20px"
+                          height="20px"
+                          alt="garbage can"
+                        />
                       </button>
                     </div>
                   );
@@ -580,8 +594,8 @@ export default function Expenses(props: Props) {
                   </label>
                   <br />
                   {deleteError && <div> Add an expense name or a date</div>}
-                  <br />
-                  <button css={buttonStyle}>Search</button>
+
+                  <button css={addButtonStyle}>Search</button>
                 </form>
               </div>
             )}
