@@ -19,7 +19,7 @@ export default async function expensesHandler(
       response.status(400).json({
         errors: [
           {
-            message: 'Date, price, name or category not provided',
+            message: 'Missing information. Please, fill in all fields',
           },
         ],
       });
