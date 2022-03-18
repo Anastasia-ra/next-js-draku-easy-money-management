@@ -19,6 +19,7 @@ export default async function categoriesHandler(
         errors: [
           {
             message: 'CategoryId not provided',
+            categoryId: undefined,
           },
         ],
       });
@@ -33,8 +34,8 @@ export default async function categoriesHandler(
       response.status(400).json({
         errors: [
           {
-            message:
-              'Category name and budget not provided. Please provide at least a new category name or new category budget.',
+            message: 'Please provide a new name or budget',
+            categoryId: request.body.category.categoryId,
           },
         ],
       });
@@ -49,12 +50,12 @@ export default async function categoriesHandler(
         request.body.category.userId,
         request.body.category.newCategoryName,
       );
-      console.log('should be here');
       if (categoryExists) {
         response.status(409).json({
           errors: [
             {
               message: 'Category already exists',
+              categoryId: request.body.category.categoryId,
             },
           ],
         });
@@ -97,6 +98,7 @@ export default async function categoriesHandler(
         errors: [
           {
             message: 'Category already exists',
+            categoryId: request.body.category.categoryId,
           },
         ],
       });
@@ -119,6 +121,7 @@ export default async function categoriesHandler(
     errors: [
       {
         message: 'Method not supported',
+        categoryId: request.body.category.categoryId,
       },
     ],
   });
