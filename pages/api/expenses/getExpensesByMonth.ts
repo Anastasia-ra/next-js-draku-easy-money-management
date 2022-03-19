@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getExpensesByMonth } from '../../../util/database';
+import { getExpensesByMonthByUser } from '../../../util/database';
 
 export default async function expensesHandler(
   request: NextApiRequest,
@@ -21,9 +21,10 @@ export default async function expensesHandler(
       });
       return;
     }
-    const expensesList = await getExpensesByMonth(
+    const expensesList = await getExpensesByMonthByUser(
       request.body.month,
       request.body.year,
+      request.body.userId,
     );
 
     response.status(201).json({
