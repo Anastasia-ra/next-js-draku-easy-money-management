@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { css, Global } from '@emotion/react';
+// import { getUserByValidSessionToken } from '../util/database';
+// import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState();
@@ -51,3 +53,18 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+
+// export async function getServerSideProps(context) {
+//   const sessionToken = context.req.cookies.sessionToken;
+//   const user = await getUserByValidSessionToken(sessionToken);
+
+//   if (!user) {
+//     return {};
+//   }
+
+//   return {
+//     props: {
+//       user: user,
+//     },
+//   };
+// }
