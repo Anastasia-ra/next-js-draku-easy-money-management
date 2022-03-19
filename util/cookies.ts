@@ -6,6 +6,8 @@ export function createSerializedRegisterSessionTokenCookie(token: string) {
 
   const maxAge = 60 * 60 * 24; // 24 hours
 
+  // const maxAge = 30;
+
   return serialize('sessionToken', token, {
     maxAge: maxAge,
 
