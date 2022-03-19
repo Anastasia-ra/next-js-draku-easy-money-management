@@ -214,11 +214,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
   console.log('expenses this motnh GSSP', expensesCurrentMonth);
 
-  const expensesDateToString = expensesCurrentMonth.map((expense) => {
-    expense.date = expense.date.toISOString();
-    return expense;
-    // return { ...expense, dateToString };
-  });
+  const expensesDateToString = JSON.parse(JSON.stringify(expensesCurrentMonth));
 
   const categories = await getAllCategoriesbyUserId(user.id);
   console.log('categories', categories);
