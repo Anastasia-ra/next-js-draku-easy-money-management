@@ -99,6 +99,7 @@ const signUpLink = css`
     color: white;
     font-size: 18px;
     line-height: 25px;
+    transition: color 0.3s ease-in 0s;
   }
 
   a:hover {
@@ -146,6 +147,34 @@ const linksStyle = css`
   padding: 10px;
 `;
 
+const singleLinkStyle2 = css`
+  font-size: 18px;
+  /* padding-left: 10px; */
+  margin: 0 auto;
+  color: white;
+  display: flex;
+  /* padding: 10px; */
+  transition: color 0.3s ease-in 0s;
+  :hover {
+    color: #04403d;
+  }
+  span {
+    text-align: start;
+    padding-left: 10px;
+    align-self: flex-end;
+  }
+`;
+
+const iconStyle = css`
+  background: url('/expense2.png') no-repeat;
+  width: 25px;
+  height: 25px;
+
+  :hover {
+    background: url('/expense2-hover.png') no-repeat;
+  }
+`;
+
 const singleLinkStyle = css`
   font-size: 18px;
   /* padding-left: 10px; */
@@ -153,12 +182,26 @@ const singleLinkStyle = css`
   color: white;
   display: flex;
   /* padding: 10px; */
+  transition: color 0.3s ease-in 0s;
+  :hover {
+    color: #04403d;
+  }
   span {
     text-align: start;
-    padding-left: 15px;
+    padding-left: 10px;
     align-self: flex-end;
   }
 `;
+
+const spanTextStyle = css`
+  text-align: start;
+  padding-left: 10px;
+  align-self: flex-end;
+`;
+
+const imageNonHoverStyle = css``;
+
+const imageHoverStyle = css``;
 
 const chartsHeaderStyle = css`
   margin: 10px 0;
@@ -357,15 +400,9 @@ export default function Home(props: Props) {
         {/* <Wallet /> */}
         <div css={linksStyle}>
           <Link href="/users/expenses">
-            <a css={singleLinkStyle}>
-              {' '}
-              <Image
-                src="/expense2.png"
-                width="25px"
-                height="25px"
-                alt="expense"
-              />
-              <span> Manage your expenses </span>
+            <a css={singleLinkStyle2}>
+              <div css={iconStyle}></div>
+              <span css={spanTextStyle}> Manage your expenses </span>
             </a>
           </Link>
           <br />

@@ -87,8 +87,12 @@ const addButtonStyle = css`
   font-size: 16px;
   background: #f4ac40;
   color: white;
+  transition: color 0.3s ease-in 0s;
   border-radius: 10px;
   border-style: none;
+  :hover {
+    color: #04403d;
+  }
 `;
 
 const deleteExpenseStyle = css`
@@ -131,8 +135,12 @@ const anotherSearchButtonStyle = css`
   margin: 20px auto;
   background: #f4ac40;
   color: white;
+  transition: color 0.3s ease-in 0s;
   border-radius: 10px;
   border-style: none;
+  :hover {
+    color: #04403d;
+  }
 `;
 
 // const deleteButtonStyle = css`

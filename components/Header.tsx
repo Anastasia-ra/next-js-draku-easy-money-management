@@ -29,7 +29,7 @@ const rightLinksStyle = css`
 
 const pageLinksStyle = css`
   color: white;
-
+  transition: color 0.3s ease-in 0s;
   :hover {
     color: #04403d;
   }

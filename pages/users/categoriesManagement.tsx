@@ -106,6 +106,10 @@ const addButtonStyle = css`
   font-size: 16px;
   background: #f4ac40;
   color: white;
+  transition: color 0.3s ease-in 0s;
+  :hover {
+    color: #04403d;
+  }
   border-radius: 10px;
   border-style: none;
 
@@ -129,8 +133,16 @@ const deleteButtonStyle = css`
   color: white;
   border-radius: 10%;
   border-style: none;
+  transition: all 0.3s ease-in 0s;
+  :hover {
+    background: #e48596;
+  }
   :disabled {
     background: #8b8889;
+    /* display: none; */
+  }
+  :disabled:hover {
+    background: #cac5c7;
   }
 `;
 
@@ -145,6 +157,10 @@ const editButtonStyle = css`
   font-size: 12px;
   margin-left: 5px;
   background: #977279;
+  transition: all 0.3s ease-in 0s;
+  :hover {
+    background: #c59fa6;
+  }
   border: solid #e4361f76;
   color: white;
   border-radius: 10%;
@@ -237,6 +253,10 @@ const changeButtonStyle = css`
   font-size: 14px;
   background: #f4ac40;
   color: white;
+  transition: color 0.3s ease-in 0s;
+  :hover {
+    color: #04403d;
+  }
   border-radius: 10px;
   border-style: none;
 `;
