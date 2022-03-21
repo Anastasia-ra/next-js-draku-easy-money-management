@@ -12,6 +12,7 @@ import {
   getAllCategoriesbyUserId,
   getAllExpensesByUserId,
   getExpensesByMonthByUser,
+  getExpensesByYearByUser,
 } from '../util/database';
 import {
   Chart as ChartJS,
@@ -38,6 +39,7 @@ import {
   getLineDataByDay,
   getProgressChartData,
 } from '../graph-functions/charts';
+import { getTotalBudgetProgress } from '../graph-functions/budgetProgress';
 // import Wallet from '../public/wallet-svgrepo-com.svg';
 
 ChartJS.register(
@@ -60,6 +62,7 @@ type Props =
       categories: Category[];
       expenses: Expense[];
       expensesCurrentMonth: Expense[];
+      expensesCurrentYear: Expense[];
     }
   | { userObject: { username: string }; error: string };
 
@@ -116,14 +119,14 @@ const dougnhutsStyle = css`
 const chartDoughnutProgressStyle = css`
   display: inline-block;
   width: 180px;
-  height: 200px;
+  height: 185px;
   position: relative;
-  bottom: 60px;
+  /* bottom: 60px; */
 `;
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
   width: 180px;
-  height: 200px;
+  height: 245px;
 `;
 
 const categoriesStyle = css`
@@ -165,15 +168,15 @@ const singleLinkStyle2 = css`
   }
 `;
 
-const iconStyle = css`
-  background: url('/expense2.png') no-repeat;
-  width: 25px;
-  height: 25px;
+// const iconStyle = css`
+//   background: url('/expense2.png') no-repeat;
+//   width: 25px;
+//   height: 25px;
 
-  :hover {
-    background: url('/expense2-hover.png') no-repeat;
-  }
-`;
+//   :hover {
+//     background: url('/expense2-hover.png') no-repeat;
+//   }
+// `;
 
 const singleLinkStyle = css`
   font-size: 18px;
@@ -199,24 +202,34 @@ const spanTextStyle = css`
   align-self: flex-end;
 `;
 
-const imageNonHoverStyle = css``;
+// const imageNonHoverStyle = css``;
 
-const imageHoverStyle = css``;
+// const imageHoverStyle = css``;
 
 const chartsHeaderStyle = css`
   margin: 10px 0;
 `;
 
 const percentageStyle = css`
-  position: relative;
+  position: absolute;
   margin: auto;
   z-index: 2;
-  top: 120px;
+  top: 90px;
+  left: 70px;
   height: 40px;
   font-size: 21px;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const progressTextStyle = css`
+  padding-top: 10px;
+  font-size: 16px;
+  /* color: #26325b; */
+  span {
+    font-size: 14px;
+  }
 `;
 
 const lineChartSwitchStyle = css`
@@ -230,6 +243,9 @@ const lineChartSwitchStyle = css`
 const doughnutSwitchStyle = css`
   display: flex;
   justify-content: center;
+  span {
+    margin: 0 5px;
+  }
 `;
 
 export default function Home(props: Props) {
@@ -343,9 +359,44 @@ export default function Home(props: Props) {
                 ).options
               }
             />
+            <div css={progressTextStyle}>
+              {getTotalBudgetProgress(
+                props.categories,
+                props.expensesCurrentMonth,
+              ).currentTotal / 100}
+              € <br />{' '}
+              <span>
+                {' '}
+                from{' '}
+                {getTotalBudgetProgress(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).totalBudget / 100}
+                €{' '}
+              </span>
+            </div>
           </div>
-          <div css={categoriesStyle}>
-            {isCheckedDoughnut ? (
+          {/* <div css={categoriesStyle}>
+            {isCheckedDoughnut ? ( */}
+          <div css={chartDoughnutCategoriesStyle}>
+            <Doughnut
+              // width="150"
+              // height="150"
+              data={
+                getDoughnutCategoriesData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).data
+              }
+              options={
+                getDoughnutCategoriesData(
+                  props.categories,
+                  props.expensesCurrentMonth,
+                ).options
+              }
+            />
+          </div>
+          {/* ) : (
               <div css={chartDoughnutCategoriesStyle}>
                 <Doughnut
                   // width="150"
@@ -353,35 +404,20 @@ export default function Home(props: Props) {
                   data={
                     getDoughnutCategoriesData(
                       props.categories,
-                      props.expensesCurrentMonth,
+                      props.expensesCurrentYear,
                     ).data
                   }
                   options={
                     getDoughnutCategoriesData(
                       props.categories,
-                      props.expensesCurrentMonth,
+                      props.expensesCurrentYear,
                     ).options
                   }
                 />
               </div>
-            ) : (
-              <div css={chartDoughnutCategoriesStyle}>
-                <Doughnut
-                  // width="150"
-                  // height="150"
-                  data={
-                    getDoughnutCategoriesData(props.categories, props.expenses)
-                      .data
-                  }
-                  options={
-                    getDoughnutCategoriesData(props.categories, props.expenses)
-                      .options
-                  }
-                />
-              </div>
-            )}
-            <div css={doughnutSwitchStyle}>
-              <span>Year</span>
+            )} */}
+          {/* <div css={doughnutSwitchStyle}>
+              <span>This year</span>
               <Switch
                 onChange={() => setIsCheckedDoughnut(!isCheckedDoughnut)}
                 checked={isCheckedDoughnut}
@@ -393,15 +429,20 @@ export default function Home(props: Props) {
                 height={15}
                 width={30}
               />
-              <span>Month</span>
-            </div>
-          </div>
+              <span>This month</span>
+            </div> */}
+          {/* </div> */}
         </div>
         {/* <Wallet /> */}
         <div css={linksStyle}>
           <Link href="/users/expenses">
             <a css={singleLinkStyle2}>
-              <div css={iconStyle}></div>
+              <Image
+                src="/expense2.png"
+                width="25px"
+                height="25px"
+                alt="wallet"
+              />{' '}
               <span css={spanTextStyle}> Manage your expenses </span>
             </a>
           </Link>
@@ -463,6 +504,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     year: 'numeric',
   }).format(new Date());
 
+  console.log('currentMonht', 'currentYear', currentMonth, currentYear);
+
+  console.log('getLastMonths', getLastMonths());
+
   const expensesCurrentMonth = await getExpensesByMonthByUser(
     Number(currentMonth),
     Number(currentYear),
@@ -473,10 +518,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     JSON.stringify(expensesCurrentMonth),
   );
 
-  console.log(
-    'expensesCurrentMonthDateToString:',
-    expensesCurrentMonthDateToString,
+  const expensesCurrentYear = await getExpensesByYearByUser(
+    Number(currentYear),
+    user.id,
   );
+
+  const expensesCurrentYearDateToString = JSON.parse(
+    JSON.stringify(expensesCurrentYear),
+  );
+
+  console.log(
+    'expensesCurrentYearDateToString',
+    expensesCurrentYearDateToString,
+  );
+  /*
+  const expensesLastYear = [];
+
+  const lastMonths = getLastMonths();
+  lastMonths.forEach(async (month) => {
+    const monthExpense = await getExpensesByMonthByUser(
+      month.monthId,
+      month.year,
+      user.id,
+    );
+    expensesLastYear.push(monthExpense);
+    console.log('expensesLastYear', expensesLastYear);
+  }); */
 
   return {
     props: {
@@ -484,6 +551,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       categories: categories,
       expenses: expensesDateToString,
       expensesCurrentMonth: expensesCurrentMonthDateToString,
+      expensesCurrentYear: expensesCurrentYearDateToString,
     },
   };
 }
