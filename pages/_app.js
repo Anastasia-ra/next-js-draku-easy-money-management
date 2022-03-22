@@ -12,6 +12,7 @@ function MyApp({ Component, pageProps }) {
 
     if ('errors' in data) {
       console.log(data.errors);
+      console.log('user is undefined in app.js');
       setUser(undefined);
       return;
     }
@@ -30,7 +31,12 @@ function MyApp({ Component, pageProps }) {
           html,
           body {
             margin: 0;
-            font-family: Gill Sans MT, Calibri, Arial, sans-serif;
+            font-family: Calibri, Futura, Arial, sans-serif;
+            background: #f3f3f3;
+
+            @media (max-width: 800px) {
+              background: white;
+            }
           }
           a {
             text-decoration: none;
