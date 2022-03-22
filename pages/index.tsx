@@ -64,21 +64,50 @@ type Props =
       expensesCurrentMonth: Expense[];
       expensesCurrentYear: Expense[];
     }
-  | { userObject: { username: string }; error: string };
+  | { error: string };
+
+const breakPointsWidth = [480, 800];
+const mediaQueryWidth = breakPointsWidth.map(
+  (bp) => `@media (max-width: ${bp}px)`,
+);
+
+const breakPointsHeight = [900];
+const mediaQueryHeight = breakPointsHeight.map(
+  (bp) => `@media (max-height: ${bp}px)`,
+);
 
 const mainStyle = css`
+  background: #ffffff;
+  border-radius: 10px;
+  /* padding: 20px; */
+  /* border-style: solid; */
   color: #26325b;
-  margin: 0 auto;
-  text-align: center;
-  max-width: 700px;
+  margin: 2vh auto;
+  text-align: left;
+  max-width: 800px;
+  height: 90vh;
+  box-shadow: 0 0 8px #cccccc;
   h1 {
-    /* font-size: 26px;
-    margin: 40px 0; */
+    /* font-size: 26px; */
+    text-align: left;
+    padding: 3vh 0 2vh 20px;
+    /* margin: 15px 0 5px 20px; */
+    ${mediaQueryHeight[0]} {
+      padding: 2vh 0 1vh 20px;
+    }
   }
   p {
     font-size: 18px;
     text-align: left;
-    margin: 30px 5vw;
+    margin: 5px 0 5vh 20px;
+    ${mediaQueryHeight[0]} {
+      margin: 5px 0 2vh 20px;
+    }
+  }
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 #cccccc;
+    border-radius: 0;
+    min-height: 85vh;
   }
 `;
 
@@ -89,6 +118,10 @@ const welcomeHeaderStyle = css`
 
 const imageStyle = css`
   margin: 20px auto;
+`;
+
+const imageStyleAfterSignUp = css`
+  margin: 30px auto;
 `;
 
 const signUpLink = css`
@@ -110,10 +143,11 @@ const signUpLink = css`
   }
 `;
 
-const dougnhutsStyle = css`
-  margin: 30px 0;
+const lowerPartStyle = css`
+  margin: 5px 0;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const chartDoughnutProgressStyle = css`
@@ -125,8 +159,8 @@ const chartDoughnutProgressStyle = css`
 `;
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
-  width: 180px;
-  height: 245px;
+  width: 230px;
+  height: 215px;
 `;
 
 const categoriesStyle = css`
@@ -135,18 +169,29 @@ const categoriesStyle = css`
 `;
 
 const chartLineStyle = css`
-  width: 280px;
-  height: 180px;
+  position: relative;
+  width: 70%;
+  /* width: 300px; */
+  height: 200px;
   margin: 0 auto;
+
+  ${mediaQueryWidth[0]} {
+    width: 90%;
+  }
+
+  ${mediaQueryHeight[0]} {
+    height: 160px;
+  }
 `;
 
 const linksStyle = css`
   background: #01aca3;
-  width: 230px;
-  margin: auto;
+  width: 220px;
+  height: 120px;
+  /* margin: auto; */
   text-align: left;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  /* margin-bottom: 80px; */
   padding: 10px;
 `;
 
@@ -251,10 +296,11 @@ const doughnutSwitchStyle = css`
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
   const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
+  console.log('props', props);
 
   if ('error' in props) {
     return (
-      <Layout userObject={props.userObject}>
+      <Layout>
         <Head>
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
@@ -283,6 +329,45 @@ export default function Home(props: Props) {
       </Layout>
     );
   }
+  console.log('props.userObject', props.userObject);
+
+  if (props.categories.length === 0) {
+    return (
+      <Layout userObject={props.userObject}>
+        <Head>
+          <title>Draku</title>
+          <meta name="description" content="Draku money management " />
+        </Head>
+        <div css={mainStyle}>
+          <h1 css={welcomeHeaderStyle}>
+            Welcome to Draku, {props.user.username}!
+          </h1>
+          <p>
+            {' '}
+            To start budgeting, start by creating your first expense categories
+            here:
+          </p>
+          <div css={signUpLink}>
+            <Link href="/users/categoriesManagement">
+              <a>Manage your catagories</a>
+            </Link>
+          </div>
+          <p> Then you can add your expenses here:</p>
+          <div css={signUpLink}>
+            <Link href="/users/expenses">
+              <a>Manage your expenses</a>
+            </Link>
+          </div>
+          <Image
+            src="/draku_logo.png"
+            width="295px"
+            height="200px"
+            css={imageStyleAfterSignUp}
+          />
+        </div>
+      </Layout>
+    );
+  }
 
   const lastMonthsWithExpenses = sumPerMonth(props.expenses, getLastMonths());
 
@@ -292,9 +377,10 @@ export default function Home(props: Props) {
         <title>Draku</title>
         <meta name="description" content="Draku money management" />
       </Head>
+
       <div css={mainStyle}>
-        <h1 css={chartsHeaderStyle}>Welcome {props.user.username}!</h1>
-        <br />
+        <h1 css={chartsHeaderStyle}>Welcome back {props.user.username}!</h1>
+        <p>We are glad that you're here. Here's your overview.</p>
         {isCheckedLineChart ? (
           <div css={chartLineStyle}>
             <Line
@@ -326,7 +412,7 @@ export default function Home(props: Props) {
           <span>This month</span>
         </div>
 
-        <div css={dougnhutsStyle}>
+        <div css={lowerPartStyle}>
           <div css={chartDoughnutProgressStyle}>
             <div
               css={css`
@@ -432,47 +518,47 @@ export default function Home(props: Props) {
               <span>This month</span>
             </div> */}
           {/* </div> */}
+          <div css={linksStyle}>
+            <Link href="/users/expenses">
+              <a css={singleLinkStyle2}>
+                <Image
+                  src="/expense2.png"
+                  width="25px"
+                  height="25px"
+                  alt="wallet"
+                />{' '}
+                <span css={spanTextStyle}> Manage your expenses </span>
+              </a>
+            </Link>
+            <br />
+            <Link href="/users/categoriesManagement">
+              <a css={singleLinkStyle}>
+                {' '}
+                <Image
+                  src="/wallet.png"
+                  width="25px"
+                  height="25px"
+                  alt="wallet"
+                />{' '}
+                <span> Manage your categories </span>
+              </a>
+            </Link>
+            <br />
+            <Link href="/users/budgetManagement">
+              <a css={singleLinkStyle}>
+                {' '}
+                <Image
+                  src="/piggy.png"
+                  width="25px"
+                  height="25px"
+                  alt="piggy"
+                />{' '}
+                <span> Check your budget </span>
+              </a>
+            </Link>
+          </div>
         </div>
         {/* <Wallet /> */}
-        <div css={linksStyle}>
-          <Link href="/users/expenses">
-            <a css={singleLinkStyle2}>
-              <Image
-                src="/expense2.png"
-                width="25px"
-                height="25px"
-                alt="wallet"
-              />{' '}
-              <span css={spanTextStyle}> Manage your expenses </span>
-            </a>
-          </Link>
-          <br />
-          <Link href="/users/categoriesManagement">
-            <a css={singleLinkStyle}>
-              {' '}
-              <Image
-                src="/wallet.png"
-                width="25px"
-                height="25px"
-                alt="wallet"
-              />{' '}
-              <span> Manage your categories </span>
-            </a>
-          </Link>
-          <br />
-          <Link href="/users/budgetManagement">
-            <a css={singleLinkStyle}>
-              {' '}
-              <Image
-                src="/piggy.png"
-                width="25px"
-                height="25px"
-                alt="piggy"
-              />{' '}
-              <span> Check your budget </span>
-            </a>
-          </Link>
-        </div>
       </div>
     </Layout>
   );
@@ -481,6 +567,9 @@ export default function Home(props: Props) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const sessionToken = context.req.cookies.sessionToken;
   const user = await getUserByValidSessionToken(sessionToken);
+
+  console.log('sessionToken', sessionToken);
+  console.log('user GSSP', user);
 
   if (!user) {
     return {
@@ -503,10 +592,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const currentYear = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
   }).format(new Date());
-
-  console.log('currentMonht', 'currentYear', currentMonth, currentYear);
-
-  console.log('getLastMonths', getLastMonths());
 
   const expensesCurrentMonth = await getExpensesByMonthByUser(
     Number(currentMonth),
