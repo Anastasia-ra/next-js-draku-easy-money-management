@@ -335,6 +335,20 @@ export async function getExpensesByMonthByUser(
   return expenses.map((expense) => camelcaseKeys(expense));
 }
 
+export async function getExpensesByYearByUser(year: number, userId: number) {
+  const expenses = await sql<Expense[]>`
+    SELECT
+      *
+    FROM
+      expenses
+    WHERE
+      EXTRACT(YEAR FROM date) = ${year} AND
+      user_id = ${userId}
+
+  `;
+  return expenses.map((expense) => camelcaseKeys(expense));
+}
+
 export async function updateCategoryNameAndBudget(
   categoryId: number,
   newCategoryName: string,
