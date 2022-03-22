@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
@@ -318,6 +319,66 @@ export default function CategoriesManagement(props: Props) {
     );
 
     setCategories(sortedCategoriesList);
+  }
+
+  if (categories.length === 0) {
+    return (
+      <Layout userObject={props.userObject}>
+        <Head>
+          <title>Categories</title>
+          <meta name="description" content="Your categories " />
+        </Head>
+        <h1>Add your first category</h1>
+        <div css={formStyle}>
+          <form
+            onSubmit={async (event) => {
+              event.preventDefault();
+              await addCategory(props.user.id, newCategory, monthlyBudget);
+            }}
+          >
+            <div css={formBlocksStyle}>
+              <div css={categoryBlockStyle}>
+                <label>
+                  Category name
+                  <br />
+                  <input
+                    disabled={maxCategory}
+                    value={newCategory}
+                    onChange={(event) =>
+                      setNewCategory(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
+              <div css={budgetBlockStyle}>
+                <label>
+                  Monthly budget
+                  <br />
+                  <input
+                    disabled={maxCategory}
+                    type="number"
+                    value={monthlyBudget}
+                    onChange={(event) =>
+                      setMonthlyBudget(event.currentTarget.value)
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+            <div css={errorsStyle}>
+              {errors.map((error) => {
+                return (
+                  <div key={`error-${error.message}`}>{error.message}</div>
+                );
+              })}
+            </div>
+            <button css={addButtonStyle} disabled={maxCategory}>
+              Add a new category
+            </button>
+          </form>
+        </div>
+      </Layout>
+    );
   }
 
   // Add category to database

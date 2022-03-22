@@ -239,6 +239,25 @@ export default function Expenses(props: Props) {
     );
   }
 
+  if (props.categories.length === 0) {
+    return (
+      <Layout userObject={props.userObject}>
+        <Head>
+          <title>Expenses</title>
+          <meta name="description" content="Your expenses " />
+        </Head>
+        <h1>First add a category to be able to add expenses</h1>
+        <p>
+          You can add your first categories in the{' '}
+          <Link href="/users/categoriesManagement">
+            <a>categories management</a>
+          </Link>{' '}
+          section.
+        </p>
+      </Layout>
+    );
+  }
+
   // Get current month
   const optionsDate = { month: 'long', year: 'numeric' } as const;
   const currentMonth = new Intl.DateTimeFormat('en-US', optionsDate).format(
@@ -517,119 +536,134 @@ export default function Expenses(props: Props) {
               </form>
             </div>
           </div>
-          <div css={deleteExpenseFlexStyle}>
-            <h2>Delete an expense</h2>
-            {displayList ? (
-              <div css={deleteListStyle}>
-                <button
-                  css={anotherSearchButtonStyle}
-                  onClick={() => setDisplayList(false)}
-                >
-                  Search another expense
-                </button>
-                {filteredExpenses.length === 0 && <div>No expenses found</div>}
-                {filteredExpenses.map((expense) => {
-                  return (
-                    <div css={deleteItemFlexStyle} key={`delete-${expense.id}`}>
-                      <div>
-                        {' '}
-                        {new Intl.DateTimeFormat('en-GB', {
-                          day: '2-digit',
-                          month: 'short',
-                        }).format(new Date(expense.date))}{' '}
-                        {expense.name} {expense.price / 100}€{' '}
-                      </div>
-                      <button
-                        css={deleteButtonStyle}
-                        onClick={async () => {
-                          await deleteExpense(expense.id);
-                          setFilteredExpenses(
-                            filteredExpenses.filter((e) => e.id !== expense.id),
-                          );
-                        }}
-                      >
-                        <Image
-                          // css={deleteImageStyle}
-                          src="/delete.png"
-                          width="20px"
-                          height="20px"
-                          alt="garbage can"
-                        />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div css={deleteExpenseStyle}>
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    if (!deleteName && !deleteDate) {
-                      setDeleteError(true);
-                      return;
-                    }
-                    setDeleteError(false);
-                    const filteredArray = findExpense(deleteName, deleteDate);
-                    console.log(filteredArray);
-                    setDeleteName('');
-                    setDeleteDate('');
-                    setDisplayList(true);
-                  }}
-                >
-                  <label>
-                    Name
-                    <br />
-                    <input
-                      value={deleteName}
-                      onChange={(event) =>
-                        setDeleteName(event.currentTarget.value)
-                      }
-                    />
-                  </label>
-                  <br />
-                  <label>
-                    Date
-                    <br />
-                    <input
-                      type="date"
-                      max={new Date().toISOString().split('T')[0]}
-                      value={deleteDate}
-                      onChange={(event) =>
-                        setDeleteDate(event.currentTarget.value)
-                      }
-                    />
-                  </label>
-                  <br />
-                  {deleteError && <div> Add an expense name or a date</div>}
-
-                  <button css={addButtonStyle}>Search</button>
-                </form>
-              </div>
-            )}
-          </div>
-          <div css={listExpensesFlexStyle}>
-            <h2>Latest expenses </h2>
+          {expenses.length > 0 && (
             <div>
-              {expenses.length === 0 && <div>No expenses yet</div>}
-              <div css={latestExpensesListStyle}>
-                {expenses.reverse().map((expense, index) => {
-                  if (index < 5) {
-                    return (
-                      <div key={`expense-${expense.id}`}>
-                        {new Intl.DateTimeFormat('en-GB', {
-                          day: '2-digit',
-                          month: 'short',
-                        }).format(new Date(expense.date))}{' '}
-                        {expense.name} {expense.price / 100}€
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
+              <div css={deleteExpenseFlexStyle}>
+                <h2>Delete an expense</h2>
+                {displayList ? (
+                  <div css={deleteListStyle}>
+                    <button
+                      css={anotherSearchButtonStyle}
+                      onClick={() => setDisplayList(false)}
+                    >
+                      Search another expense
+                    </button>
+                    {filteredExpenses.length === 0 && (
+                      <div>No expenses found</div>
+                    )}
+                    {filteredExpenses.map((expense) => {
+                      return (
+                        <div
+                          css={deleteItemFlexStyle}
+                          key={`delete-${expense.id}`}
+                        >
+                          <div>
+                            {' '}
+                            {new Intl.DateTimeFormat('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                            }).format(new Date(expense.date))}{' '}
+                            {expense.name} {expense.price / 100}€{' '}
+                          </div>
+                          <button
+                            css={deleteButtonStyle}
+                            onClick={async () => {
+                              await deleteExpense(expense.id);
+                              setFilteredExpenses(
+                                filteredExpenses.filter(
+                                  (e) => e.id !== expense.id,
+                                ),
+                              );
+                            }}
+                          >
+                            <Image
+                              // css={deleteImageStyle}
+                              src="/delete.png"
+                              width="20px"
+                              height="20px"
+                              alt="garbage can"
+                            />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div css={deleteExpenseStyle}>
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        if (!deleteName && !deleteDate) {
+                          setDeleteError(true);
+                          return;
+                        }
+                        setDeleteError(false);
+                        const filteredArray = findExpense(
+                          deleteName,
+                          deleteDate,
+                        );
+                        console.log(filteredArray);
+                        setDeleteName('');
+                        setDeleteDate('');
+                        setDisplayList(true);
+                      }}
+                    >
+                      <label>
+                        Name
+                        <br />
+                        <input
+                          value={deleteName}
+                          onChange={(event) =>
+                            setDeleteName(event.currentTarget.value)
+                          }
+                        />
+                      </label>
+                      <br />
+                      <label>
+                        Date
+                        <br />
+                        <input
+                          type="date"
+                          max={new Date().toISOString().split('T')[0]}
+                          value={deleteDate}
+                          onChange={(event) =>
+                            setDeleteDate(event.currentTarget.value)
+                          }
+                        />
+                      </label>
+                      <br />
+                      {deleteError && <div> Add an expense name or a date</div>}
+
+                      <button css={addButtonStyle}>Search</button>
+                    </form>
+                  </div>
+                )}
+              </div>
+
+              <div css={listExpensesFlexStyle}>
+                <h2>Latest expenses </h2>
+                <div>
+                  {expenses.length === 0 && <div>No expenses yet</div>}
+                  <div css={latestExpensesListStyle}>
+                    {expenses.reverse().map((expense, index) => {
+                      if (index < 5) {
+                        return (
+                          <div key={`expense-${expense.id}`}>
+                            {new Intl.DateTimeFormat('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                            }).format(new Date(expense.date))}{' '}
+                            {expense.name} {expense.price / 100}€
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}{' '}
         </div>
       </div>
     </Layout>
@@ -668,12 +702,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     (a: Expense, b: Expense) => {
       return a.date.localeCompare(b.date);
     },
-  );
-
-  console.log(
-    'expensesSortedByDate',
-    expensesSortedByDate,
-    typeof expensesSortedByDate[1].date,
   );
 
   return {

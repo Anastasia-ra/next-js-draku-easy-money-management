@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import Layout from '../../components/Layout';
 import {
   getUserByValidSessionToken,
@@ -90,6 +91,25 @@ export default function CategoriesManagement(props: Props) {
     return <div>Please log-in first</div>;
   }
 
+  if (props.categories.length === 0) {
+    return (
+      <Layout userObject={props.userObject}>
+        <Head>
+          <title>Your budgets</title>
+          <meta name="description" content="Your budgets " />
+        </Head>
+        <h1>First add a category to check you budget</h1>
+        <p>
+          You can add your first categories in the{' '}
+          <Link href="/users/categoriesManagement">
+            <a>categories management</a>
+          </Link>{' '}
+          section.
+        </p>
+      </Layout>
+    );
+  }
+
   const totalBudgetProgress = getTotalBudgetProgress(
     props.categories,
     props.expensesCurrentMonth,
@@ -106,7 +126,7 @@ export default function CategoriesManagement(props: Props) {
   return (
     <Layout userObject={props.userObject}>
       <Head>
-        <title>Your budget</title>
+        <title>Your budgets</title>
         <meta name="description" content="budget" />
       </Head>
       <div css={mainStyle}>
