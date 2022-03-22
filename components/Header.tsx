@@ -7,6 +7,7 @@ const mainStyle = css`
   background: #01aca3;
   height: 40px;
   font-size: 24px;
+  font-weight: lighter;
   color: white;
   display: flex;
   justify-content: space-between;
@@ -19,6 +20,14 @@ const mainStyle = css`
 
     /* text-align: center; */
   }
+`;
+
+const textStyle = css`
+  width: 800px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
 `;
 
 const rightLinksStyle = css`
@@ -53,32 +62,35 @@ function Anchor({
 }
 
 export default function Header(props: Props) {
+  // console.log('props.userObject.username in header', props.userObject.username);
   return (
     <header css={mainStyle}>
-      {props.userObject && (
-        <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
-      )}
-
-      <div css={rightLinksStyle}>
-        {props.userObject ? (
-          <>
-            <Link href="/">
-              <a css={pageLinksStyle}>Home</a>
-            </Link>
-            <Anchor href="/logout" css={pageLinksStyle}>
-              Logout
-            </Anchor>
-          </>
-        ) : (
-          <>
-            <Link href="/login">
-              <a css={pageLinksStyle}>Login</a>
-            </Link>
-            <Link href="/signup">
-              <a css={pageLinksStyle}>Sign-up</a>
-            </Link>
-          </>
+      <div css={textStyle}>
+        {props.userObject && (
+          <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
         )}
+
+        <div css={rightLinksStyle}>
+          {props.userObject ? (
+            <>
+              <Link href="/">
+                <a css={pageLinksStyle}>Home</a>
+              </Link>
+              <Anchor href="/logout" css={pageLinksStyle}>
+                Logout
+              </Anchor>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
+                <a css={pageLinksStyle}>Login</a>
+              </Link>
+              <Link href="/signup">
+                <a css={pageLinksStyle}>Sign-up</a>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
