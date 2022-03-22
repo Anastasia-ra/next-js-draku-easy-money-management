@@ -57,6 +57,10 @@ const buttonStyle = css`
   color: white;
   border-radius: 10px;
   border-style: none;
+  transition: color 0.3s ease-in 0s;
+  :hover {
+    color: #04403d;
+  }
 `;
 
 export default function Login(props: Props) {

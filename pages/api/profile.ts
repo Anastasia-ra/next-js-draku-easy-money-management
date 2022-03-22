@@ -18,7 +18,7 @@ export default async function handler(
       });
       return;
     }
-
+    console.log('inside profile ts');
     const user = await getUserByValidSessionToken(token);
 
     if (user) {
