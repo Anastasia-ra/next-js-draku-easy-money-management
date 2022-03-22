@@ -25,7 +25,7 @@ export function getLastMonths() {
     lastMonths.push({
       monthId: date.getMonth(),
       month: month,
-      year: year.toString().slice(2),
+      year: year,
     });
     date.setMonth(date.getMonth() - 1);
   }
@@ -34,14 +34,12 @@ export function getLastMonths() {
 
 export function sumPerMonth(
   expenses: Expense[],
-  lastMonths: Array<{ monthId: number; month: string; year: string }>,
+  lastMonths: Array<{ monthId: number; month: string; year: number }>,
 ) {
   const expensesWithMonthId = expenses.map((expense) => {
     const month = new Date(expense.date).getMonth();
     return { ...expense, month };
   });
-
-  // const monthExpenses: Array<number> = [];
 
   const lastMonthsWithExpenses = lastMonths.map((month) => {
     return { ...month, monthExpenses: [0] };
@@ -50,7 +48,6 @@ export function sumPerMonth(
   for (const month of lastMonthsWithExpenses) {
     for (const expense of expensesWithMonthId) {
       if (expense.month === month.monthId) {
-        console.log('month expenses check', month.monthId, month.monthExpenses);
         month.monthExpenses.push(expense.price);
       }
     }
