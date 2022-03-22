@@ -63,9 +63,8 @@ export function getDoughnutCategoriesData(
   };
 
   const optionsDoughnutCategories = {
-    cutout: '60%',
+    cutout: '75%',
     radius: 60,
-    // spacing: '5%',
     maintainAspectRatio: false,
     elements: {
       arc: {
@@ -84,11 +83,20 @@ export function getDoughnutCategoriesData(
       // padding: 10,
     },
     plugins: {
-      // tooltip: {
-      //   enabled: false,
-      // },
+      tooltip: {
+        enabled: false,
+      },
+      title: {
+        display: true,
+        text: 'Categories',
+        color: '#26325b',
+        font: {
+          size: 16,
+          family: "'Gill Sans MT', 'Calibri', 'Arial', 'sans-serif'",
+        },
+      },
       legend: {
-        position: 'bottom' as 'bottom',
+        position: 'right' as 'right',
         // align: 'start' as 'start',
         display: true,
         // maxHeight: 20,
@@ -133,9 +141,10 @@ export function getProgressChartData(
 
   const budgetLeft = budgetProgress > 1 ? 0 : 1 - budgetProgress;
 
-  let bgColorProgress = '#07b335';
+  // let bgColorProgress = '#07b335';
+  let bgColorProgress = '#01aca3';
   if (0.7 < budgetProgress && budgetProgress < 0.9) {
-    bgColorProgress = '#eb8305';
+    bgColorProgress = '#f4ac40';
   }
   if (budgetProgress >= 0.9) {
     bgColorProgress = '#a81b0c';
@@ -155,8 +164,8 @@ export function getProgressChartData(
   };
 
   const optionsProgressCircle = {
-    cutout: '85%',
-    radius: 70,
+    cutout: '75%',
+    radius: 60,
     rotation: 0,
     maintainAspectRatio: false,
     elements: {
@@ -171,6 +180,15 @@ export function getProgressChartData(
       padding: 0,
     },
     plugins: {
+      title: {
+        display: true,
+        text: 'Progress',
+        color: '#26325b',
+        font: {
+          size: 16,
+          family: "'Gill Sans MT', 'Calibri', 'Arial', 'sans-serif'",
+        },
+      },
       tooltip: {
         enabled: false,
       },
@@ -208,12 +226,12 @@ export function getLineData(
     monthExpenses: Array<number>;
     monthId: number;
     month: string;
-    year: string;
+    year: number;
   }>,
 ) {
   const dataLine = {
     labels: monthsWithExpenses
-      .map((month) => `${month.month} ${month.year}`)
+      .map((month) => `${month.month} ${month.year.toString().slice(2)}`)
       .reverse(),
     datasets: [
       {
@@ -228,10 +246,11 @@ export function getLineData(
   };
 
   const optionsLine = {
-    maintainAspectRatio: false,
+    // // responsive: true,
+    // maintainAspectRatio: false,
     plugins: {
       title: {
-        display: true,
+        display: false,
         text: 'Your expenses this year',
         color: '#26325b',
         font: {
@@ -334,10 +353,11 @@ export function getLineDataByDay(
   };
 
   const optionsLine = {
+    // responsive: true,
     maintainAspectRatio: false,
     plugins: {
       title: {
-        display: true,
+        display: false,
         text: 'Your expenses this month',
         color: '#26325b',
         // fullSize: false,
@@ -439,9 +459,9 @@ export function getDoughnutCategoriesBudgetData(categoriesArray: Category[]) {
       // padding: 10,
     },
     plugins: {
-      // tooltip: {
-      //   enabled: false,
-      // },
+      tooltip: {
+        enabled: false,
+      },
       legend: {
         position: 'bottom' as 'bottom',
         // align: 'start' as 'start',
