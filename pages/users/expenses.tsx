@@ -30,22 +30,67 @@ type Errors = { message: string }[];
 
 type Currency = { name: string; exchangeRate: number };
 
+const breakPointsWidth = [480, 800];
+const mediaQueryWidth = breakPointsWidth.map(
+  (bp) => `@media (max-width: ${bp}px)`,
+);
+
+const breakPointsHeight = [900];
+const mediaQueryHeight = breakPointsHeight.map(
+  (bp) => `@media (max-height: ${bp}px)`,
+);
+
 const mainStyle = css`
   color: #26325b;
-
+  background: #ffffff;
+  border-radius: 10px;
+  margin: 2vh auto;
+  text-align: left;
+  max-width: 800px;
+  height: 80vh;
+  box-shadow: 0 0 8px #cccccc;
+  ${mediaQueryHeight[0]} {
+    height: 95vh;
+  }
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 white;
+    border-radius: 0;
+    /* min-height: 85vh; */
+  }
+  h1 {
+    /* font-size: 26px; */
+    text-align: left;
+    padding: 3vh 0 2vh 20px;
+    /* margin: 15px 0 5px 20px; */
+    ${mediaQueryHeight[0]} {
+      padding: 2vh 0 1vh 20px;
+    }
+    ${mediaQueryWidth[0]} {
+      padding: 0vh 0 1vh 20px;
+    }
+  }
   h2 {
     text-align: center;
+    font-size: 18px;
+  }
+  p {
+    font-size: 18px;
+    text-align: left;
+    margin: 5px 0 5vh 20px;
+    ${mediaQueryHeight[0]} {
+      margin: 5px 0 2vh 20px;
+    }
   }
 `;
 
 const addExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 280px;
+  width: 200px;
   height: 270px;
   margin: auto;
   padding: 10px 15px;
-  border-radius: 15%;
+  border-radius: 10px;
   text-align: center;
 `;
 
@@ -98,11 +143,11 @@ const addButtonStyle = css`
 const deleteExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 280px;
-  height: 165px;
-  margin: auto;
+  width: 200px;
+  height: 270px;
+  /* margin: auto; */
   padding: 10px 15px;
-  border-radius: 15%;
+  border-radius: 10px;
   text-align: center;
   /* h1 {
     text-align: center;
@@ -124,10 +169,6 @@ const deleteListStyle = css`
   margin: auto;
 `;
 
-const deleteItemFlexStyle = css`
-  display: flex;
-`;
-
 const anotherSearchButtonStyle = css`
   width: 210px;
   height: 25px;
@@ -136,7 +177,7 @@ const anotherSearchButtonStyle = css`
   background: #f4ac40;
   color: white;
   transition: color 0.3s ease-in 0s;
-  border-radius: 10px;
+  border-radius: 5px;
   border-style: none;
   :hover {
     color: #04403d;
@@ -159,31 +200,105 @@ const deleteButtonStyle = css`
   width: 25px;
   height: 20px;
   font-size: 12px;
-  margin-left: 20px;
+  margin: 2px 2px 2px 5px;
   background: #e0415e;
   /* border: solid #e4361f76; */
   color: white;
   border-radius: 10%;
   border-style: none;
+  align-self: center;
   :disabled {
     background: #8b8889;
   }
 `;
 
+const deleteItemFlexStyle = css`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+`;
+
+const singleItemtoDeleteStyle = css`
+  display: flex;
+`;
+
+const deleteNameStyle = css`
+  width: 100px;
+`;
+
+const deleteDateStyle = css`
+  padding: 0 5px;
+`;
+
+const deletePriceStyle = css`
+  width: 60px;
+`;
+
 const latestExpensesListStyle = css`
-  width: 210px;
+  width: 250px;
+  height: 270px;
   margin: auto;
 `;
 
+const singleExpenseStyle = css`
+  display: flex;
+  flex-wrap: nowrap;
+`;
+
+const expenseNameStyle = css`
+  padding: 0 2px;
+  text-align: start;
+  width: 110px;
+`;
+
+const expenseDateStyle = css`
+  text-align: start;
+  padding: 0 2px;
+  width: 65px;
+`;
+
+const expensePriceStyle = css`
+  text-align: start;
+`;
+
 const mainFlexStyle = css`
+  margin: 0 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 2vw;
 `;
 
 const addErrorStyle = css`
   /* color: #26325b;
  width: 2 */
+`;
+
+const mainStyleError = css`
+  color: #26325b;
+  background: #ffffff;
+  border-radius: 10px;
+  margin: 2vh auto;
+  text-align: left;
+  max-width: 800px;
+  box-shadow: 0 0 8px #cccccc;
+  padding: 1px 5px 5px 10px;
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 white;
+    border-radius: 0;
+  }
+  h1 {
+    text-align: left;
+    padding: 3vh 0 2vh 20px;
+    ${mediaQueryWidth[0]} {
+      padding: 0vh 0 1vh 20px;
+    }
+  }
+  p {
+    font-size: 18px;
+    text-align: left;
+    margin: 5px 0 5vh 20px;
+  }
 `;
 
 const addExpenseFlexStyle = css``;
@@ -246,14 +361,16 @@ export default function Expenses(props: Props) {
           <title>Expenses</title>
           <meta name="description" content="Your expenses " />
         </Head>
-        <h1>First add a category to be able to add expenses</h1>
-        <p>
-          You can add your first categories in the{' '}
-          <Link href="/users/categoriesManagement">
-            <a>categories management</a>
-          </Link>{' '}
-          section.
-        </p>
+        <div css={mainStyleError}>
+          <h1>To add expenses, you first have to add a category</h1>
+          <p>
+            You can add your first categories in the{' '}
+            <Link href="/users/categoriesManagement">
+              <a>categories management</a>
+            </Link>{' '}
+            section.
+          </p>
+        </div>
       </Layout>
     );
   }
@@ -413,6 +530,7 @@ export default function Expenses(props: Props) {
       </Head>
       <div css={mainStyle}>
         <h1>Manage your expenses </h1>
+        <p>Here you can enter, delete or review your latest expenses. </p>
         {/* <h2>{currentMonth}</h2> */}
         <div css={mainFlexStyle}>
           <div css={addExpenseFlexStyle}>
@@ -537,133 +655,143 @@ export default function Expenses(props: Props) {
             </div>
           </div>
           {expenses.length > 0 && (
-            <div>
-              <div css={deleteExpenseFlexStyle}>
-                <h2>Delete an expense</h2>
-                {displayList ? (
-                  <div css={deleteListStyle}>
-                    <button
-                      css={anotherSearchButtonStyle}
-                      onClick={() => setDisplayList(false)}
-                    >
-                      Search another expense
-                    </button>
-                    {filteredExpenses.length === 0 && (
-                      <div>No expenses found</div>
-                    )}
-                    {filteredExpenses.map((expense) => {
+            <div css={deleteExpenseFlexStyle}>
+              <h2>Delete an expense</h2>
+              {displayList ? (
+                <div css={deleteListStyle}>
+                  <button
+                    css={anotherSearchButtonStyle}
+                    onClick={() => setDisplayList(false)}
+                  >
+                    Search another expense
+                  </button>
+                  {filteredExpenses.length === 0 && (
+                    <div>No expenses found</div>
+                  )}
+                  {filteredExpenses.map((expense) => {
+                    return (
+                      <div
+                        css={deleteItemFlexStyle}
+                        key={`delete-${expense.id}`}
+                      >
+                        <div css={singleItemtoDeleteStyle}>
+                          {' '}
+                          <div css={deleteDateStyle}>
+                            {new Intl.DateTimeFormat('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                            }).format(new Date(expense.date))}{' '}
+                          </div>{' '}
+                          <div css={deleteNameStyle}>{expense.name}</div>{' '}
+                          <div css={deletePriceStyle}>
+                            {expense.price / 100}€
+                          </div>
+                        </div>
+                        <button
+                          css={deleteButtonStyle}
+                          onClick={async () => {
+                            await deleteExpense(expense.id);
+                            setFilteredExpenses(
+                              filteredExpenses.filter(
+                                (e) => e.id !== expense.id,
+                              ),
+                            );
+                          }}
+                        >
+                          <Image
+                            // css={deleteImageStyle}
+                            src="/delete.png"
+                            width="20px"
+                            height="20px"
+                            alt="garbage can"
+                          />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div css={deleteExpenseStyle}>
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      if (!deleteName && !deleteDate) {
+                        setDeleteError(true);
+                        return;
+                      }
+                      setDeleteError(false);
+                      const filteredArray = findExpense(deleteName, deleteDate);
+                      console.log(filteredArray);
+                      setDeleteName('');
+                      setDeleteDate('');
+                      setDisplayList(true);
+                    }}
+                  >
+                    <label>
+                      Name
+                      <br />
+                      <input
+                        value={deleteName}
+                        onChange={(event) =>
+                          setDeleteName(event.currentTarget.value)
+                        }
+                      />
+                    </label>
+                    <br />
+                    <label>
+                      Date
+                      <br />
+                      <input
+                        type="date"
+                        max={new Date().toISOString().split('T')[0]}
+                        value={deleteDate}
+                        onChange={(event) =>
+                          setDeleteDate(event.currentTarget.value)
+                        }
+                      />
+                    </label>
+                    <br />
+                    {deleteError && <div> Add an expense name or a date</div>}
+
+                    <button css={addButtonStyle}>Search</button>
+                  </form>
+                </div>
+              )}
+            </div>
+          )}
+
+          {expenses.length > 0 && (
+            <div css={listExpensesFlexStyle}>
+              <h2>Latest expenses </h2>
+              <div>
+                {expenses.length === 0 && <div>No expenses yet</div>}
+                <div css={latestExpensesListStyle}>
+                  {expenses.reverse().map((expense, index) => {
+                    if (index < 5) {
                       return (
                         <div
-                          css={deleteItemFlexStyle}
-                          key={`delete-${expense.id}`}
+                          css={singleExpenseStyle}
+                          key={`expense-${expense.id}`}
                         >
-                          <div>
-                            {' '}
+                          <div css={expenseDateStyle}>
                             {new Intl.DateTimeFormat('en-GB', {
                               day: '2-digit',
                               month: 'short',
                             }).format(new Date(expense.date))}{' '}
-                            {expense.name} {expense.price / 100}€{' '}
+                          </div>{' '}
+                          <div css={expenseNameStyle}>{expense.name}</div>{' '}
+                          <div css={expensePriceStyle}>
+                            {expense.price / 100}€
                           </div>
-                          <button
-                            css={deleteButtonStyle}
-                            onClick={async () => {
-                              await deleteExpense(expense.id);
-                              setFilteredExpenses(
-                                filteredExpenses.filter(
-                                  (e) => e.id !== expense.id,
-                                ),
-                              );
-                            }}
-                          >
-                            <Image
-                              // css={deleteImageStyle}
-                              src="/delete.png"
-                              width="20px"
-                              height="20px"
-                              alt="garbage can"
-                            />
-                          </button>
                         </div>
                       );
-                    })}
-                  </div>
-                ) : (
-                  <div css={deleteExpenseStyle}>
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        if (!deleteName && !deleteDate) {
-                          setDeleteError(true);
-                          return;
-                        }
-                        setDeleteError(false);
-                        const filteredArray = findExpense(
-                          deleteName,
-                          deleteDate,
-                        );
-                        console.log(filteredArray);
-                        setDeleteName('');
-                        setDeleteDate('');
-                        setDisplayList(true);
-                      }}
-                    >
-                      <label>
-                        Name
-                        <br />
-                        <input
-                          value={deleteName}
-                          onChange={(event) =>
-                            setDeleteName(event.currentTarget.value)
-                          }
-                        />
-                      </label>
-                      <br />
-                      <label>
-                        Date
-                        <br />
-                        <input
-                          type="date"
-                          max={new Date().toISOString().split('T')[0]}
-                          value={deleteDate}
-                          onChange={(event) =>
-                            setDeleteDate(event.currentTarget.value)
-                          }
-                        />
-                      </label>
-                      <br />
-                      {deleteError && <div> Add an expense name or a date</div>}
-
-                      <button css={addButtonStyle}>Search</button>
-                    </form>
-                  </div>
-                )}
-              </div>
-
-              <div css={listExpensesFlexStyle}>
-                <h2>Latest expenses </h2>
-                <div>
-                  {expenses.length === 0 && <div>No expenses yet</div>}
-                  <div css={latestExpensesListStyle}>
-                    {expenses.reverse().map((expense, index) => {
-                      if (index < 5) {
-                        return (
-                          <div key={`expense-${expense.id}`}>
-                            {new Intl.DateTimeFormat('en-GB', {
-                              day: '2-digit',
-                              month: 'short',
-                            }).format(new Date(expense.date))}{' '}
-                            {expense.name} {expense.price / 100}€
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
-                  </div>
+                    }
+                    return null;
+                  })}
                 </div>
               </div>
             </div>
-          )}{' '}
+          )}
         </div>
       </div>
     </Layout>

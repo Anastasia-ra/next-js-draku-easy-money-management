@@ -28,8 +28,34 @@ type Props =
       error: string;
     };
 
+const breakPointsWidth = [480, 800];
+const mediaQueryWidth = breakPointsWidth.map(
+  (bp) => `@media (max-width: ${bp}px)`,
+);
+
+const breakPointsHeight = [900];
+const mediaQueryHeight = breakPointsHeight.map(
+  (bp) => `@media (max-height: ${bp}px)`,
+);
+
 const mainStyle = css`
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #cccccc;
   color: #26325b;
+  max-width: 480px;
+  padding-bottom: 10px;
+  margin: 2vh auto;
+  h1 {
+    font-size: 26px;
+    text-align: left;
+    padding: 15px 0 0px 35px;
+  }
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 #cccccc;
+    border-radius: 0;
+    min-height: 85vh;
+  }
 `;
 
 const progressDivStyle = css`
@@ -67,12 +93,12 @@ const totalFlexStyle = css`
   display: flex;
   justify-content: space-between;
   font-size: 21px;
+  font-weight: bolder;
 `;
 
 const totalInfosStyle = css`
   width: 100px;
   text-align: end;
-  font-size: 21px;
   span {
     font-size: 18px;
   }
@@ -98,14 +124,16 @@ export default function CategoriesManagement(props: Props) {
           <title>Your budgets</title>
           <meta name="description" content="Your budgets " />
         </Head>
-        <h1>First add a category to check you budget</h1>
-        <p>
-          You can add your first categories in the{' '}
-          <Link href="/users/categoriesManagement">
-            <a>categories management</a>
-          </Link>{' '}
-          section.
-        </p>
+        <div css={mainStyle}>
+          <h1>First add a category to check you budget</h1>
+          <p>
+            You can add your first categories in the{' '}
+            <Link href="/users/categoriesManagement">
+              <a>categories management</a>
+            </Link>{' '}
+            section.
+          </p>
+        </div>
       </Layout>
     );
   }

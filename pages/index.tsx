@@ -66,7 +66,7 @@ type Props =
     }
   | { error: string };
 
-const breakPointsWidth = [480, 800];
+const breakPointsWidth = [480, 800, 725];
 const mediaQueryWidth = breakPointsWidth.map(
   (bp) => `@media (max-width: ${bp}px)`,
 );
@@ -85,8 +85,12 @@ const mainStyle = css`
   margin: 2vh auto;
   text-align: left;
   max-width: 800px;
-  height: 90vh;
+  height: 80vh;
   box-shadow: 0 0 8px #cccccc;
+  ${mediaQueryHeight[0]} {
+    height: 95vh;
+  }
+
   h1 {
     /* font-size: 26px; */
     text-align: left;
@@ -94,6 +98,9 @@ const mainStyle = css`
     /* margin: 15px 0 5px 20px; */
     ${mediaQueryHeight[0]} {
       padding: 2vh 0 1vh 20px;
+    }
+    ${mediaQueryWidth[0]} {
+      padding: 0vh 0 1vh 20px;
     }
   }
   p {
@@ -116,10 +123,6 @@ const welcomeHeaderStyle = css`
   margin: 40px 0;
 `;
 
-const imageStyle = css`
-  margin: 20px auto;
-`;
-
 const imageStyleAfterSignUp = css`
   margin: 30px auto;
 `;
@@ -127,14 +130,15 @@ const imageStyleAfterSignUp = css`
 const signUpLink = css`
   background: #01aca3;
   margin: 20px auto;
-  height: 30px;
-  width: 250px;
-  border-radius: 10px;
+  height: 25px;
+  width: 200px;
+  border-radius: 5px;
+  text-align: center;
 
   a {
     color: white;
-    font-size: 18px;
-    line-height: 25px;
+    font-size: 16px;
+    line-height: 21px;
     transition: color 0.3s ease-in 0s;
   }
 
@@ -144,10 +148,14 @@ const signUpLink = css`
 `;
 
 const lowerPartStyle = css`
-  margin: 5px 0;
+  margin: 5vh 0;
+  ${mediaQueryHeight[0]} {
+    margin: 5px 0;
+  }
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 2vw;
 `;
 
 const chartDoughnutProgressStyle = css`
@@ -157,10 +165,37 @@ const chartDoughnutProgressStyle = css`
   position: relative;
   /* bottom: 60px; */
 `;
+
+const percentageStyle = css`
+  position: absolute;
+  margin: auto;
+  z-index: 2;
+  top: 90px;
+  left: 70px;
+  height: 40px;
+  font-size: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const progressTextStyle = css`
+  position: relative;
+  /* right: 20px; */
+  left: 60px;
+  /* bottom: 10px; */
+  /* padding-top: 10px; */
+  font-size: 16px;
+  /* color: #26325b; */
+  span {
+    font-size: 14px;
+  }
+`;
+
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
-  width: 230px;
-  height: 215px;
+  width: 220px;
+  height: 245px;
 `;
 
 const categoriesStyle = css`
@@ -188,10 +223,9 @@ const linksStyle = css`
   background: #01aca3;
   width: 220px;
   height: 120px;
-  /* margin: auto; */
   text-align: left;
   border-radius: 8px;
-  /* margin-bottom: 80px; */
+  margin-top: 30px;
   padding: 10px;
 `;
 
@@ -255,28 +289,6 @@ const chartsHeaderStyle = css`
   margin: 10px 0;
 `;
 
-const percentageStyle = css`
-  position: absolute;
-  margin: auto;
-  z-index: 2;
-  top: 90px;
-  left: 70px;
-  height: 40px;
-  font-size: 21px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const progressTextStyle = css`
-  padding-top: 10px;
-  font-size: 16px;
-  /* color: #26325b; */
-  span {
-    font-size: 14px;
-  }
-`;
-
 const lineChartSwitchStyle = css`
   display: flex;
   justify-content: center;
@@ -293,6 +305,64 @@ const doughnutSwitchStyle = css`
   }
 `;
 
+const imageStyle = css`
+  margin: 20px auto;
+`;
+
+const imageFlexStyle = css`
+  position: relative;
+  height: 350px;
+  top: 80px;
+
+  ${mediaQueryWidth[2]} {
+    top: 0px;
+  }
+`;
+
+const textLoggedOutStyle = css`
+  margin: 20px;
+`;
+
+const textPartLoggedOutStyle = css`
+  max-width: 400px;
+  height: 350px;
+`;
+
+const mainLoggedOutStyle = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 10px;
+  color: #26325b;
+  margin: 10vh auto 0 auto;
+  padding: 10px 0px 40px 15px;
+  text-align: left;
+  max-width: 800px;
+
+  box-shadow: 0 0 8px #cccccc;
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 #cccccc;
+    border-radius: 0;
+    min-height: 85vh;
+  }
+  ${mediaQueryWidth[2]} {
+    padding: 0px;
+  }
+
+  h1 {
+    /* font-size: 26px; */
+    text-align: left;
+    padding: 3vh 0 2vh 20px;
+    /* margin: 15px 0 5px 20px; */
+    ${mediaQueryWidth[0]} {
+      padding: 0vh 0 1vh 20px;
+    }
+  }
+`;
+
+const firstLinks = css``;
+
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
   const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
@@ -305,25 +375,29 @@ export default function Home(props: Props) {
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
         </Head>
-        <div css={mainStyle}>
-          <h1 css={welcomeHeaderStyle}>
-            Welcome to Draku, your simple money management solution.
-          </h1>
-          <Image
-            src="/draku_logo.png"
-            width="295px"
-            height="200px"
-            css={imageStyle}
-          />
-          <p>
-            Draku makes managing personal finances as easy as sleeping! With
-            Draku you can easily record your financial transactions, set budgets
-            and review your monthly and yearly spendings.
-          </p>
-          <div css={signUpLink}>
-            <Link href="/signup">
-              <a>Sign up here to start saving</a>
-            </Link>
+        <div css={mainLoggedOutStyle}>
+          <div css={textPartLoggedOutStyle}>
+            <h1 css={welcomeHeaderStyle}>
+              Welcome to Draku, your simple money management solution.
+            </h1>
+            <div css={textLoggedOutStyle}>
+              Draku makes managing personal finances as easy as sleeping! With
+              Draku you can easily record your financial transactions, set
+              budgets and review your monthly and yearly spendings.
+            </div>
+            <div css={signUpLink}>
+              <Link href="/signup">
+                <a>Sign up here to start saving</a>
+              </Link>
+            </div>
+          </div>
+          <div css={imageFlexStyle}>
+            <Image
+              src="/draku_logo.png"
+              width="310px"
+              height="208px"
+              css={imageStyle}
+            />
           </div>
         </div>
       </Layout>
@@ -338,32 +412,36 @@ export default function Home(props: Props) {
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
         </Head>
-        <div css={mainStyle}>
-          <h1 css={welcomeHeaderStyle}>
-            Welcome to Draku, {props.user.username}!
-          </h1>
-          <p>
-            {' '}
-            To start budgeting, start by creating your first expense categories
-            here:
-          </p>
-          <div css={signUpLink}>
-            <Link href="/users/categoriesManagement">
-              <a>Manage your catagories</a>
-            </Link>
+        <div css={mainLoggedOutStyle}>
+          <div css={textPartLoggedOutStyle}>
+            <h1 css={welcomeHeaderStyle}>
+              Welcome to Draku, {props.user.username}!
+            </h1>
+            <p>
+              {' '}
+              To start budgeting, start by creating your first expense
+              categories here:
+            </p>
+            <div css={signUpLink}>
+              <Link href="/users/categoriesManagement">
+                <a>Manage your catagories</a>
+              </Link>
+            </div>
+            <p> Then you can add your expenses here:</p>
+            <div css={signUpLink}>
+              <Link href="/users/expenses">
+                <a>Manage your expenses</a>
+              </Link>
+            </div>
           </div>
-          <p> Then you can add your expenses here:</p>
-          <div css={signUpLink}>
-            <Link href="/users/expenses">
-              <a>Manage your expenses</a>
-            </Link>
+          <div css={imageFlexStyle}>
+            <Image
+              src="/draku_logo.png"
+              width="295px"
+              height="200px"
+              css={imageStyleAfterSignUp}
+            />
           </div>
-          <Image
-            src="/draku_logo.png"
-            width="295px"
-            height="200px"
-            css={imageStyleAfterSignUp}
-          />
         </div>
       </Layout>
     );

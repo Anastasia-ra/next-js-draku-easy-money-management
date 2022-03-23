@@ -59,13 +59,33 @@ type UpdateErrors = { message: string; categoryId: number }[];
 
 type Categories = Category[];
 
+const breakPointsWidth = [480, 800];
+const mediaQueryWidth = breakPointsWidth.map(
+  (bp) => `@media (max-width: ${bp}px)`,
+);
+
+const breakPointsHeight = [900];
+const mediaQueryHeight = breakPointsHeight.map(
+  (bp) => `@media (max-height: ${bp}px)`,
+);
+
 const mainStyle = css`
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #cccccc;
   color: #26325b;
+  max-width: 480px;
+  padding-bottom: 10px;
+  margin: 2vh auto;
   h1 {
     font-size: 26px;
-    text-align: center;
-    /* margin: 20px auto;
-    width: */
+    text-align: left;
+    padding: 15px 0 0px 35px;
+  }
+  ${mediaQueryWidth[1]} {
+    box-shadow: 0 0 0 #cccccc;
+    border-radius: 0;
+    min-height: 85vh;
   }
 `;
 
@@ -74,7 +94,7 @@ const formStyle = css`
   color: white;
   width: 280px;
   height: 90px;
-  margin: 10px auto;
+  margin: 10px auto 20px auto;
   padding: 10px 15px;
   border-radius: 15px;
   text-align: center;
@@ -88,7 +108,7 @@ const formStyle = css`
   input {
     margin: 10px 10px 0 10px;
     width: 100px;
-    border-radius: 8px;
+    border-radius: 5px;
     border-style: none;
   }
 `;
@@ -234,7 +254,7 @@ const changeFormStyle = css`
   input {
     margin: 5px 5px 0 5px;
     width: 80px;
-    border-radius: 8px;
+    border-radius: 5px;
     border-style: none;
   }
 `;
@@ -328,54 +348,56 @@ export default function CategoriesManagement(props: Props) {
           <title>Categories</title>
           <meta name="description" content="Your categories " />
         </Head>
-        <h1>Add your first category</h1>
-        <div css={formStyle}>
-          <form
-            onSubmit={async (event) => {
-              event.preventDefault();
-              await addCategory(props.user.id, newCategory, monthlyBudget);
-            }}
-          >
-            <div css={formBlocksStyle}>
-              <div css={categoryBlockStyle}>
-                <label>
-                  Category name
-                  <br />
-                  <input
-                    disabled={maxCategory}
-                    value={newCategory}
-                    onChange={(event) =>
-                      setNewCategory(event.currentTarget.value)
-                    }
-                  />
-                </label>
+        <div css={mainStyle}>
+          <h1>Add your first category</h1>
+          <div css={formStyle}>
+            <form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                await addCategory(props.user.id, newCategory, monthlyBudget);
+              }}
+            >
+              <div css={formBlocksStyle}>
+                <div css={categoryBlockStyle}>
+                  <label>
+                    Category name
+                    <br />
+                    <input
+                      disabled={maxCategory}
+                      value={newCategory}
+                      onChange={(event) =>
+                        setNewCategory(event.currentTarget.value)
+                      }
+                    />
+                  </label>
+                </div>
+                <div css={budgetBlockStyle}>
+                  <label>
+                    Monthly budget
+                    <br />
+                    <input
+                      disabled={maxCategory}
+                      type="number"
+                      value={monthlyBudget}
+                      onChange={(event) =>
+                        setMonthlyBudget(event.currentTarget.value)
+                      }
+                    />
+                  </label>
+                </div>
               </div>
-              <div css={budgetBlockStyle}>
-                <label>
-                  Monthly budget
-                  <br />
-                  <input
-                    disabled={maxCategory}
-                    type="number"
-                    value={monthlyBudget}
-                    onChange={(event) =>
-                      setMonthlyBudget(event.currentTarget.value)
-                    }
-                  />
-                </label>
+              <div css={errorsStyle}>
+                {errors.map((error) => {
+                  return (
+                    <div key={`error-${error.message}`}>{error.message}</div>
+                  );
+                })}
               </div>
-            </div>
-            <div css={errorsStyle}>
-              {errors.map((error) => {
-                return (
-                  <div key={`error-${error.message}`}>{error.message}</div>
-                );
-              })}
-            </div>
-            <button css={addButtonStyle} disabled={maxCategory}>
-              Add a new category
-            </button>
-          </form>
+              <button css={addButtonStyle} disabled={maxCategory}>
+                Add a new category
+              </button>
+            </form>
+          </div>
         </div>
       </Layout>
     );
