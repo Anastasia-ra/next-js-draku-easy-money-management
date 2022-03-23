@@ -96,7 +96,7 @@ export function getDoughnutCategoriesData(
         },
       },
       legend: {
-        position: 'right' as 'right',
+        position: 'bottom' as 'bottom',
         // align: 'start' as 'start',
         display: true,
         // maxHeight: 20,
