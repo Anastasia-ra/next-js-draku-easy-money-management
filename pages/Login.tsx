@@ -32,7 +32,7 @@ const loginStyle = css`
   height: 350px;
   margin: auto;
   padding: 10px 15px;
-  border-radius: 15%;
+  border-radius: 10px;
   text-align: center;
   /* h1 {
     text-align: center;

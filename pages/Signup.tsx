@@ -32,7 +32,7 @@ const signUpStyle = css`
   height: 400px;
   margin: auto;
   padding: 10px 15px;
-  border-radius: 15%;
+  border-radius: 10px;
   text-align: center;
   font-size: 18px;
   /* h1 {
