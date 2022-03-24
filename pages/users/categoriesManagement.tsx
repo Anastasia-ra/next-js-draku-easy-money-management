@@ -79,6 +79,11 @@ const mainStyle = css`
     border-radius: 0;
     min-height: 85vh;
   }
+  p {
+    font-size: 18px;
+    text-align: left;
+    margin: 5px 0 3vh 35px;
+  }
 `;
 
 const formStyle = css`
@@ -477,6 +482,10 @@ export default function CategoriesManagement(props: Props) {
       </Head>
       <div css={mainStyle}>
         <h1>Manage your categories</h1>
+        <p>
+          You can set up to 10 different categories. <br /> Only categories
+          without expenses can be deleted.{' '}
+        </p>
 
         <div css={chartDoughnutCategoriesStyle}>
           <Doughnut
