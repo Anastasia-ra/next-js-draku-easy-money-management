@@ -128,9 +128,9 @@ export default function CategoriesManagement(props: Props) {
     props.expensesCurrentMonth,
   ).progress;
 
-  let bgColorTotal = '#07b335';
+  let bgColorTotal = '#01aca3';
   if (0.7 < totalBudgetProgress && totalBudgetProgress < 0.9) {
-    bgColorTotal = '#eb8305';
+    bgColorTotal = '#f4ac40';
   }
   if (totalBudgetProgress >= 0.9) {
     bgColorTotal = '#a81b0c';
@@ -181,9 +181,9 @@ export default function CategoriesManagement(props: Props) {
               ).progress * 100,
             );
 
-            let bgColor = '#07b335';
+            let bgColor = '#01aca3';
             if (70 < budgetProgress && budgetProgress < 90) {
-              bgColor = '#eb8305';
+              bgColor = '#f4ac40';
             }
             if (budgetProgress >= 90) {
               bgColor = '#a81b0c';
