@@ -8,8 +8,9 @@ import { getCategoriesList } from '../../graph-functions/fetchApi';
 import {
   getUserByValidSessionToken,
   Category,
-  // Expense,
+  Expense,
   getAllCategoriesbyUserId,
+  getExpensesPerCategory,
   // getExpensesByMonthByUser,
 } from '../../util/database';
 import {
@@ -50,6 +51,7 @@ type Props = {
   user: { id: number; username: string };
   // expensesCurrentMonth: Expense[];
   categories: Category[];
+  categoriesWithExpenses: number[];
 };
 
 type Errors = { message: string }[];
@@ -305,30 +307,14 @@ export default function CategoriesManagement(props: Props) {
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
   const [categories, setCategories] = useState<Categories>(props.categories);
-  const [maxCategory, setMaxCategory] = useState(false);
+  const [maxCategory, setMaxCategory] = useState(props.categories.length > 9);
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
-    [],
+    props.categoriesWithExpenses,
   );
   const [updateCategoryName, setUpdateCategoryName] = useState('');
   const [updateCategoryBudget, setUpdateCategoryBudget] = useState('');
   const [editIsClicked, setEditIsClicked] = useState(0);
   const [updateErrors, setUpdateErrors] = useState<UpdateErrors>([]);
-
-  // // Display all categories on first render or when userId changes
-  // useEffect(() => {
-  //   const fetchCategories = async () => await getAllCategories(props.user.id);
-  //   fetchCategories().catch(console.error);
-  // }, [props.user.id]);
-
-  useEffect(() => {
-    setMaxCategory(categories.length > 9);
-  }, [categories.length]);
-
-  useEffect(() => {
-    const fetchCategoriesWithExpense = async () =>
-      await getCategoriesWithExpensesList();
-    fetchCategoriesWithExpense().catch(console.error);
-  }, []);
 
   async function getAllCategories(userId: number) {
     const categoriesListResponseBody = await getCategoriesList(userId);
@@ -486,15 +472,6 @@ export default function CategoriesManagement(props: Props) {
     await getAllCategories(userId);
   }
 
-  async function getCategoriesWithExpensesList() {
-    const response = await fetch(`/api/categories/checkAllCategories`);
-    const data = await response.json();
-    const categoryList = data.expensesPerCategories.map(
-      (expense: { categoryId: number }) => expense.categoryId,
-    );
-    setCategoriesWithExpense(categoryList);
-  }
-
   async function updateCategoryNameBudget(
     categoryId: number,
     categoryName: string,
@@ -547,7 +524,9 @@ export default function CategoriesManagement(props: Props) {
         </div>
         <div css={categoriesListStyle}>
           {categories.map((category, index) => {
-            const hasExpense = categoriesWithExpense.includes(category.id);
+            const hasExpense = props.categoriesWithExpenses.includes(
+              category.id,
+            );
             return (
               <div css={singleCategoryStyle} key={`category-${category.name}`}>
                 <div css={singleLineStyle}>
@@ -561,14 +540,9 @@ export default function CategoriesManagement(props: Props) {
                     css={deleteButtonStyle}
                     disabled={hasExpense}
                     onClick={async () => {
-                      const categoryWithExpense =
-                        await checkIfExpenseInCategory(category.id);
-                      await getCategoriesWithExpensesList();
-                      if (!categoryWithExpense) {
-                        await deleteCategory(category.id, props.user.id);
-                        setMaxCategory(false);
-                        return;
-                      }
+                      await deleteCategory(category.id, props.user.id);
+                      setMaxCategory(false);
+                      return;
                     }}
                   >
                     <Image
@@ -739,6 +713,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const sortedCategories = categories.sort(
     (a: Category, b: Category) => a.id - b.id,
   );
+
+  const expensesWithDistinctCategories = await getExpensesPerCategory();
+
+  const categoriesWithExpenses = expensesWithDistinctCategories.map(
+    (expense: { categoryId: number }) => expense.categoryId,
+  );
+
+  console.log('categoryList', categoriesWithExpenses);
   // const currentMonth = new Intl.DateTimeFormat('en-US', {
   //   month: 'numeric',
   // }).format(new Date());
@@ -764,6 +746,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       user: user,
       categories: sortedCategories,
+      categoriesWithExpenses: categoriesWithExpenses,
       // expensesCurrentMonth: expensesCurrentMonthDateToString,
     },
   };
