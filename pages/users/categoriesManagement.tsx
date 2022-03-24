@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
@@ -50,7 +49,7 @@ type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
   // expensesCurrentMonth: Expense[];
-  // categories: Category[];
+  categories: Category[];
 };
 
 type Errors = { message: string }[];
@@ -305,7 +304,7 @@ export default function CategoriesManagement(props: Props) {
   const [newCategory, setNewCategory] = useState('');
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
-  const [categories, setCategories] = useState<Categories>([]);
+  const [categories, setCategories] = useState<Categories>(props.categories);
   const [maxCategory, setMaxCategory] = useState(false);
   const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
     [],
@@ -315,11 +314,11 @@ export default function CategoriesManagement(props: Props) {
   const [editIsClicked, setEditIsClicked] = useState(0);
   const [updateErrors, setUpdateErrors] = useState<UpdateErrors>([]);
 
-  // Display all categories on first render or when userId changes
-  useEffect(() => {
-    const fetchCategories = async () => await getAllCategories(props.user.id);
-    fetchCategories().catch(console.error);
-  }, [props.user.id]);
+  // // Display all categories on first render or when userId changes
+  // useEffect(() => {
+  //   const fetchCategories = async () => await getAllCategories(props.user.id);
+  //   fetchCategories().catch(console.error);
+  // }, [props.user.id]);
 
   useEffect(() => {
     setMaxCategory(categories.length > 9);
@@ -737,7 +736,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const categories = await getAllCategoriesbyUserId(user.id);
-
+  const sortedCategories = categories.sort(
+    (a: Category, b: Category) => a.id - b.id,
+  );
   // const currentMonth = new Intl.DateTimeFormat('en-US', {
   //   month: 'numeric',
   // }).format(new Date());
@@ -762,7 +763,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       user: user,
-      categories: categories,
+      categories: sortedCategories,
       // expensesCurrentMonth: expensesCurrentMonthDateToString,
     },
   };
