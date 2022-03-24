@@ -317,6 +317,7 @@ export default function Expenses(props: Props) {
     'error' in props ? [] : props.expenses,
   );
   const [deleteName, setDeleteName] = useState('');
+  const [deleteCategoryId, setDeleteCategoryId] = useState('');
   const [deleteDate, setDeleteDate] = useState('');
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
   const [exchangeRate, setExchangeRate] = useState('1');
@@ -439,37 +440,60 @@ export default function Expenses(props: Props) {
     }
   }
 
-  // Search through expenses
+  function findExpense(
+    expenseName: string,
+    expenseDate: string,
+    categoryId: number,
+  ) {
+    let filteredArray;
 
-  function findExpense(expenseName: string, expenseDate: string) {
     if (!('error' in props)) {
-      if (expenseName !== '' && expenseDate === '') {
-        const filteredArray = expenses.filter((expense) =>
-          expense.name.toLowerCase().includes(expenseName.toLowerCase()),
-        );
-        setFilteredExpenses(filteredArray);
-        return filteredArray;
-      } else if (expenseName === '' && expenseDate !== '') {
-        const filteredArray = expenses.filter((expense) =>
+      if (expenseDate !== '') {
+        filteredArray = expenses.filter((expense) =>
           expense.date.split('T')[0].split('-').join('-').includes(expenseDate),
         );
+
+        if (expenseName !== '') {
+          filteredArray = filteredArray.filter((expense) =>
+            expense.name.toLowerCase().includes(expenseName.toLowerCase()),
+          );
+
+          if (categoryId) {
+            filteredArray = filteredArray.filter(
+              (expense) => expense.categoryId === categoryId,
+            );
+            setFilteredExpenses(filteredArray);
+            return filteredArray;
+          }
+          setFilteredExpenses(filteredArray);
+          return filteredArray;
+        }
         setFilteredExpenses(filteredArray);
         return filteredArray;
-      } else if (expenseName === '' && expenseDate === '') {
-        setFilteredExpenses([]);
-        return [];
-      }
-      const filteredArray = expenses.filter((expense) => {
-        return (
-          expense.name.toLowerCase().includes(expenseName.toLowerCase()) &&
-          expense.date.split('T')[0].split('-').join('-').includes(expenseDate)
+      } else if (expenseName !== '') {
+        filteredArray = expenses.filter((expense) =>
+          expense.name.toLowerCase().includes(expenseName.toLowerCase()),
         );
-      });
-      setFilteredExpenses(filteredArray);
-      return filteredArray;
+
+        if (categoryId) {
+          filteredArray = filteredArray.filter(
+            (expense) => expense.categoryId === categoryId,
+          );
+          setFilteredExpenses(filteredArray);
+          return filteredArray;
+        }
+        setFilteredExpenses(filteredArray);
+        return filteredArray;
+      }
+      if (categoryId) {
+        filteredArray = expenses.filter(
+          (expense) => expense.categoryId === categoryId,
+        );
+        setFilteredExpenses(filteredArray);
+        return filteredArray;
+      }
     }
   }
-
   async function deleteExpense(expenseId: number) {
     const deleteResponse = await fetch(`/api/expenses/deleteExpense`, {
       method: 'POST',
@@ -708,15 +732,20 @@ export default function Expenses(props: Props) {
                   <form
                     onSubmit={(event) => {
                       event.preventDefault();
-                      if (!deleteName && !deleteDate) {
+                      if (!deleteName && !deleteDate && !deleteCategoryId) {
                         setDeleteError(true);
                         return;
                       }
                       setDeleteError(false);
-                      const filteredArray = findExpense(deleteName, deleteDate);
+                      const filteredArray = findExpense(
+                        deleteName,
+                        deleteDate,
+                        Number(deleteCategoryId),
+                      );
                       console.log(filteredArray);
                       setDeleteName('');
                       setDeleteDate('');
+                      setDeleteCategoryId('');
                       setDisplayList(true);
                     }}
                   >
@@ -730,6 +759,28 @@ export default function Expenses(props: Props) {
                           setDeleteName(event.currentTarget.value)
                         }
                       />
+                    </label>
+                    <br />
+                    <label>
+                      Category
+                      <br />
+                      <select
+                        css={categoryInputStyle}
+                        value={deleteCategoryId}
+                        onChange={(event) => {
+                          setDeleteCategoryId(event.currentTarget.value);
+                        }}
+                      >
+                        <option value="">Choose a category</option>
+
+                        {props.categories.map((category) => {
+                          return (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </label>
                     <br />
                     <label>
