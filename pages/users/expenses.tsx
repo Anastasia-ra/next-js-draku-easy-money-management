@@ -313,7 +313,9 @@ export default function Expenses(props: Props) {
   const [inputName, setInputName] = useState('');
   const [inputCategoryId, setInputCategoryId] = useState('');
   const [errors, setErrors] = useState<Errors>([]);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>(
+    'error' in props ? [] : props.expenses,
+  );
   const [deleteName, setDeleteName] = useState('');
   const [deleteDate, setDeleteDate] = useState('');
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
@@ -323,12 +325,12 @@ export default function Expenses(props: Props) {
   const [deleteError, setDeleteError] = useState(false);
 
   // Display all expenses on first render or when userId changes
-  useEffect(() => {
-    if (!('error' in props)) {
-      const fetchExpenses = async () => await getAllExpenses(props.user.id);
-      fetchExpenses().catch(console.error);
-    }
-  }, [props]);
+  // useEffect(() => {
+  //   if (!('error' in props)) {
+  //     const fetchExpenses = async () => await getAllExpenses(props.user.id);
+  //     fetchExpenses().catch(console.error);
+  //   }
+  // }, [props]);
 
   // Get current exchange rates
 
@@ -767,7 +769,7 @@ export default function Expenses(props: Props) {
                 {expenses.length === 0 && <div>No expenses yet</div>}
                 <div css={latestExpensesListStyle}>
                   {expenses.reverse().map((expense, index) => {
-                    if (index < 5) {
+                    if (index < 15) {
                       return (
                         <div
                           css={singleExpenseStyle}
@@ -814,17 +816,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const categories = await getAllCategoriesbyUserId(user.id);
 
   const expenses = await getAllExpensesByUserId(user.id);
-  // console.log('expenses', expenses, typeof expenses[1].date);
-  // const expensesDateToString = expenses.map((expense) => {
-  //   expense.date = expense.date.toISOString();
-  //   // expense.date = new Date(expense.date);
-  //   return expense;
-  // });
 
   // To avoid issue with serializing object
   const expensesDateToString = JSON.parse(JSON.stringify(expenses));
-
-  // console.log('expensesDateToString', expensesDateToString);
 
   const expensesSortedByDate = expensesDateToString.sort(
     (a: Expense, b: Expense) => {
@@ -837,7 +831,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       user: user,
       categories: categories,
       expenses: expensesSortedByDate,
-      // expenses: expenses,
     },
   };
 }
