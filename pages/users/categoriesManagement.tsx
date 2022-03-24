@@ -2,19 +2,16 @@ import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Layout from '../../components/Layout';
 import { getCategoriesList } from '../../graph-functions/fetchApi';
 import {
   getUserByValidSessionToken,
   Category,
-  Expense,
   getAllCategoriesbyUserId,
   getExpensesPerCategory,
-  // getExpensesByMonthByUser,
 } from '../../util/database';
 import {
-  // getDoughnutCategoriesData,
   colors,
   getDoughnutCategoriesBudgetData,
 } from '../../graph-functions/charts';
@@ -49,7 +46,6 @@ ChartJS.register(
 type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
-  // expensesCurrentMonth: Expense[];
   categories: Category[];
   categoriesWithExpenses: number[];
 };
@@ -63,11 +59,6 @@ type Categories = Category[];
 const breakPointsWidth = [480, 800];
 const mediaQueryWidth = breakPointsWidth.map(
   (bp) => `@media (max-width: ${bp}px)`,
-);
-
-const breakPointsHeight = [900];
-const mediaQueryHeight = breakPointsHeight.map(
-  (bp) => `@media (max-height: ${bp}px)`,
 );
 
 const mainStyle = css`
@@ -308,9 +299,6 @@ export default function CategoriesManagement(props: Props) {
   const [errors, setErrors] = useState<Errors>([]);
   const [categories, setCategories] = useState<Categories>(props.categories);
   const [maxCategory, setMaxCategory] = useState(props.categories.length > 9);
-  const [categoriesWithExpense, setCategoriesWithExpense] = useState<number[]>(
-    props.categoriesWithExpenses,
-  );
   const [updateCategoryName, setUpdateCategoryName] = useState('');
   const [updateCategoryBudget, setUpdateCategoryBudget] = useState('');
   const [editIsClicked, setEditIsClicked] = useState(0);
@@ -425,30 +413,6 @@ export default function CategoriesManagement(props: Props) {
     setMonthlyBudget('');
   }
 
-  async function checkIfExpenseInCategory(categoryId: Number) {
-    const categoryResponse = await fetch(`/api/categories/checkCategory`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        category: {
-          categoryId: categoryId,
-        },
-      }),
-    });
-
-    const categoryResponseBody = await categoryResponse.json();
-    if ('errors' in categoryResponseBody) {
-      setErrors(categoryResponseBody.errors);
-      return;
-    }
-
-    setErrors([]);
-    console.log('categoryResponseBody.category', categoryResponseBody.category);
-    return categoryResponseBody.category;
-  }
-
   async function deleteCategory(categoryId: number, userId: number) {
     const deleteResponse = await fetch(`/api/categories/deleteCategory`, {
       method: 'POST',
@@ -516,8 +480,6 @@ export default function CategoriesManagement(props: Props) {
 
         <div css={chartDoughnutCategoriesStyle}>
           <Doughnut
-            // width="150"
-            // height="150"
             data={getDoughnutCategoriesBudgetData(categories).data}
             options={getDoughnutCategoriesBudgetData(categories).options}
           />
@@ -546,7 +508,6 @@ export default function CategoriesManagement(props: Props) {
                     }}
                   >
                     <Image
-                      // css={deleteImageStyle}
                       src="/delete.png"
                       width="20px"
                       height="20px"
@@ -721,33 +682,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
 
   console.log('categoryList', categoriesWithExpenses);
-  // const currentMonth = new Intl.DateTimeFormat('en-US', {
-  //   month: 'numeric',
-  // }).format(new Date());
-
-  // const currentYear = new Intl.DateTimeFormat('en-US', {
-  //   year: 'numeric',
-  // }).format(new Date());
-
-  // const expensesCurrentMonth = await getExpensesByMonthByUser(
-  //   Number(currentMonth),
-  //   Number(currentYear),
-  //   user.id,
-  // );
-
-  // const expensesCurrentMonthDateToString = expensesCurrentMonth.map(
-  //   (expense) => {
-  //     expense.date = expense.date.toISOString();
-  //     return expense;
-  //   },
-  // );
 
   return {
     props: {
       user: user,
       categories: sortedCategories,
       categoriesWithExpenses: categoriesWithExpenses,
-      // expensesCurrentMonth: expensesCurrentMonthDateToString,
     },
   };
 }
