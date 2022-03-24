@@ -10,8 +10,6 @@ export default async function categoriesHandler(
   if (request.method === 'GET') {
     const expensesPerCategories = await getExpensesPerCategory();
 
-    console.log('expensesPerCategories', expensesPerCategories);
-
     response.status(201).json({
       expensesPerCategories: expensesPerCategories,
     });
