@@ -33,11 +33,6 @@ const mediaQueryWidth = breakPointsWidth.map(
   (bp) => `@media (max-width: ${bp}px)`,
 );
 
-const breakPointsHeight = [900];
-const mediaQueryHeight = breakPointsHeight.map(
-  (bp) => `@media (max-height: ${bp}px)`,
-);
-
 const mainStyle = css`
   background: #ffffff;
   border-radius: 10px;
@@ -65,8 +60,6 @@ const progressDivStyle = css`
 
 const progressBarStyle = css`
   margin: 5px 0;
-  /* width: 280px;
-  margin: auto; */
 `;
 
 const totalProgressDivStyle = css`
@@ -105,14 +98,6 @@ const totalInfosStyle = css`
 `;
 
 export default function CategoriesManagement(props: Props) {
-  // const currentMonth = new Intl.DateTimeFormat('en-US', {
-  //   month: 'numeric',
-  // }).format(new Date());
-
-  // const currentYear = new Intl.DateTimeFormat('en-US', {
-  //   year: 'numeric',
-  // }).format(new Date());
-
   if ('error' in props) {
     return <div>Please log-in first</div>;
   }
@@ -121,8 +106,8 @@ export default function CategoriesManagement(props: Props) {
     return (
       <Layout userObject={props.userObject}>
         <Head>
-          <title>Your budgets</title>
-          <meta name="description" content="Your budgets " />
+          <title>Your budget</title>
+          <meta name="description" content="Your budget " />
         </Head>
         <div css={mainStyle}>
           <h1>First add a category to check you budget</h1>
@@ -154,11 +139,11 @@ export default function CategoriesManagement(props: Props) {
   return (
     <Layout userObject={props.userObject}>
       <Head>
-        <title>Your budgets</title>
+        <title>Your budget</title>
         <meta name="description" content="budget" />
       </Head>
       <div css={mainStyle}>
-        <h1>Manage your budget</h1>
+        <h1>Check your budget</h1>
         <div>
           <div css={totalProgressDivStyle}>
             <div css={totalFlexStyle}>
