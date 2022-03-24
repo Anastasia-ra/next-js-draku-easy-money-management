@@ -561,6 +561,7 @@ export default function CategoriesManagement(props: Props) {
                       <label>
                         New name
                         <input
+                          maxLength={15}
                           css={newNameInputStyle}
                           value={updateCategoryName}
                           onChange={(event) =>
@@ -617,6 +618,7 @@ export default function CategoriesManagement(props: Props) {
                   Category name
                   <br />
                   <input
+                    maxLength={15}
                     disabled={maxCategory}
                     value={newCategory}
                     onChange={(event) =>

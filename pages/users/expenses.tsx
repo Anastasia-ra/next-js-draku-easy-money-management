@@ -324,16 +324,6 @@ export default function Expenses(props: Props) {
   const [displayList, setDisplayList] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
 
-  // Display all expenses on first render or when userId changes
-  // useEffect(() => {
-  //   if (!('error' in props)) {
-  //     const fetchExpenses = async () => await getAllExpenses(props.user.id);
-  //     fetchExpenses().catch(console.error);
-  //   }
-  // }, [props]);
-
-  // Get current exchange rates
-
   useEffect(() => {
     const fetchExchangeRates = async () => await getExchangeRates();
     fetchExchangeRates().catch(console.error);
@@ -616,6 +606,7 @@ export default function Expenses(props: Props) {
                   Name
                   <br />
                   <input
+                    maxLength={30}
                     css={nameInputStyle}
                     value={inputName}
                     onChange={(event) =>
@@ -733,6 +724,7 @@ export default function Expenses(props: Props) {
                       Name
                       <br />
                       <input
+                        maxLength={30}
                         value={deleteName}
                         onChange={(event) =>
                           setDeleteName(event.currentTarget.value)
@@ -826,11 +818,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   );
 
+  console.log('expensesSortedByDate', expensesSortedByDate);
+
   return {
     props: {
       user: user,
       categories: categories,
-      expenses: expensesSortedByDate,
+      expenses: expensesSortedByDate.reverse(),
     },
   };
 }

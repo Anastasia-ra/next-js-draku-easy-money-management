@@ -118,6 +118,7 @@ export default function Signup(props: Props) {
               Email
               <br />
               <input
+                maxLength={50}
                 type="Email"
                 value={email}
                 onChange={(event) => setEmail(event.currentTarget.value)}
@@ -128,6 +129,7 @@ export default function Signup(props: Props) {
               Username
               <br />
               <input
+                maxLength={15}
                 value={username}
                 onChange={(event) => setUsername(event.currentTarget.value)}
               />
@@ -137,6 +139,7 @@ export default function Signup(props: Props) {
               Password
               <br />
               <input
+                maxLength={15}
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.currentTarget.value)}

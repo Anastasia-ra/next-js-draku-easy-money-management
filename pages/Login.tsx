@@ -129,6 +129,7 @@ export default function Login(props: Props) {
               <span> Username {'  '} </span>
               <br />
               <input
+                maxLength={15}
                 value={username}
                 onChange={(event) => setUsername(event.currentTarget.value)}
               />
@@ -140,6 +141,7 @@ export default function Login(props: Props) {
               <br />
               <input
                 type="password"
+                maxLength={15}
                 value={password}
                 onChange={(event) => setPassword(event.currentTarget.value)}
               />
