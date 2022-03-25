@@ -198,10 +198,10 @@ const chartDoughnutCategoriesStyle = css`
   height: 245px;
 `;
 
-const categoriesStyle = css`
-  display: inline-flex;
-  flex-direction: column;
-`;
+// const categoriesStyle = css`
+//   display: inline-flex;
+//   flex-direction: column;
+// `;
 
 const chartLineStyle = css`
   position: relative;
@@ -297,13 +297,13 @@ const lineChartSwitchStyle = css`
   }
 `;
 
-const doughnutSwitchStyle = css`
-  display: flex;
-  justify-content: center;
-  span {
-    margin: 0 5px;
-  }
-`;
+// const doughnutSwitchStyle = css`
+//   display: flex;
+//   justify-content: center;
+//   span {
+//     margin: 0 5px;
+//   }
+// `;
 
 const imageStyle = css`
   margin: 20px auto;
@@ -361,11 +361,11 @@ const mainLoggedOutStyle = css`
   }
 `;
 
-const firstLinks = css``;
+// const firstLinks = css``;
 
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
-  const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
+  // const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
   console.log('props', props);
 
   if ('error' in props) {
