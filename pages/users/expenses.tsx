@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
-import { getExpensesList } from '../../graph-functions/fetchApi';
+import { getExpensesList } from '../../graphFunctions/fetchApi';
 import {
   getAllCategoriesbyUserId,
   getUserByValidSessionToken,
@@ -101,10 +101,11 @@ const dateInputStyle = css`
 
 const priceInputStyle = css`
   width: 70px;
-  margin: 5px 10px 5px 0;
+  margin: 5px 10px 2px 0;
 `;
 
 const currencyInputStyle = css`
+  width: 60px;
   margin: 5px 0 5px 10px;
 `;
 

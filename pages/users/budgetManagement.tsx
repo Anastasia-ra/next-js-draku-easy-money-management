@@ -14,7 +14,7 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import {
   getBudgetProgressByCategoryPerMonth,
   getTotalBudgetProgress,
-} from '../../graph-functions/budgetProgress';
+} from '../../graphFunctions/budgetProgress';
 
 type Props =
   | {

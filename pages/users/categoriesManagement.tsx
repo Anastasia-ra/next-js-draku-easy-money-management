@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import Layout from '../../components/Layout';
-import { getCategoriesList } from '../../graph-functions/fetchApi';
+import { getCategoriesList } from '../../graphFunctions/fetchApi';
 import {
   getUserByValidSessionToken,
   Category,
@@ -14,7 +14,7 @@ import {
 import {
   colors,
   getDoughnutCategoriesBudgetData,
-} from '../../graph-functions/charts';
+} from '../../graphFunctions/charts';
 import {
   Chart as ChartJS,
   ArcElement,

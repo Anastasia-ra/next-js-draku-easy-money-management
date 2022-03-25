@@ -32,14 +32,14 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 // import { Context } from 'chartjs-plugin-datalabels';
 // import Options from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
-import { getLastMonths, sumPerMonth } from '../graph-functions/sumPerMonth';
+import { getLastMonths, sumPerMonth } from '../graphFunctions/sumPerMonth';
 import {
   getDoughnutCategoriesData,
   getLineData,
   getLineDataByDay,
   getProgressChartData,
-} from '../graph-functions/charts';
-import { getTotalBudgetProgress } from '../graph-functions/budgetProgress';
+} from '../graphFunctions/charts';
+import { getTotalBudgetProgress } from '../graphFunctions/budgetProgress';
 // import Wallet from '../public/wallet-svgrepo-com.svg';
 
 ChartJS.register(
