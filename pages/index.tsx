@@ -196,6 +196,9 @@ const chartDoughnutCategoriesStyle = css`
   display: inline-block;
   width: 220px;
   height: 245px;
+  ${mediaQueryWidth[0]} {
+    margin: 30px 0 5px 0;
+  }
 `;
 
 // const categoriesStyle = css`
