@@ -4,25 +4,25 @@ import { css, Global } from '@emotion/react';
 // import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState();
+  // const [user, setUser] = useState();
 
-  const refreshUserProfile = useCallback(async () => {
-    const response = await fetch('/api/profile');
-    const data = await response.json();
+  // const refreshUserProfile = useCallback(async () => {
+  //   const response = await fetch('/api/profile');
+  //   const data = await response.json();
 
-    if ('errors' in data) {
-      console.log(data.errors);
-      console.log('user is undefined in app.js');
-      setUser(undefined);
-      return;
-    }
+  //   if ('errors' in data) {
+  //     console.log(data.errors);
+  //     console.log('user is undefined in app.js');
+  //     setUser(undefined);
+  //     return;
+  //   }
 
-    setUser(data.user);
-  }, []);
+  //   setUser(data.user);
+  // }, []);
 
-  useEffect(() => {
-    refreshUserProfile().catch(() => {});
-  }, [refreshUserProfile]);
+  // useEffect(() => {
+  //   refreshUserProfile().catch(() => {});
+  // }, [refreshUserProfile]);
 
   return (
     <>
@@ -51,8 +51,8 @@ function MyApp({ Component, pageProps }) {
       />
       <Component
         {...pageProps}
-        userObject={user}
-        refreshUserProfile={refreshUserProfile}
+        // userObject={user}
+        // refreshUserProfile={refreshUserProfile}
       />
     </>
   );

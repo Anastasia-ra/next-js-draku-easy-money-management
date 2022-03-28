@@ -410,7 +410,7 @@ export default function Home(props: Props) {
 
   if (props.categories.length === 0) {
     return (
-      <Layout userObject={props.userObject}>
+      <Layout>
         <Head>
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
@@ -453,7 +453,7 @@ export default function Home(props: Props) {
   const lastMonthsWithExpenses = sumPerMonth(props.expenses, getLastMonths());
 
   return (
-    <Layout userObject={props.userObject} css={mainStyle}>
+    <Layout css={mainStyle}>
       <Head>
         <title>Draku</title>
         <meta name="description" content="Draku money management" />
