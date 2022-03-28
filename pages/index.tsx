@@ -369,7 +369,7 @@ const mainLoggedOutStyle = css`
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
   // const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
-  console.log('props', props);
+  console.log('props in Home', props);
 
   if ('error' in props) {
     return (
@@ -406,7 +406,7 @@ export default function Home(props: Props) {
       </Layout>
     );
   }
-  console.log('props.userObject', props.userObject);
+  // console.log('props.userObject', props.userObject);
 
   if (props.categories.length === 0) {
     return (
@@ -710,6 +710,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     expensesLastYear.push(monthExpense);
     console.log('expensesLastYear', expensesLastYear);
   }); */
+  console.log(
+    'props in gssp',
+    'user',
+    user,
+    'categories',
+    categories,
+    'expenses',
+    expenses,
+  );
 
   return {
     props: {
