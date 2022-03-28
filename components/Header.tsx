@@ -61,7 +61,7 @@ function Anchor({
   return <a {...restProps}>{children}</a>;
 }
 
-export default function Header(props) {
+export default function Header() {
   // console.log('props.userObject.username in header', props.userObject.username);
   return (
     <header css={mainStyle}>
