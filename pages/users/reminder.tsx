@@ -9,20 +9,21 @@ import {
 import { GetServerSidePropsContext } from 'next';
 
 type Props = {
-  userObject: { username: string };
-  user: { id: number; username: string };
-  categories: Category[];
+  // userObject: { username: string };
+  // user: { id: number; username: string };
+  // categories: Category[];
 };
 
 export default function Reminder(props: Props) {
+  const [userEmail, setUserEmail] = useState('');
   const [reminderName, setReminderName] = useState('');
   const [reminderPrice, setReminderPrice] = useState('');
   const [reminderDay, setReminderDay] = useState('');
   const [reminderCategory, setReminderCategory] = useState('');
 
   return (
-    <Layout userObject={props.userObject}>
-      <Head>
+    <Layout>
+      {/* <Head>
         <title>Reminders</title>
         <meta name="reminder" content="Add reminders" />
       </Head>
@@ -31,6 +32,17 @@ export default function Reminder(props: Props) {
           event.preventDefault();
         }}
       >
+        <label>
+          Email
+          <br />
+          <input
+            value={userEmail}
+            onChange={(event) => {
+              setUserEmail(event.currentTarget.value);
+            }}
+          />
+        </label>
+        <br />
         <label>
           Name
           <br />
@@ -86,8 +98,8 @@ export default function Reminder(props: Props) {
         {/* {errors.map((error) => {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })} */}
-        <button>Add</button>
-      </form>
+      {/* <button>Add</button>
+      </form> */}
     </Layout>
   );
 }
