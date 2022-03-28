@@ -12,8 +12,8 @@ import { RegisterResponseBody } from './api/register';
 type Errors = { message: string }[];
 
 type Props = {
-  refreshUserProfile: () => void;
-  userObject: { username: string };
+  // refreshUserProfile: () => void;
+  // userObject: { username: string };
   csrfToken: string;
 };
 
@@ -71,7 +71,7 @@ export default function Login(props: Props) {
   const router = useRouter();
 
   return (
-    <Layout userObject={props.userObject}>
+    <Layout>
       <Head>
         <title>Login at Draku</title>
         <meta name="description" content="Draku log in" />
@@ -116,11 +116,11 @@ export default function Login(props: Props) {
               // (because this is untrusted user input)
               /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
             ) {
-              props.refreshUserProfile();
+              // 'props.refreshUserProfile();'
               await router.push(returnTo);
               return;
             }
-            props.refreshUserProfile();
+            // props.refreshUserProfile();
             await router.push(`/`);
           }}
         >
