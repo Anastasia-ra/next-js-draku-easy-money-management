@@ -57,7 +57,7 @@ ChartJS.register(
 
 type Props =
   | {
-      userObject: { username: string };
+      // userObject: { username: string };
       user: { id: number; username: string };
       categories: Category[];
       expenses: Expense[];
