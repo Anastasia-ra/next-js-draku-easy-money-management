@@ -848,6 +848,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const sessionToken = context.req.cookies.sessionToken;
   const user = await getUserByValidSessionToken(sessionToken);
 
+  console.log('sessionToken', sessionToken);
+  console.log('user GSSP', user);
+
   if (!user) {
     return {
       redirect: {
