@@ -9,22 +9,22 @@ test('sign up, add a category, delete the category', async () => {
 
   // Signing up on GitHub actions
 
-  await expect(page).toClick('[data-test-id="sign up"]');
-  await page.waitForNavigation();
-  expect(page.url()).toBe(`${baseUrl}/signup`);
-  await expect(page).toFill('[data-test-id="email"]', 'test@test');
-  await expect(page).toFill('[data-test-id="username"]', 'test');
-  await expect(page).toFill('[data-test-id="password"]', 'pwtest');
-  await expect(page).toClick('[data-test-id="signup-button"]');
+  // await expect(page).toClick('[data-test-id="sign up"]');
+  // await page.waitForNavigation();
+  // expect(page.url()).toBe(`${baseUrl}/signup`);
+  // await expect(page).toFill('[data-test-id="email"]', 'test@test');
+  // await expect(page).toFill('[data-test-id="username"]', 'test');
+  // await expect(page).toFill('[data-test-id="password"]', 'pwtest');
+  // await expect(page).toClick('[data-test-id="signup-button"]');
 
   // Login if not on GitHub actions
 
-  // await expect(page).toClick('[data-test-id="log in"]');
-  // await page.waitForNavigation();
-  // expect(page.url()).toBe(`${baseUrl}/login`);
-  // await expect(page).toFill('[data-test-id="username"]', 'test');
-  // await expect(page).toFill('[data-test-id="password"]', 'pwtest');
-  // await expect(page).toClick('[data-test-id="login-button"]');
+  await expect(page).toClick('[data-test-id="log in"]');
+  await page.waitForNavigation();
+  expect(page.url()).toBe(`${baseUrl}/login`);
+  await expect(page).toFill('[data-test-id="username"]', 'test');
+  await expect(page).toFill('[data-test-id="password"]', 'pwtest');
+  await expect(page).toClick('[data-test-id="login-button"]');
 
   await page.waitForNavigation();
 
