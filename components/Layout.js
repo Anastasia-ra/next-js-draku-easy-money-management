@@ -6,7 +6,7 @@ export default function Layout(props) {
     <>
       <Head>{/* favicon */}</Head>
 
-      <Header />
+      <Header userObject={props.userObject} />
 
       <main>{props.children}</main>
     </>

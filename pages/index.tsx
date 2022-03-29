@@ -25,12 +25,12 @@ import {
   LineElement,
   Title,
   BarElement,
-  // ChartOptions,
+  ChartOptions,
 } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-// import { Context } from 'chartjs-plugin-datalabels';
-// import Options from 'chartjs-plugin-datalabels';
+import { Context } from 'chartjs-plugin-datalabels';
+import Options from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
 import { getLastMonths, sumPerMonth } from '../graphFunctions/sumPerMonth';
 import {
@@ -40,7 +40,6 @@ import {
   getProgressChartData,
 } from '../graphFunctions/charts';
 import { getTotalBudgetProgress } from '../graphFunctions/budgetProgress';
-// import Wallet from '../public/wallet-svgrepo-com.svg';
 
 ChartJS.register(
   ArcElement,
@@ -57,7 +56,7 @@ ChartJS.register(
 
 type Props =
   | {
-      // userObject: { username: string };
+      userObject: { username: string };
       user: { id: number; username: string };
       categories: Category[];
       expenses: Expense[];
@@ -364,7 +363,7 @@ const mainLoggedOutStyle = css`
   }
 `;
 
-// const firstLinks = css``;
+const firstLinks = css``;
 
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
@@ -373,7 +372,7 @@ export default function Home(props: Props) {
 
   if ('error' in props) {
     return (
-      <Layout>
+      <Layout css={mainStyle}>
         <Head>
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
@@ -410,7 +409,7 @@ export default function Home(props: Props) {
 
   if (props.categories.length === 0) {
     return (
-      <Layout>
+      <Layout userObject={props.userObject} css={mainStyle}>
         <Head>
           <title>Draku</title>
           <meta name="description" content="Draku money management " />
@@ -453,12 +452,11 @@ export default function Home(props: Props) {
   const lastMonthsWithExpenses = sumPerMonth(props.expenses, getLastMonths());
 
   return (
-    <Layout css={mainStyle}>
+    <Layout userObject={props.userObject}>
       <Head>
         <title>Draku</title>
         <meta name="description" content="Draku money management" />
       </Head>
-
       <div css={mainStyle}>
         <h1 css={chartsHeaderStyle}>Welcome back {props.user.username}!</h1>
         <p>We are glad that you're here. Here's your overview.</p>
@@ -639,13 +637,14 @@ export default function Home(props: Props) {
             </Link>
           </div>
         </div>
-        {/* <Wallet /> */}
       </div>
     </Layout>
   );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  /* context.res.setHeader('Cache-Control', 'no-store'); */
+
   const sessionToken = context.req.cookies.sessionToken;
   const user = await getUserByValidSessionToken(sessionToken);
 

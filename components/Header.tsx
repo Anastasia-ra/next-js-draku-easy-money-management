@@ -48,9 +48,9 @@ const usernameStyle = css`
   margin-left: 10px;
 `;
 
-// type Props = {
-//   userObject?: User;
-// };
+type Props = {
+  userObject?: User;
+};
 
 function Anchor({
   children,
@@ -61,36 +61,36 @@ function Anchor({
   return <a {...restProps}>{children}</a>;
 }
 
-export default function Header() {
+export default function Header(props: Props) {
   // console.log('props.userObject.username in header', props.userObject.username);
   return (
     <header css={mainStyle}>
       <div css={textStyle}>
-        {/* {props.userObject && (
+        {props.userObject && (
           <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
-        )} */}
+        )}
 
-        {/* <div css={rightLinksStyle}>
+        <div css={rightLinksStyle}>
           {props.userObject ? (
-            <> */}
-        <Link href="/">
-          <a css={pageLinksStyle}>Home</a>
-        </Link>
-        <Anchor href="/logout" css={pageLinksStyle}>
-          Logout
-        </Anchor>
-        {/* </>
+            <>
+              <Link href="/">
+                <a css={pageLinksStyle}>Home</a>
+              </Link>
+              <Anchor href="/logout" css={pageLinksStyle}>
+                Logout
+              </Anchor>
+            </>
           ) : (
-            <> */}
-        <Link href="/login">
-          <a css={pageLinksStyle}>Login</a>
-        </Link>
-        <Link href="/signup">
-          <a css={pageLinksStyle}>Sign-up</a>
-        </Link>
-        {/* </>
-          )} */}
-        {/* </div> */}
+            <>
+              <Link href="/login">
+                <a css={pageLinksStyle}>Login</a>
+              </Link>
+              <Link href="/signup">
+                <a css={pageLinksStyle}>Sign-up</a>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
