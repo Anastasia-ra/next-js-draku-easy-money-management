@@ -13,6 +13,8 @@ jobs:
       PGDATABASE: budget_app
       PGUSERNAME: budget_app
       PGPASSWORD: budget_app
+      CSRF_SECRET_SALT: ${{ secrets.CSRF_SECRET_SALT }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
       - name: Start preinstalled PostgreSQL on Ubuntu
         run: |

@@ -5,6 +5,6 @@ module.exports = {
   },
   browserContext: 'default',
   server: {
-    command: 'yarn dev',
+    command: 'yarn start',
   },
 };
