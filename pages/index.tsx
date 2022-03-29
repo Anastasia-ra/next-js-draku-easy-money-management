@@ -426,7 +426,7 @@ export default function Home(props: Props) {
             </p>
             <div css={signUpLink}>
               <Link href="/users/categoriesManagement">
-                <a>Manage your catagories</a>
+                <a data-test-id="category-link">Manage your catagories</a>
               </Link>
             </div>
             <p> Then you can add your expenses here:</p>
@@ -611,7 +611,7 @@ export default function Home(props: Props) {
             </Link>
             <br />
             <Link href="/users/categoriesManagement">
-              <a css={singleLinkStyle}>
+              <a data-test-id="category-link" css={singleLinkStyle}>
                 {' '}
                 <Image
                   src="/wallet.png"

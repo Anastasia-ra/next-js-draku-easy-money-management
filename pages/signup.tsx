@@ -118,6 +118,7 @@ export default function Signup(props: Props) {
               Email
               <br />
               <input
+                data-test-id="email"
                 maxLength={50}
                 type="Email"
                 value={email}
@@ -129,6 +130,7 @@ export default function Signup(props: Props) {
               Username
               <br />
               <input
+                data-test-id="username"
                 maxLength={15}
                 value={username}
                 onChange={(event) => setUsername(event.currentTarget.value)}
@@ -139,6 +141,7 @@ export default function Signup(props: Props) {
               Password
               <br />
               <input
+                data-test-id="password"
                 maxLength={15}
                 type="password"
                 value={password}
@@ -152,7 +155,9 @@ export default function Signup(props: Props) {
                 );
               })}
             </div>
-            <button css={buttonStyle}>Sign-up</button>
+            <button data-test-id="signup-button" css={buttonStyle}>
+              Sign-up
+            </button>
           </div>
         </form>
       </div>

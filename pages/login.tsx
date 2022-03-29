@@ -129,6 +129,7 @@ export default function Login(props: Props) {
               <span> Username {'  '} </span>
               <br />
               <input
+                data-test-id="username"
                 maxLength={15}
                 value={username}
                 onChange={(event) => setUsername(event.currentTarget.value)}
@@ -140,6 +141,7 @@ export default function Login(props: Props) {
               <span> Password {'  '} </span>
               <br />
               <input
+                data-test-id="password"
                 type="password"
                 maxLength={15}
                 value={password}
@@ -155,7 +157,9 @@ export default function Login(props: Props) {
               })}
             </div>
 
-            <button css={buttonStyle}>Log-in</button>
+            <button data-test-id="login-button" css={buttonStyle}>
+              Log-in
+            </button>
           </div>
         </form>
       </div>

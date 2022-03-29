@@ -341,6 +341,7 @@ export default function CategoriesManagement(props: Props) {
                     Category name
                     <br />
                     <input
+                      data-test-id="category-name"
                       disabled={maxCategory}
                       value={newCategory}
                       onChange={(event) =>
@@ -354,6 +355,7 @@ export default function CategoriesManagement(props: Props) {
                     Monthly budget
                     <br />
                     <input
+                      data-test-id="category-budget"
                       disabled={maxCategory}
                       type="number"
                       value={monthlyBudget}
@@ -371,7 +373,11 @@ export default function CategoriesManagement(props: Props) {
                   );
                 })}
               </div>
-              <button css={addButtonStyle} disabled={maxCategory}>
+              <button
+                data-test-id="add-category"
+                css={addButtonStyle}
+                disabled={maxCategory}
+              >
                 Add a new category
               </button>
             </form>
@@ -502,11 +508,17 @@ export default function CategoriesManagement(props: Props) {
               <div css={singleCategoryStyle} key={`category-${category.name}`}>
                 <div css={singleLineStyle}>
                   <div css={getColorDot(index)} />
-                  <div css={categoryNameStyle}>{category.name}</div>
+                  <div
+                    data-test-id="category-list-name"
+                    css={categoryNameStyle}
+                  >
+                    {category.name}
+                  </div>
                   <div css={categoryBudgetStyle}>
                     {category.monthlyBudget / 100}€
                   </div>
                   <button
+                    data-test-id="delete-category"
                     aria-label="delete category"
                     css={deleteButtonStyle}
                     disabled={hasExpense}
@@ -627,6 +639,7 @@ export default function CategoriesManagement(props: Props) {
                   Category name
                   <br />
                   <input
+                    data-test-id="category-name"
                     maxLength={15}
                     disabled={maxCategory}
                     value={newCategory}
@@ -641,6 +654,7 @@ export default function CategoriesManagement(props: Props) {
                   Monthly budget
                   <br />
                   <input
+                    data-test-id="category-budget"
                     disabled={maxCategory}
                     type="number"
                     value={monthlyBudget}
@@ -658,7 +672,11 @@ export default function CategoriesManagement(props: Props) {
                 );
               })}
             </div>
-            <button css={addButtonStyle} disabled={maxCategory}>
+            <button
+              data-test-id="add-category"
+              css={addButtonStyle}
+              disabled={maxCategory}
+            >
               Add a new category
             </button>
           </form>

@@ -76,17 +76,25 @@ export default function Header(props: Props) {
               <Link href="/">
                 <a css={pageLinksStyle}>Home</a>
               </Link>
-              <Anchor href="/logout" css={pageLinksStyle}>
+              <Anchor
+                data-test-id="log-out"
+                href="/logout"
+                css={pageLinksStyle}
+              >
                 Logout
               </Anchor>
             </>
           ) : (
             <>
               <Link href="/login">
-                <a css={pageLinksStyle}>Login</a>
+                <a data-test-id="log in" css={pageLinksStyle}>
+                  Login
+                </a>
               </Link>
               <Link href="/signup">
-                <a css={pageLinksStyle}>Sign-up</a>
+                <a data-test-id="sign up" css={pageLinksStyle}>
+                  Sign-up
+                </a>
               </Link>
             </>
           )}
