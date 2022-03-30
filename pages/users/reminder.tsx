@@ -11,7 +11,7 @@ import { GetServerSidePropsContext } from 'next';
 
 type Props = {
   userObject: { username: string };
-  // user: { id: number; username: string };
+  user: { id: number; username: string };
   // categories: Category[];
 };
 
@@ -114,6 +114,7 @@ export default function Reminder(props: Props) {
     name: string,
     price: string,
     day: string,
+    username: string,
   ) {
     console.log('sendEmail');
     const sendEmailResponseBody = await fetch(`/api/reminderEmails`, {
@@ -127,6 +128,7 @@ export default function Reminder(props: Props) {
           name,
           price,
           day,
+          username,
         },
       }),
     });
@@ -151,6 +153,7 @@ export default function Reminder(props: Props) {
               reminderName,
               reminderPrice,
               reminderDay,
+              props.user.username,
             );
             setUserEmail('');
             setReminderName('');
