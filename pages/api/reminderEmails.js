@@ -13,7 +13,9 @@ export default async function emailHandler(request, response) {
       typeof request.body.reminder.name !== 'string' ||
       !request.body.reminder.name ||
       typeof request.body.reminder.price !== 'string' ||
-      !request.body.reminder.price
+      !request.body.reminder.price ||
+      typeof request.body.reminder.username !== 'string' ||
+      !request.body.reminder.username
     ) {
       response.status(400).json({
         errors: [
@@ -60,9 +62,11 @@ export default async function emailHandler(request, response) {
       subject: `Reminder to pay your bills`,
       text: `Hey, just a quick reminder that you have to pay ${request.body.reminder.name}. The total amount is ${request.body.reminder.price}`,
       html: `<div>
-          Hey, just a quick reminder that you have to pay
-          ${request.body.reminder.name}. The total amount is
-          ${request.body.reminder.price}
+          <div>Hey  ${request.body.reminder.username}! </div>
+          Just a quick reminder that you have to pay
+          ${request.body.reminder.name} soon. The total amount is
+          ${request.body.reminder.price}.
+          <div>Draku</div>
         </div>`,
       auth: {
         user: 'draku.money.management@gmail.com',
@@ -77,7 +81,9 @@ export default async function emailHandler(request, response) {
       subject: `Confirmation e-mail reminder set-up `,
       text: `Hey, you successfully registered for an e-mail reminder to pay your ${request.body.reminder.name} bill.`,
       html: `<div>
-      Hey, you successfully registered for an e-mail reminder to pay your ${request.body.reminder.name} bill.
+      <div>Hey  ${request.body.reminder.username}! </div>
+      You successfully registered for an e-mail reminder to pay your ${request.body.reminder.name} bill.
+      <div>Draku</div>
         </div>`,
       auth: {
         user: 'draku.money.management@gmail.com',
@@ -93,6 +99,16 @@ export default async function emailHandler(request, response) {
         console.log(info);
       }
     });
+
+    // cron.schedule(` */10 * * * * *`, () => {
+    //   transporter.sendMail(mailData, function (err, info) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //       console.log(info);
+    //     }
+    //   });
+    // });
 
     cron.schedule(`* * * ${request.body.reminder.day} * *`, () => {
       transporter.sendMail(mailData, function (err, info) {
