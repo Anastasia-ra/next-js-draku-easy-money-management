@@ -21,6 +21,29 @@ export default function Reminder(props: Props) {
   const [reminderDay, setReminderDay] = useState('');
   const [reminderCategory, setReminderCategory] = useState('');
 
+  async function sendEmail(
+    email: string,
+    name: string,
+    price: string,
+    day: string,
+  ) {
+    console.log('sendEmail');
+    const sendEmailResponseBody = await fetch(`/api/reminderEmails`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        reminder: {
+          email,
+          name,
+          price,
+          day,
+        },
+      }),
+    });
+  }
+
   return (
     <Layout userObject={props.userObject}>
       <Head>
@@ -28,8 +51,14 @@ export default function Reminder(props: Props) {
         <meta name="reminder" content="Add reminders" />
       </Head>
       <form
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
+          console.log('submitted');
           event.preventDefault();
+          await sendEmail(userEmail, reminderName, reminderPrice, reminderDay);
+          setUserEmail('');
+          setReminderName('');
+          setReminderPrice('');
+          setReminderDay('');
         }}
       >
         <label>
@@ -50,7 +79,6 @@ export default function Reminder(props: Props) {
             value={reminderName}
             onChange={(event) => {
               setReminderName(event.currentTarget.value);
-              console.log('name', event.currentTarget.value);
             }}
           />
         </label>
@@ -66,10 +94,12 @@ export default function Reminder(props: Props) {
         </label>
         <br />
         <label>
-          Name
+          Day
           <br />
           <input
             type="number"
+            min="1"
+            max="28"
             value={reminderDay}
             onChange={(event) => setReminderDay(event.currentTarget.value)}
           />
