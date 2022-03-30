@@ -224,7 +224,7 @@ const chartLineStyle = css`
 const linksStyle = css`
   background: #01aca3;
   width: 220px;
-  height: 120px;
+  height: 160px;
   text-align: left;
   border-radius: 8px;
   margin-top: 30px;
@@ -635,13 +635,14 @@ export default function Home(props: Props) {
                 <span> Check your budget </span>
               </a>
             </Link>
+            <br />
             <Link href="/users/reminder">
               <a css={singleLinkStyle}>
                 {' '}
                 <Image
-                  src="/piggy.png"
-                  width="25px"
-                  height="25px"
+                  src="/bell.png"
+                  width="22px"
+                  height="22px"
                   alt="piggy"
                 />{' '}
                 <span> Set up a reminder </span>
