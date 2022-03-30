@@ -635,6 +635,18 @@ export default function Home(props: Props) {
                 <span> Check your budget </span>
               </a>
             </Link>
+            <Link href="/users/reminder">
+              <a css={singleLinkStyle}>
+                {' '}
+                <Image
+                  src="/piggy.png"
+                  width="25px"
+                  height="25px"
+                  alt="piggy"
+                />{' '}
+                <span> Set up a reminder </span>
+              </a>
+            </Link>
           </div>
         </div>
       </div>
