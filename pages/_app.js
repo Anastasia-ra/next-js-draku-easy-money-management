@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { css, Global } from '@emotion/react';
+// import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState();
@@ -24,6 +25,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      {/* <Head>
+        <meta name="theme-color" content="#01aca3" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" type="image/png" sizes="512*512" href="/dragon.png" />
+      </Head> */}
       <Global
         styles={css`
           html,
