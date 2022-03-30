@@ -9,7 +9,7 @@ import {
 import { GetServerSidePropsContext } from 'next';
 
 type Props = {
-  // userObject: { username: string };
+  userObject: { username: string };
   // user: { id: number; username: string };
   // categories: Category[];
 };
@@ -22,8 +22,8 @@ export default function Reminder(props: Props) {
   const [reminderCategory, setReminderCategory] = useState('');
 
   return (
-    <Layout>
-      {/* <Head>
+    <Layout userObject={props.userObject}>
+      <Head>
         <title>Reminders</title>
         <meta name="reminder" content="Add reminders" />
       </Head>
@@ -75,7 +75,7 @@ export default function Reminder(props: Props) {
           />
         </label>
         <br />
-        <label>
+        {/* <label>
           Category
           <br />
           <select
@@ -94,12 +94,12 @@ export default function Reminder(props: Props) {
               );
             })}
           </select>
-        </label>
+        </label> */}
         {/* {errors.map((error) => {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })} */}
-      {/* <button>Add</button>
-      </form> */}
+        <button>Add</button>
+      </form>
     </Layout>
   );
 }
