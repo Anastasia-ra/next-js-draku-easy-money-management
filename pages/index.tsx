@@ -84,7 +84,7 @@ const mainStyle = css`
   margin: 2vh auto;
   text-align: left;
   max-width: 800px;
-  height: 80vh;
+  height: 70vh;
   box-shadow: 0 0 8px #cccccc;
   ${mediaQueryHeight[0]} {
     height: 95vh;
@@ -229,6 +229,7 @@ const linksStyle = css`
   border-radius: 8px;
   margin-top: 30px;
   padding: 10px;
+  margin-bottom: 20px;
 `;
 
 const singleLinkStyle2 = css`
