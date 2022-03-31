@@ -12,7 +12,36 @@ import {
   Category,
   Expense,
   getAllExpensesByUserId,
+  getExpensesByMonthByUser,
 } from '../../util/database';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+} from 'chart.js';
+import { Doughnut, Line } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { getDoughnutCategoriesData } from '../../graphFunctions/charts';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  BarElement,
+  ChartDataLabels,
+);
 
 type Props =
   | {
@@ -20,6 +49,7 @@ type Props =
       user: { id: number; username: string };
       categories: Category[];
       expenses: Expense[];
+      expensesCurrentMonth: Expense[];
     }
   | {
       userObject: { username: string };
@@ -302,6 +332,15 @@ const mainStyleError = css`
   }
 `;
 
+const chartDoughnutCategoriesStyle = css`
+  display: inline-block;
+  width: 220px;
+  height: 245px;
+  ${mediaQueryWidth[0]} {
+    margin: 30px 0 5px 0;
+  }
+`;
+
 const addExpenseFlexStyle = css``;
 
 const deleteExpenseFlexStyle = css``;
@@ -550,6 +589,28 @@ export default function Expenses(props: Props) {
         <p>Here you can enter, delete or review your latest expenses. </p>
         {/* <h2>{currentMonth}</h2> */}
         <div css={mainFlexStyle}>
+          {expenses.length > 0 && (
+            <div>
+              <div css={chartDoughnutCategoriesStyle}>
+                <Doughnut
+                  // width="150"
+                  // height="150"
+                  data={
+                    getDoughnutCategoriesData(
+                      props.categories,
+                      props.expensesCurrentMonth,
+                    ).data
+                  }
+                  options={
+                    getDoughnutCategoriesData(
+                      props.categories,
+                      props.expensesCurrentMonth,
+                    ).options
+                  }
+                />
+              </div>
+            </div>
+          )}
           <div css={addExpenseFlexStyle}>
             <h2>Add an expense</h2>
             <div css={addExpenseStyle}>
@@ -873,13 +934,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   );
 
-  console.log('expensesSortedByDate', expensesSortedByDate);
+  const currentMonth = new Intl.DateTimeFormat('en-US', {
+    month: 'numeric',
+  }).format(new Date());
+
+  const currentYear = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+  }).format(new Date());
+
+  const expensesCurrentMonth = await getExpensesByMonthByUser(
+    Number(currentMonth),
+    Number(currentYear),
+    user.id,
+  );
+
+  const expensesCurrentMonthDateToString = JSON.parse(
+    JSON.stringify(expensesCurrentMonth),
+  );
 
   return {
     props: {
       user: user,
       categories: categories,
       expenses: expensesSortedByDate.reverse(),
+      expensesCurrentMonth: expensesCurrentMonthDateToString,
     },
   };
 }
