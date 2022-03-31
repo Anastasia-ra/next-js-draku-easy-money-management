@@ -31,7 +31,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
 import { getLastMonths, sumPerMonth } from '../graphFunctions/sumPerMonth';
 import {
-  getDoughnutCategoriesData,
+  getDoughnutCategories,
   getLineData,
   getLineDataByDay,
   getProgressChartData,
@@ -544,13 +544,13 @@ export default function Home(props: Props) {
               // width="150"
               // height="150"
               data={
-                getDoughnutCategoriesData(
+                getDoughnutCategories(
                   props.categories,
                   props.expensesCurrentMonth,
                 ).data
               }
               options={
-                getDoughnutCategoriesData(
+                getDoughnutCategories(
                   props.categories,
                   props.expensesCurrentMonth,
                 ).options

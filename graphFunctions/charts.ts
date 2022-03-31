@@ -16,7 +16,7 @@ export const colors = [
   'rgba(44, 46, 46, 0.8)',
 ];
 
-export function getDoughnutCategoriesData(
+export function getDoughnutCategories(
   categoriesArray: Category[],
   expensesArray: Expense[],
 ) {
@@ -125,6 +125,120 @@ export function getDoughnutCategoriesData(
     },
   };
   return { data: dataDoughnutCategories, options: optionsDoughnutCategories };
+}
+
+export function getDoughnutCategoriesAndExpensesData(
+  categoriesArray: Category[],
+  expensesArray: Expense[],
+) {
+  const categoriesWithSum = getSumExpensesCategory(
+    categoriesArray,
+    expensesArray,
+  );
+  const categoriesWithShares = getSharePerCategory(categoriesWithSum);
+  const categoriesWithSharesFiltered = categoriesWithShares.filter(
+    (e) => e.shareOfExpenses !== 0,
+  );
+
+  const categories = categoriesWithSharesFiltered.map((e) => e.name);
+
+  const categoriesData = categoriesWithSharesFiltered.map(
+    (e) => e.shareOfExpenses,
+  );
+
+  const dataDoughnutCategoriesExpenses = {
+    labels: categories,
+    datasets: [
+      {
+        label: 'Expenses per category',
+        data: categoriesData,
+        backgroundColor: colors,
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          ' rgba(86, 255, 86, 1)',
+          'rgba(68, 7, 97, 1)',
+          'rgba(224, 240, 10, 1)',
+          'rgba(44, 46, 46, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const optionsDoughnutCategoriesExpenses = {
+    cutout: '75%',
+    radius: 60,
+    maintainAspectRatio: false,
+    elements: {
+      arc: {
+        hoverBackgroundColor: [
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 206, 86, 0.7)',
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(153, 102, 255,0.7)',
+          'rgba(255, 159, 64, 0.7)',
+        ],
+        hoverOffset: 3,
+      },
+    },
+    layout: {
+      // padding: 10,
+    },
+    plugins: {
+      tooltip: {
+        enabled: false,
+      },
+      title: {
+        display: true,
+        text: 'Categories with expenses',
+        color: '#26325b',
+        font: {
+          size: 16,
+          family: "'Gill Sans MT', 'Calibri', 'Arial', 'sans-serif'",
+        },
+      },
+      legend: {
+        position: 'bottom' as 'bottom',
+        // align: 'start' as 'start',
+        display: true,
+        // maxHeight: 20,
+        // maxWidth: 300,
+        // fullSize: true,
+        labels: {
+          boxWidth: 7,
+          usePointStyle: true,
+          pointStyle: 'circle' as 'circle',
+          color: '#26325b',
+          padding: 5,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      datalabels: {
+        display: false,
+        color: '#26325b',
+        formatter: function (value: number, context: Context) {
+          return (
+            categories[context.dataIndex] + '\n' + Math.round(value * 100) + '%'
+          );
+        },
+        align: 'end' as 'end',
+        offset: 8,
+        textAlign: 'center' as 'center',
+      },
+    },
+  };
+  return {
+    data: dataDoughnutCategoriesExpenses,
+    options: optionsDoughnutCategoriesExpenses,
+  };
 }
 
 export function getProgressChartData(
