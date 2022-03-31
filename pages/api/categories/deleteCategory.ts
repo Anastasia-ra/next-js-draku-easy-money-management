@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteCategoryById } from '../../../util/database';
+import {
+  deleteCategoryByIdAndUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function categoriesHandler(
   request: NextApiRequest,
@@ -19,13 +22,17 @@ export default async function categoriesHandler(
       });
       return;
     }
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
 
-    await deleteCategoryById(request.body.category.categoryId);
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
 
-    // if (!deletedCategory) {
-    //   response.status(404).json({ error: 'Category not found' });
-    //   return;
-    // }
+    await deleteCategoryByIdAndUserId(
+      request.body.category.categoryId,
+      user.id,
+    );
 
     response.status(201).json({
       message: 'Category sucessfully deleted',

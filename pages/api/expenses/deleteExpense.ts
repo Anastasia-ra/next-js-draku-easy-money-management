@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { deleteExpenseById } from '../../../util/database';
+import {
+  deleteExpenseByIdAndByUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function expensesHandler(
   request: NextApiRequest,
@@ -19,13 +22,14 @@ export default async function expensesHandler(
       });
       return;
     }
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
 
-    await deleteExpenseById(request.body.expense.expenseId);
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
 
-    // if (!deletedCategory) {
-    //   response.status(404).json({ error: 'Category not found' });
-    //   return;
-    // }
+    await deleteExpenseByIdAndByUserId(request.body.expense.expenseId, user.id);
 
     response.status(201).json({
       message: 'Expense sucessfully deleted',

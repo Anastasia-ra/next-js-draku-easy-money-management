@@ -286,22 +286,30 @@ export async function getFirstExpenseByCategory(categoryId: number) {
   return expense && camelcaseKeys(expense);
 }
 
-export async function deleteCategoryById(categoryId: number) {
+export async function deleteCategoryByIdAndUserId(
+  categoryId: number,
+  userId: number,
+) {
   const [category] = await sql<[Category]>`
     DELETE FROM
       categories
     WHERE
-      id = ${categoryId}
+      id = ${categoryId} AND
+      user_id = ${userId}
   `;
   return category;
 }
 
-export async function deleteExpenseById(expenseId: number) {
+export async function deleteExpenseByIdAndByUserId(
+  expenseId: number,
+  userId: number,
+) {
   const [expense] = await sql<[Expense]>`
     DELETE FROM
       expenses
     WHERE
-      id = ${expenseId}
+      id = ${expenseId} AND
+      user_id = ${userId}
   `;
   return expense;
 }
