@@ -25,12 +25,9 @@ import {
   LineElement,
   Title,
   BarElement,
-  ChartOptions,
 } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { Context } from 'chartjs-plugin-datalabels';
-import Options from 'chartjs-plugin-datalabels';
 import { useState } from 'react';
 import { getLastMonths, sumPerMonth } from '../graphFunctions/sumPerMonth';
 import {
@@ -363,8 +360,6 @@ const mainLoggedOutStyle = css`
     }
   }
 `;
-
-const firstLinks = css``;
 
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
