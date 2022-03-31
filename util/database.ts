@@ -38,6 +38,15 @@ export type Expense = {
   date: string;
 };
 
+export type EmailReminder = {
+  id: number;
+  userId: number;
+  name: string;
+  price: number;
+  day: number;
+  email: string;
+};
+
 declare module globalThis {
   let postgresSqlClient: ReturnType<typeof postgres> | undefined;
 }
@@ -406,4 +415,33 @@ export async function updateCategoryBudget(
       id = ${categoryId}
   `;
   return camelcaseKeys(category);
+}
+
+export async function addReminder(
+  userId: number,
+  name: string,
+  price: number,
+  day: number,
+  email: string,
+) {
+  const [reminder] = await sql<[EmailReminder]>`
+    INSERT INTO emailreminders
+      (user_id, name, price, day, email)
+    VALUES
+      (${userId}, ${name}, ${price}, ${day}, ${email})
+    RETURNING *
+  `;
+  return camelcaseKeys(reminder);
+}
+
+export async function getAllRemindersByUserId(userId: number) {
+  const reminders = await sql<EmailReminder[]>`
+    SELECT
+        *
+    FROM
+        emailReminders
+    WHERE
+        user_id = ${userId}
+    `;
+  return reminders.map((reminder) => camelcaseKeys(reminder));
 }
