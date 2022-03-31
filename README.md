@@ -13,19 +13,19 @@
 - Unit tests and E2E tests with Jest and Puppeteer
 - Chart.js
 - ExchangeRate - API
-- Nodemailer with OAuth2 and Gmail API
+- Nodemailer with OAuth2, Gmail API and node-cron to schedule the emails
 
 ## Functionalities 
 
 - User authentication: registration and login secured with CSRF token
-- User can add up to 10 categories and set a monthly bduget for this category
+- User can add up to 10 categories and set a monthly bduget for each category
 - User can change the name or change the budget of each category
 - Categories can also be deleted
 - User can add an expense with a date and a name
 - User can choose the currency of his expense from 161 currencies. The exchange rates are updated on a daily basis. By default the expense will be added in €.
 - User can search for a specific expense and delete it.
 - A chart with the user expenses is displayed on the homepage. The user can choose if he wants to see a monthly or a yearly overview
-- A progress chart shows the budget progress of the current moment
+- A progress chart shows the budget progress of the current month
 - A progress chart shows the share of expenses per category
 - User can check his budget progress per category in a dedicated page
 - User can schedule a reminder to pay a bill on a specific day of the month. The user will then get a confirmation email and then each month on the specified date, he will get an email reminding him to pay this specific bill. 
