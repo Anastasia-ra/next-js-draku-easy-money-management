@@ -7,8 +7,6 @@ export default async function expensesHandler(
 ) {
   if (request.method === 'POST') {
     if (
-      // typeof request.body.expense.date !== 'string' ||
-      // !request.body.expense.date ||
       typeof request.body.expense.price !== 'number' ||
       !request.body.expense.price ||
       typeof request.body.expense.name !== 'string' ||

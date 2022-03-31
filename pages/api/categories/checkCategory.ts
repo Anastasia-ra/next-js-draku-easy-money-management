@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getFirstExpenseByCategory } from '../../../util/database';
+import {
+  getFirstExpenseByCategoryAndByUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function categoriesHandler(
   request: NextApiRequest,
@@ -20,8 +23,16 @@ export default async function categoriesHandler(
       return;
     }
 
-    const category = await getFirstExpenseByCategory(
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
+    const category = await getFirstExpenseByCategoryAndByUserId(
       request.body.category.categoryId,
+      user.id,
     );
 
     console.log('category', category);

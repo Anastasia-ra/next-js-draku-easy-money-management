@@ -2,6 +2,7 @@ import { config } from 'dotenv-safe';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 import cron from 'node-cron';
+import { getUserByValidSessionToken } from '../../util/database';
 
 config();
 
@@ -25,6 +26,13 @@ export default async function emailHandler(request, response) {
         ],
       });
       return;
+    }
+
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
     }
 
     const clientId = process.env.CLIENT_ID;

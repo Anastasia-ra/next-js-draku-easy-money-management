@@ -271,7 +271,10 @@ export async function getAllExpensesByUserId(userId: number) {
   return expenses.map((expense) => camelcaseKeys(expense));
 }
 
-export async function getFirstExpenseByCategory(categoryId: number) {
+export async function getFirstExpenseByCategoryAndByUserId(
+  categoryId: number,
+  userId: number,
+) {
   const [expense] = await sql<[Expense | undefined]>`
     SELECT
       id,
@@ -280,7 +283,8 @@ export async function getFirstExpenseByCategory(categoryId: number) {
     FROM
       expenses
     WHERE
-      category_id = ${categoryId}
+      category_id = ${categoryId} AND
+      user_id = ${userId}
     LIMIT 1
   `;
   return expense && camelcaseKeys(expense);
