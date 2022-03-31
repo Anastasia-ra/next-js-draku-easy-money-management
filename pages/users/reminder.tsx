@@ -6,14 +6,20 @@ import {
   getAllCategoriesbyUserId,
   getUserByValidSessionToken,
   Category,
+  getAllExpensesByUserId,
+  EmailReminder,
+  getAllRemindersByUserId,
 } from '../../util/database';
 import { GetServerSidePropsContext } from 'next';
 
 type Props = {
   userObject: { username: string };
   user: { id: number; username: string };
+  reminders: EmailReminder[];
   // categories: Category[];
 };
+
+type Errors = { message: string }[];
 
 const breakPointsWidth = [480, 800];
 const mediaQueryWidth = breakPointsWidth.map(
@@ -103,21 +109,35 @@ const addButtonStyle = css`
   border-style: none;
 `;
 
+const singleReminderStyle = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const reminderNameStyle = css``;
+
+const reminderPriceStyle = css``;
+
+const reminderDayStyle = css``;
+
 export default function Reminder(props: Props) {
   const [userEmail, setUserEmail] = useState('');
   const [reminderName, setReminderName] = useState('');
   const [reminderPrice, setReminderPrice] = useState('');
   const [reminderDay, setReminderDay] = useState('');
+  const [reminders, setReminders] = useState<EmailReminder[]>(props.reminders);
+  const [confirmation, setConfirmation] = useState(false);
+  const [errors, setErrors] = useState<Errors>([]);
 
   async function sendEmail(
     email: string,
     name: string,
     price: string,
     day: string,
-    username: string,
+    user: { id: number; username: string },
   ) {
     console.log('sendEmail');
-    const sendEmailResponseBody = await fetch(`/api/reminderEmails`, {
+    const sendEmailResponse = await fetch(`/api/reminderEmails`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,10 +148,42 @@ export default function Reminder(props: Props) {
           name,
           price,
           day,
-          username,
+          user,
         },
       }),
     });
+
+    const sendEmailResponseBody = await sendEmailResponse.json();
+
+    console.log('sendEmailResponseBody', sendEmailResponseBody);
+
+    if (!('errors' in sendEmailResponseBody)) {
+      setErrors([]);
+      setConfirmation(true);
+    } else {
+      setConfirmation(false);
+      setErrors(sendEmailResponseBody.errors);
+    }
+  }
+
+  async function getAllReminders() {
+    const allRemindersResponse = await fetch(`/api/getAllReminders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: props.user.id,
+      }),
+    });
+
+    const allRemindersResponseBody = await allRemindersResponse.json();
+
+    console.log('allRemindersResponseBody', allRemindersResponseBody);
+
+    setReminders(allRemindersResponseBody.remindersList);
+
+    return allRemindersResponseBody;
   }
 
   return (
@@ -141,8 +193,30 @@ export default function Reminder(props: Props) {
         <meta name="reminder" content="Add reminders" />
       </Head>
       <div css={mainStyle}>
-        <h1>Add a reminder to pay your bills</h1>
+        <h1>Reminders to pay your bills</h1>
         {/* <p>You can add an email reminder to pay your bills.</p> */}
+        <div>
+          {reminders.map((emailReminder) => {
+            return (
+              <div
+                css={singleReminderStyle}
+                key={`reminder-${emailReminder.id}-${emailReminder.name}`}
+              >
+                <div css={reminderNameStyle}>{emailReminder.name}</div>
+                <div css={reminderPriceStyle}>{emailReminder.price}</div>
+                <div css={reminderDayStyle}>{emailReminder.day}</div>
+              </div>
+            );
+          })}
+        </div>
+        {confirmation && (
+          <div>
+            Congratulations! You will soon receive a confirmation email.{' '}
+          </div>
+        )}
+        {errors.map((error) => {
+          return <div key={`error-${error.message}`}>{error.message}</div>;
+        })}
         <form
           css={formStyle}
           onSubmit={async (event) => {
@@ -153,12 +227,13 @@ export default function Reminder(props: Props) {
               reminderName,
               reminderPrice,
               reminderDay,
-              props.user.username,
+              props.user,
             );
             setUserEmail('');
             setReminderName('');
             setReminderPrice('');
             setReminderDay('');
+            await getAllReminders();
           }}
         >
           <label>
@@ -240,10 +315,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     (a: Category, b: Category) => a.id - b.id,
   );
 
+  const reminders = await getAllRemindersByUserId(user.id);
+  console.log('reminders', reminders);
+
   return {
     props: {
       user: user,
       categories: sortedCategories,
+      reminders: reminders,
     },
   };
 }
