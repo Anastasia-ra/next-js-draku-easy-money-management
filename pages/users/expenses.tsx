@@ -28,7 +28,7 @@ import {
 } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getDoughnutCategoriesData } from '../../graphFunctions/charts';
+import { colors, getDoughnutCategoriesData } from '../../graphFunctions/charts';
 
 ChartJS.register(
   ArcElement,
@@ -50,6 +50,8 @@ type Props =
       categories: Category[];
       expenses: Expense[];
       expensesCurrentMonth: Expense[];
+      currentMonth: string;
+      currentYear: string;
     }
   | {
       userObject: { username: string };
@@ -77,10 +79,10 @@ const mainStyle = css`
   margin: 2vh auto;
   text-align: left;
   max-width: 800px;
-  height: 80vh;
+  height: 780px;
   box-shadow: 0 0 8px #cccccc;
   ${mediaQueryHeight[0]} {
-    height: 95vh;
+    height: 780px;
   }
   ${mediaQueryWidth[1]} {
     box-shadow: 0 0 0 white;
@@ -265,12 +267,6 @@ const deletePriceStyle = css`
   width: 60px;
 `;
 
-const latestExpensesListStyle = css`
-  width: 250px;
-  height: 270px;
-  margin: auto;
-`;
-
 const singleExpenseStyle = css`
   display: flex;
   flex-wrap: nowrap;
@@ -335,11 +331,40 @@ const mainStyleError = css`
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
   width: 220px;
-  height: 245px;
+  height: 285px;
   ${mediaQueryWidth[0]} {
     margin: 30px 0 5px 0;
   }
 `;
+
+const chartStyle = css`
+  /* display: block; */
+  /* margin: auto; */
+`;
+
+const latestExpensesListStyle = css`
+  width: 250px;
+  height: 270px;
+  /* margin: auto; */
+`;
+
+const flexChartStyle = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 20px;
+`;
+
+function getColorDot(index: number) {
+  const colorDotStyle = css`
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    background: ${colors[index]};
+  `;
+  return colorDotStyle;
+}
 
 const addExpenseFlexStyle = css``;
 
@@ -432,6 +457,20 @@ export default function Expenses(props: Props) {
     );
     console.log('expensesSortedByDate', expensesSortedByDate);
     setExpenses(expensesSortedByDate.reverse());
+
+    // if (!('error' in props)) {
+    //   setCurrentMonthExpenses(
+    //     expenses.filter((expense) => {
+    //       const year = expense.date.split('-')[0];
+    //       if (props.currentYear === year) {
+    //         console.log('true');
+    //         const month = expense.date.split('-')[1];
+    //         return parseInt(props.currentMonth, 10) === parseInt(month, 10);
+    //       }
+    //       return false;
+    //     }),
+    //   );
+    // }
   }
 
   // Add expense in database
@@ -457,7 +496,6 @@ export default function Expenses(props: Props) {
         },
       }),
     });
-    console.log(expenseResponse);
 
     const expenseResponseBody = await expenseResponse.json();
 
@@ -477,6 +515,17 @@ export default function Expenses(props: Props) {
     setInputCategoryId('');
     if (!('error' in props)) {
       await getAllExpenses(props.user.id);
+      // setCurrentMonthExpenses(
+      //   expenses.filter((expense) => {
+      //     const year = expense.date.split('-')[0];
+      //     if (props.currentYear === year) {
+      //       console.log('true');
+      //       const month = expense.date.split('-')[1];
+      //       return parseInt(props.currentMonth, 10) === parseInt(month, 10);
+      //     }
+      //     return false;
+      //   }),
+      // );
     }
   }
 
@@ -588,9 +637,9 @@ export default function Expenses(props: Props) {
         <h1>Manage your expenses </h1>
         <p>Here you can enter, delete or review your latest expenses. </p>
         {/* <h2>{currentMonth}</h2> */}
-        <div css={mainFlexStyle}>
-          {expenses.length > 0 && (
-            <div>
+        {expenses.length > 0 && (
+          <div css={flexChartStyle}>
+            <div css={chartStyle}>
               <div css={chartDoughnutCategoriesStyle}>
                 <Doughnut
                   // width="150"
@@ -598,19 +647,63 @@ export default function Expenses(props: Props) {
                   data={
                     getDoughnutCategoriesData(
                       props.categories,
-                      props.expensesCurrentMonth,
+                      expenses.filter((expense) => {
+                        const year = expense.date.split('-')[0];
+                        if (props.currentYear === year) {
+                          const month = expense.date.split('-')[1];
+                          return (
+                            parseInt(props.currentMonth, 10) ===
+                            parseInt(month, 10)
+                          );
+                        }
+                        return false;
+                      }),
                     ).data
                   }
                   options={
                     getDoughnutCategoriesData(
                       props.categories,
-                      props.expensesCurrentMonth,
+                      expenses.filter((expense) => {
+                        const year = expense.date.split('-')[0];
+                        if (props.currentYear === year) {
+                          const month = expense.date.split('-')[1];
+                          return (
+                            parseInt(props.currentMonth, 10) ===
+                            parseInt(month, 10)
+                          );
+                        }
+                        return false;
+                      }),
                     ).options
                   }
                 />
               </div>
             </div>
-          )}
+            <div css={latestExpensesListStyle}>
+              <h2>Latest expenses </h2>
+              {expenses.reverse().map((expense, index) => {
+                if (index < 10) {
+                  return (
+                    <div css={singleExpenseStyle} key={`expense-${expense.id}`}>
+                      {/* <div css={getColorDot(expense.categoryId)} /> */}
+                      <div css={expenseDateStyle}>
+                        {new Intl.DateTimeFormat('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                        }).format(new Date(expense.date))}{' '}
+                      </div>{' '}
+                      <div css={expenseNameStyle}>{expense.name}</div>{' '}
+                      <div css={expensePriceStyle}>{expense.price / 100}€</div>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </div>
+        )}
+
+        <div css={mainFlexStyle}>
           <div css={addExpenseFlexStyle}>
             <h2>Add an expense</h2>
             <div css={addExpenseStyle}>
@@ -628,7 +721,7 @@ export default function Expenses(props: Props) {
                     ),
                     inputDate,
                   );
-                  console.log('currency', typeof exchangeRate, exchangeRate);
+                  console.log('expenses in form', expenses);
                 }}
               >
                 <label>
@@ -867,7 +960,7 @@ export default function Expenses(props: Props) {
             </div>
           )}
 
-          {expenses.length > 0 && (
+          {/* {expenses.length > 0 && (
             <div css={listExpensesFlexStyle}>
               <h2>Latest expenses </h2>
               <div>
@@ -898,7 +991,7 @@ export default function Expenses(props: Props) {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </Layout>
@@ -942,6 +1035,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     year: 'numeric',
   }).format(new Date());
 
+  console.log('year, month', currentMonth, currentYear);
+
   const expensesCurrentMonth = await getExpensesByMonthByUser(
     Number(currentMonth),
     Number(currentYear),
@@ -958,6 +1053,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       categories: categories,
       expenses: expensesSortedByDate.reverse(),
       expensesCurrentMonth: expensesCurrentMonthDateToString,
+      currentMonth: currentMonth,
+      currentYear: currentYear,
     },
   };
 }
