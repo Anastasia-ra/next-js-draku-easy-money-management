@@ -28,7 +28,10 @@ import {
 } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { colors, getDoughnutCategoriesData } from '../../graphFunctions/charts';
+import {
+  colors,
+  getDoughnutCategoriesAndExpensesData,
+} from '../../graphFunctions/charts';
 
 ChartJS.register(
   ArcElement,
@@ -118,7 +121,7 @@ const mainStyle = css`
 const addExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 200px;
+  width: 220px;
   height: 270px;
   margin: auto;
   padding: 10px 15px;
@@ -176,7 +179,7 @@ const addButtonStyle = css`
 const deleteExpenseStyle = css`
   background: #01aca3;
   color: white;
-  width: 200px;
+  width: 220px;
   height: 270px;
   /* margin: auto; */
   padding: 10px 15px;
@@ -198,7 +201,7 @@ const deleteExpenseStyle = css`
 `;
 
 const deleteListStyle = css`
-  width: 250px;
+  width: 220px;
   margin: auto;
 `;
 
@@ -275,25 +278,26 @@ const singleExpenseStyle = css`
 const expenseNameStyle = css`
   padding: 0 2px;
   text-align: start;
-  width: 110px;
+  width: 130px;
 `;
 
 const expenseDateStyle = css`
   text-align: start;
-  padding: 0 2px;
   width: 65px;
 `;
 
 const expensePriceStyle = css`
   text-align: start;
+  width: 60px;
 `;
 
 const mainFlexStyle = css`
-  margin: 0 10px;
+  margin: auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   flex-wrap: wrap;
-  gap: 2vw;
+  max-width: 600px;
+  align-items: center;
 `;
 
 const addErrorStyle = css`
@@ -331,13 +335,16 @@ const mainStyleError = css`
 const chartDoughnutCategoriesStyle = css`
   display: inline-block;
   width: 220px;
-  height: 285px;
-  ${mediaQueryWidth[0]} {
+  height: 250px;
+  /* ${mediaQueryWidth[0]} {
     margin: 30px 0 5px 0;
-  }
+  } */
 `;
 
 const chartStyle = css`
+  background-color: #fbf9f9;
+  border-radius: 5px;
+  box-shadow: 0 0 8px #ccc;
   /* display: block; */
   /* margin: auto; */
 `;
@@ -346,13 +353,21 @@ const latestExpensesListStyle = css`
   width: 250px;
   height: 270px;
   /* margin: auto; */
+  background-color: #fbf9f9;
+  border-radius: 5px;
+  box-shadow: 0 0 8px #ccc;
+  h2 {
+    margin-top: 10px;
+  }
 `;
 
 const flexChartStyle = css`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  column-gap: 20px;
+  justify-content: space-around;
+  /* column-gap: 20px; */
+  margin: auto;
+  max-width: 600px;
 `;
 
 function getColorDot(index: number) {
@@ -645,7 +660,7 @@ export default function Expenses(props: Props) {
                   // width="150"
                   // height="150"
                   data={
-                    getDoughnutCategoriesData(
+                    getDoughnutCategoriesAndExpensesData(
                       props.categories,
                       expenses.filter((expense) => {
                         const year = expense.date.split('-')[0];
@@ -661,7 +676,7 @@ export default function Expenses(props: Props) {
                     ).data
                   }
                   options={
-                    getDoughnutCategoriesData(
+                    getDoughnutCategoriesAndExpensesData(
                       props.categories,
                       expenses.filter((expense) => {
                         const year = expense.date.split('-')[0];
@@ -685,15 +700,14 @@ export default function Expenses(props: Props) {
                 if (index < 10) {
                   return (
                     <div css={singleExpenseStyle} key={`expense-${expense.id}`}>
-                      {/* <div css={getColorDot(expense.categoryId)} /> */}
+                      <div css={expenseNameStyle}>{expense.name}</div>{' '}
+                      <div css={expensePriceStyle}>{expense.price / 100}€</div>
                       <div css={expenseDateStyle}>
                         {new Intl.DateTimeFormat('en-GB', {
                           day: '2-digit',
                           month: 'short',
                         }).format(new Date(expense.date))}{' '}
                       </div>{' '}
-                      <div css={expenseNameStyle}>{expense.name}</div>{' '}
-                      <div css={expensePriceStyle}>{expense.price / 100}€</div>
                     </div>
                   );
                 }
@@ -770,7 +784,6 @@ export default function Expenses(props: Props) {
                         setExchangeRate(event.currentTarget.value)
                       }
                     >
-                      {/* <option value="EUR">EUR</option> */}
                       {currencyList.map((curr) => {
                         return (
                           <option key={curr.name} value={curr.exchangeRate}>
@@ -871,7 +884,6 @@ export default function Expenses(props: Props) {
                           }}
                         >
                           <Image
-                            // css={deleteImageStyle}
                             src="/delete.png"
                             width="20px"
                             height="20px"
@@ -959,39 +971,6 @@ export default function Expenses(props: Props) {
               )}
             </div>
           )}
-
-          {/* {expenses.length > 0 && (
-            <div css={listExpensesFlexStyle}>
-              <h2>Latest expenses </h2>
-              <div>
-                {expenses.length === 0 && <div>No expenses yet</div>}
-                <div css={latestExpensesListStyle}>
-                  {expenses.reverse().map((expense, index) => {
-                    if (index < 15) {
-                      return (
-                        <div
-                          css={singleExpenseStyle}
-                          key={`expense-${expense.id}`}
-                        >
-                          <div css={expenseDateStyle}>
-                            {new Intl.DateTimeFormat('en-GB', {
-                              day: '2-digit',
-                              month: 'short',
-                            }).format(new Date(expense.date))}{' '}
-                          </div>{' '}
-                          <div css={expenseNameStyle}>{expense.name}</div>{' '}
-                          <div css={expensePriceStyle}>
-                            {expense.price / 100}€
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </Layout>
