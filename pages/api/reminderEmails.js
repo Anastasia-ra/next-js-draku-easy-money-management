@@ -2,7 +2,7 @@ import { config } from 'dotenv-safe';
 import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 import cron from 'node-cron';
-import { getUserByValidSessionToken } from '../../util/database';
+import { addReminder, getUserByValidSessionToken } from '../../util/database';
 
 config();
 
@@ -15,8 +15,8 @@ export default async function emailHandler(request, response) {
       !request.body.reminder.name ||
       typeof request.body.reminder.price !== 'string' ||
       !request.body.reminder.price ||
-      typeof request.body.reminder.username !== 'string' ||
-      !request.body.reminder.username
+      typeof request.body.reminder.user.id !== 'number' ||
+      !request.body.reminder.user.id
     ) {
       response.status(400).json({
         errors: [
@@ -128,7 +128,15 @@ export default async function emailHandler(request, response) {
       });
     });
 
-    response.status(200).json({ message: 'it worked' });
+    const newReminder = await addReminder(
+      request.body.reminder.user.id,
+      request.body.reminder.name,
+      request.body.reminder.price,
+      Number(request.body.reminder.day),
+      request.body.reminder.email,
+    );
+
+    response.status(200).json({ reminder: newReminder });
     return;
   }
 
