@@ -2,6 +2,7 @@ import { Category, Expense } from '../util/database';
 import { getSharePerCategory, getSumExpensesCategory } from './sumPerCategory';
 import { Context } from 'chartjs-plugin-datalabels';
 import { getTotalBudgetProgress } from './budgetProgress';
+import { getSumPerDay } from './sumPerDay';
 
 export const colors = [
   'rgba(255, 99, 164, 0.8)',
@@ -425,15 +426,15 @@ export function getLineDataByDay(
     date: string;
   }>,
 ) {
-  const expensesSorted = expensesCurrentMonth.sort((a, b) => {
-    return a.date.localeCompare(b.date);
-  });
-
   const numberDaysCurrentMonth = new Date(
     new Date().getFullYear(),
     new Date().getMonth() + 1,
     0,
   ).getDate();
+
+  const currentDay = new Date().getDate();
+
+  const daysWithExpenses = getSumPerDay(expensesCurrentMonth, currentDay);
 
   function getDaysCurrentMonth() {
     const days = [];
@@ -454,7 +455,7 @@ export function getLineDataByDay(
     datasets: [
       {
         label: 'Expenses',
-        data: expensesSorted.map((expense) => expense.price / 100),
+        data: daysWithExpenses.map((day) => day.totalExpenses / 100),
         borderColor: '#01aca3',
         backgroundColor: '#01aca3',
       },

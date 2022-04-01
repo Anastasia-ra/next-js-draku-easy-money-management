@@ -706,7 +706,7 @@ export default function Expenses(props: Props) {
 
             <div css={latestExpensesListStyle}>
               <h2>Latest expenses </h2>
-              {expenses.reverse().map((expense, index) => {
+              {expenses.map((expense, index) => {
                 if (index < 10) {
                   return (
                     <div css={singleExpenseStyle} key={`expense-${expense.id}`}>
