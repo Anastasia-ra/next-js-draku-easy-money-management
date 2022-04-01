@@ -202,6 +202,7 @@ const deleteExpenseStyle = css`
 
 const deleteListStyle = css`
   width: 220px;
+  height: 270px;
   margin: auto;
 `;
 
@@ -233,9 +234,10 @@ const anotherSearchButtonStyle = css`
 // `;
 
 const deleteButtonStyle = css`
-  width: 25px;
-  height: 20px;
-  font-size: 12px;
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+  border-radius: 50%;
   margin: 2px 2px 2px 5px;
   background: #e0415e;
   /* border: solid #e4361f76; */
@@ -246,6 +248,14 @@ const deleteButtonStyle = css`
   :disabled {
     background: #8b8889;
   }
+  div {
+    margin: auto;
+  }
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  line-height: 12px;
 `;
 
 const deleteItemFlexStyle = css`
@@ -263,11 +273,11 @@ const deleteNameStyle = css`
 `;
 
 const deleteDateStyle = css`
-  padding: 0 5px;
+  width: 50px;
 `;
 
 const deletePriceStyle = css`
-  width: 60px;
+  width: 50px;
 `;
 
 const singleExpenseStyle = css`
@@ -297,7 +307,7 @@ const mainFlexStyle = css`
   justify-content: space-around;
   flex-wrap: wrap;
   max-width: 600px;
-  align-items: center;
+  align-items: start;
 `;
 
 const addErrorStyle = css`
@@ -852,12 +862,6 @@ export default function Expenses(props: Props) {
               <h2>Delete an expense</h2>
               {displayList ? (
                 <div css={deleteListStyle}>
-                  <button
-                    css={anotherSearchButtonStyle}
-                    onClick={() => setDisplayList(false)}
-                  >
-                    Search another expense
-                  </button>
                   {filteredExpenses.length === 0 && (
                     <div>No expenses found</div>
                   )}
@@ -891,16 +895,23 @@ export default function Expenses(props: Props) {
                             );
                           }}
                         >
-                          <Image
+                          <div>×</div>
+                          {/* <Image
                             src="/delete.png"
-                            width="20px"
-                            height="20px"
+                            width="11px"
+                            height="11px"
                             alt="garbage can"
-                          />
+                          /> */}
                         </button>
                       </div>
                     );
                   })}
+                  <button
+                    css={anotherSearchButtonStyle}
+                    onClick={() => setDisplayList(false)}
+                  >
+                    Search another expense
+                  </button>
                 </div>
               ) : (
                 <div css={deleteExpenseStyle}>
