@@ -112,13 +112,38 @@ const addButtonStyle = css`
 const singleReminderStyle = css`
   display: flex;
   flex-direction: row;
+  padding-left: 10px;
 `;
 
-const reminderNameStyle = css``;
+const titleReminderStyle = css`
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+  font-weight: bold;
+`;
 
-const reminderPriceStyle = css``;
+const remindersListStyle = css`
+  margin: 5px auto 25px auto;
+  width: 270px;
 
-const reminderDayStyle = css``;
+  h2 {
+    font-size: 18px;
+  }
+`;
+
+const reminderNameStyle = css`
+  width: 130px;
+`;
+
+const reminderPriceStyle = css`
+  width: 60px;
+  text-align: center;
+`;
+
+const reminderDayStyle = css`
+  width: 100px;
+  text-align: center;
+`;
 
 export default function Reminder(props: Props) {
   const [userEmail, setUserEmail] = useState('');
@@ -195,7 +220,18 @@ export default function Reminder(props: Props) {
       <div css={mainStyle}>
         <h1>Reminders to pay your bills</h1>
         {/* <p>You can add an email reminder to pay your bills.</p> */}
-        <div>
+        <div css={remindersListStyle}>
+          {reminders.length > 0 && (
+            <>
+              <h2>Your current reminders are: </h2>{' '}
+              <div css={titleReminderStyle}>
+                <div css={reminderNameStyle}>Name</div>{' '}
+                <div css={reminderPriceStyle}>Price</div>{' '}
+                <div css={reminderDayStyle}>Reminder day</div>
+              </div>
+            </>
+          )}
+
           {reminders.map((emailReminder) => {
             return (
               <div
@@ -274,7 +310,7 @@ export default function Reminder(props: Props) {
             </label>
 
             <label>
-              Day
+              Reminder Day
               <br />
               <input
                 css={dayInput}
