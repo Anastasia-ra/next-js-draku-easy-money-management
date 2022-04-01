@@ -654,46 +654,56 @@ export default function Expenses(props: Props) {
         {/* <h2>{currentMonth}</h2> */}
         {expenses.length > 0 && (
           <div css={flexChartStyle}>
-            <div css={chartStyle}>
-              <div css={chartDoughnutCategoriesStyle}>
-                <Doughnut
-                  // width="150"
-                  // height="150"
-                  data={
-                    getDoughnutCategoriesAndExpensesData(
-                      props.categories,
-                      expenses.filter((expense) => {
-                        const year = expense.date.split('-')[0];
-                        if (props.currentYear === year) {
-                          const month = expense.date.split('-')[1];
-                          return (
-                            parseInt(props.currentMonth, 10) ===
-                            parseInt(month, 10)
-                          );
-                        }
-                        return false;
-                      }),
-                    ).data
-                  }
-                  options={
-                    getDoughnutCategoriesAndExpensesData(
-                      props.categories,
-                      expenses.filter((expense) => {
-                        const year = expense.date.split('-')[0];
-                        if (props.currentYear === year) {
-                          const month = expense.date.split('-')[1];
-                          return (
-                            parseInt(props.currentMonth, 10) ===
-                            parseInt(month, 10)
-                          );
-                        }
-                        return false;
-                      }),
-                    ).options
-                  }
-                />
+            {expenses.filter((expense) => {
+              const year = expense.date.split('-')[0];
+              if (props.currentYear === year) {
+                const month = expense.date.split('-')[1];
+                return parseInt(props.currentMonth, 10) === parseInt(month, 10);
+              }
+              return false;
+            }).length > 0 && (
+              <div css={chartStyle}>
+                <div css={chartDoughnutCategoriesStyle}>
+                  <Doughnut
+                    // width="150"
+                    // height="150"
+                    data={
+                      getDoughnutCategoriesAndExpensesData(
+                        props.categories,
+                        expenses.filter((expense) => {
+                          const year = expense.date.split('-')[0];
+                          if (props.currentYear === year) {
+                            const month = expense.date.split('-')[1];
+                            return (
+                              parseInt(props.currentMonth, 10) ===
+                              parseInt(month, 10)
+                            );
+                          }
+                          return false;
+                        }),
+                      ).data
+                    }
+                    options={
+                      getDoughnutCategoriesAndExpensesData(
+                        props.categories,
+                        expenses.filter((expense) => {
+                          const year = expense.date.split('-')[0];
+                          if (props.currentYear === year) {
+                            const month = expense.date.split('-')[1];
+                            return (
+                              parseInt(props.currentMonth, 10) ===
+                              parseInt(month, 10)
+                            );
+                          }
+                          return false;
+                        }),
+                      ).options
+                    }
+                  />
+                </div>
               </div>
-            </div>
+            )}
+
             <div css={latestExpensesListStyle}>
               <h2>Latest expenses </h2>
               {expenses.reverse().map((expense, index) => {
@@ -725,7 +735,6 @@ export default function Expenses(props: Props) {
                 onSubmit={async (event) => {
                   event.preventDefault();
                   await getAllExpenses(props.user.id);
-                  console.log('inputPrice', inputPrice);
                   await addExpense(
                     props.user.id,
                     Number(inputCategoryId),
@@ -735,7 +744,6 @@ export default function Expenses(props: Props) {
                     ),
                     inputDate,
                   );
-                  console.log('expenses in form', expenses);
                 }}
               >
                 <label>

@@ -538,24 +538,27 @@ export default function Home(props: Props) {
           </div>
           {/* <div css={categoriesStyle}>
             {isCheckedDoughnut ? ( */}
-          <div css={chartDoughnutCategoriesStyle}>
-            <Doughnut
-              // width="150"
-              // height="150"
-              data={
-                getDoughnutCategories(
-                  props.categories,
-                  props.expensesCurrentMonth,
-                ).data
-              }
-              options={
-                getDoughnutCategories(
-                  props.categories,
-                  props.expensesCurrentMonth,
-                ).options
-              }
-            />
-          </div>
+          {props.expensesCurrentMonth.length > 0 && (
+            <div css={chartDoughnutCategoriesStyle}>
+              <Doughnut
+                // width="150"
+                // height="150"
+                data={
+                  getDoughnutCategories(
+                    props.categories,
+                    props.expensesCurrentMonth,
+                  ).data
+                }
+                options={
+                  getDoughnutCategories(
+                    props.categories,
+                    props.expensesCurrentMonth,
+                  ).options
+                }
+              />
+            </div>
+          )}
+
           {/* ) : (
               <div css={chartDoughnutCategoriesStyle}>
                 <Doughnut
