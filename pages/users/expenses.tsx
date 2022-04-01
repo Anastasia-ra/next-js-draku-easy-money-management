@@ -996,8 +996,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const categories = await getAllCategoriesbyUserId(user.id);
 
   const expenses = await getAllExpensesByUserId(user.id);
-
-  // To avoid issue with serializing object
   const expensesDateToString = JSON.parse(JSON.stringify(expenses));
 
   const expensesSortedByDate = expensesDateToString.sort(

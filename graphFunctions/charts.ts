@@ -449,8 +449,6 @@ export function getLineDataByDay(
     return days;
   }
 
-  console.log('days', getDaysCurrentMonth());
-
   const dataLine = {
     labels: getDaysCurrentMonth(),
     datasets: [

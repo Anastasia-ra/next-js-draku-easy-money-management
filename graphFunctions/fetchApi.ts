@@ -8,7 +8,6 @@ export async function getExpensesList(userId: number) {
       userId,
     }),
   });
-  console.log('expensesList', expensesListResponse);
   const expensesListResponseBody = await expensesListResponse.json();
   return expensesListResponseBody;
 }

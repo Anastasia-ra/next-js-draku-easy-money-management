@@ -364,7 +364,6 @@ const mainLoggedOutStyle = css`
 export default function Home(props: Props) {
   const [isCheckedLineChart, setIsCheckedLineChart] = useState(true);
   // const [isCheckedDoughnut, setIsCheckedDoughnut] = useState(true);
-  console.log('props in Home', props);
 
   if ('error' in props) {
     return (
@@ -652,8 +651,6 @@ export default function Home(props: Props) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  /* context.res.setHeader('Cache-Control', 'no-store'); */
-
   const sessionToken = context.req.cookies.sessionToken;
   const user = await getUserByValidSessionToken(sessionToken);
 
@@ -701,10 +698,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     JSON.stringify(expensesCurrentYear),
   );
 
-  console.log(
-    'expensesCurrentYearDateToString',
-    expensesCurrentYearDateToString,
-  );
   /*
   const expensesLastYear = [];
 

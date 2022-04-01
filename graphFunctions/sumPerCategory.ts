@@ -21,7 +21,6 @@ export function getSumExpensesCategory(
       expensesSum: expensesSum,
     };
   });
-  console.log('sumPerCategory', sumPerCategory);
   return sumPerCategory;
 }
 
@@ -52,6 +51,5 @@ export function getSharePerCategory(categoryWithSum: CategoryWithSum[]) {
       shareOfExpenses: proportion,
     };
   });
-  console.log('categoriesWithPercentage', categoriesWithShare);
   return categoriesWithShare;
 }
