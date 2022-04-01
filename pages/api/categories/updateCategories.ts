@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
   getCategorybyUserId,
-  updateCategoryBudget,
-  updateCategoryName,
-  updateCategoryNameAndBudget,
+  getUserByValidSessionToken,
+  updateCategoryBudgetByUserId,
+  updateCategoryNameByUserId,
+  updateCategoryNameAndBudgetByUserId,
 } from '../../../util/database';
 
 export default async function categoriesHandler(
@@ -11,6 +12,13 @@ export default async function categoriesHandler(
   response: NextApiResponse,
 ) {
   if (request.method === 'PUT') {
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
     if (
       typeof request.body.category.categoryId !== 'number' ||
       !request.body.category.categoryId
@@ -62,9 +70,10 @@ export default async function categoriesHandler(
         return;
       }
 
-      const updatedCategory = await updateCategoryName(
+      const updatedCategory = await updateCategoryNameByUserId(
         request.body.category.categoryId,
         request.body.category.newCategoryName,
+        user.id,
       );
 
       response.status(201).json({
@@ -77,9 +86,10 @@ export default async function categoriesHandler(
       typeof request.body.category.newCategoryName !== 'string' ||
       !request.body.category.newCategoryName
     ) {
-      const updatedCategory = await updateCategoryBudget(
+      const updatedCategory = await updateCategoryBudgetByUserId(
         request.body.category.categoryId,
         request.body.category.newCategoryBudget,
+        user.id,
       );
 
       response.status(201).json({
@@ -105,10 +115,11 @@ export default async function categoriesHandler(
       return;
     }
 
-    const updatedCategory = await updateCategoryNameAndBudget(
+    const updatedCategory = await updateCategoryNameAndBudgetByUserId(
       request.body.category.categoryId,
       request.body.category.newCategoryName,
       request.body.category.newCategoryBudget,
+      user.id,
     );
 
     response.status(201).json({

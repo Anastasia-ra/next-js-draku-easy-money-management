@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllExpensesByUserId } from '../../../util/database';
+import {
+  getAllExpensesByUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function expensesHandler(
   request: NextApiRequest,
@@ -16,6 +19,13 @@ export default async function expensesHandler(
       });
       return;
     }
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
     const expensesList = await getAllExpensesByUserId(request.body.userId);
 
     console.log('expensesList', expensesList);

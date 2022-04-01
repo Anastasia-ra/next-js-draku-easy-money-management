@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getExpensesPerCategory } from '../../../util/database';
+import {
+  getExpensesPerCategory,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 // Get single expense for each category
 
@@ -8,6 +11,13 @@ export default async function categoriesHandler(
   response: NextApiResponse,
 ) {
   if (request.method === 'GET') {
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
     const expensesPerCategories = await getExpensesPerCategory();
 
     response.status(201).json({

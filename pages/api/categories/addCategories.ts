@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createCategory, getCategorybyUserId } from '../../../util/database';
+import {
+  createCategory,
+  getCategorybyUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function categoriesHandler(
   request: NextApiRequest,
@@ -22,9 +26,16 @@ export default async function categoriesHandler(
       });
       return;
     }
+
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
     const categoryFromRequest = request.body.category;
 
-    // Checks if category already exists in database
     const categoryExists = await getCategorybyUserId(
       categoryFromRequest.userId,
       categoryFromRequest.name,

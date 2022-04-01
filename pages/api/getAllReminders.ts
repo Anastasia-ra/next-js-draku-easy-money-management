@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllRemindersByUserId } from '../../util/database';
+import {
+  getAllRemindersByUserId,
+  getUserByValidSessionToken,
+} from '../../util/database';
 
 export default async function remindersHandler(
   request: NextApiRequest,
@@ -16,6 +19,13 @@ export default async function remindersHandler(
       });
       return;
     }
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
+    }
+
     const remindersList = await getAllRemindersByUserId(request.body.userId);
 
     response.status(201).json({

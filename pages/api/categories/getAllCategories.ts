@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAllCategoriesbyUserId } from '../../../util/database';
+import {
+  getAllCategoriesbyUserId,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function categoriesHandler(
   request: NextApiRequest,
@@ -15,6 +18,13 @@ export default async function categoriesHandler(
         ],
       });
       return;
+    }
+
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
     }
 
     const categoriesList = await getAllCategoriesbyUserId(request.body.userId);

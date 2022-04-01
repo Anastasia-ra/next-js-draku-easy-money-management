@@ -370,10 +370,11 @@ export async function getExpensesByYearByUser(year: number, userId: number) {
   return expenses.map((expense) => camelcaseKeys(expense));
 }
 
-export async function updateCategoryNameAndBudget(
+export async function updateCategoryNameAndBudgetByUserId(
   categoryId: number,
   newCategoryName: string,
   newCategoryBudget: number,
+  userId: number,
 ) {
   const [category] = await sql<Category[]>`
     UPDATE
@@ -382,14 +383,16 @@ export async function updateCategoryNameAndBudget(
       name = ${newCategoryName},
       monthly_budget = ${newCategoryBudget}
     WHERE
-      id = ${categoryId}
+      id = ${categoryId} AND
+      user_id = ${userId}
   `;
   return camelcaseKeys(category);
 }
 
-export async function updateCategoryName(
+export async function updateCategoryNameByUserId(
   categoryId: number,
   newCategoryName: string,
+  userId: number,
 ) {
   const [category] = await sql<Category[]>`
     UPDATE
@@ -397,14 +400,16 @@ export async function updateCategoryName(
     SET
       name = ${newCategoryName}
     WHERE
-      id = ${categoryId}
+      id = ${categoryId} AND
+      user_id = ${userId}
   `;
   return camelcaseKeys(category);
 }
 
-export async function updateCategoryBudget(
+export async function updateCategoryBudgetByUserId(
   categoryId: number,
   newCategoryBudget: number,
+  userId: number,
 ) {
   const [category] = await sql<Category[]>`
     UPDATE
@@ -412,7 +417,8 @@ export async function updateCategoryBudget(
     SET
       monthly_budget = ${newCategoryBudget}
     WHERE
-      id = ${categoryId}
+      id = ${categoryId} AND
+      user_id = ${userId}
   `;
   return camelcaseKeys(category);
 }

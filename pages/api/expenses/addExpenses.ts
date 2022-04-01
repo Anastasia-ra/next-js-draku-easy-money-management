@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createExpense } from '../../../util/database';
+import {
+  createExpense,
+  getUserByValidSessionToken,
+} from '../../../util/database';
 
 export default async function expensesHandler(
   request: NextApiRequest,
@@ -22,6 +25,13 @@ export default async function expensesHandler(
         ],
       });
       return;
+    }
+
+    const sessionToken = request.cookies.sessionToken;
+    const user = await getUserByValidSessionToken(sessionToken);
+
+    if (!user) {
+      return response.status(401).send({ message: 'Unauthorized' });
     }
 
     const expenseFromRequest = request.body.expense;
