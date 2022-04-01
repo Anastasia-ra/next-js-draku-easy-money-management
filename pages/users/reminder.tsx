@@ -6,11 +6,11 @@ import {
   getAllCategoriesbyUserId,
   getUserByValidSessionToken,
   Category,
-  getAllExpensesByUserId,
   EmailReminder,
   getAllRemindersByUserId,
 } from '../../util/database';
 import { GetServerSidePropsContext } from 'next';
+import Link from 'next/link';
 
 type Props = {
   userObject: { username: string };
@@ -141,7 +141,7 @@ const reminderPriceStyle = css`
 `;
 
 const reminderDayStyle = css`
-  width: 100px;
+  width: 110px;
   text-align: center;
 `;
 
@@ -153,6 +153,22 @@ export default function Reminder(props: Props) {
   const [reminders, setReminders] = useState<EmailReminder[]>(props.reminders);
   const [confirmation, setConfirmation] = useState(false);
   const [errors, setErrors] = useState<Errors>([]);
+
+  if ('error' in props) {
+    return (
+      <Layout userObject={props.userObject}>
+        <Head>
+          <title>Error</title>
+          <meta name="description" content="Reminder error" />
+        </Head>
+        <h1>Error</h1>
+        <p>Please login first to be able to add new reminders.</p>
+        <Link href="/login?returnTo=/users/expenses">
+          <a>Login</a>
+        </Link>
+      </Layout>
+    );
+  }
 
   async function sendEmail(
     email: string,
@@ -245,14 +261,7 @@ export default function Reminder(props: Props) {
             );
           })}
         </div>
-        {confirmation && (
-          <div>
-            Congratulations! You will soon receive a confirmation email.{' '}
-          </div>
-        )}
-        {errors.map((error) => {
-          return <div key={`error-${error.message}`}>{error.message}</div>;
-        })}
+
         <form
           css={formStyle}
           onSubmit={async (event) => {
@@ -327,6 +336,15 @@ export default function Reminder(props: Props) {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })} */}
           <button css={addButtonStyle}>Add reminder</button>
+          {confirmation && (
+            <div>
+              Your reminder has been added! You will soon receive a confirmation
+              email.{' '}
+            </div>
+          )}
+          {errors.map((error) => {
+            return <div key={`error-${error.message}`}>{error.message}</div>;
+          })}
         </form>
       </div>
     </Layout>
