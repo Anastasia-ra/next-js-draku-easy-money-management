@@ -8,7 +8,7 @@
 - TypeScript
 - API routes
 - Authentication: CSRF tokens, bcrypt
-- PostgreSQL (4 tables)
+- PostgreSQL
 - Emotion for styling
 - Unit tests and E2E tests with Jest and Puppeteer
 - Chart.js
