@@ -70,7 +70,7 @@ export default async function emailHandler(request, response) {
       subject: `Reminder to pay your bills`,
       text: `Hey, just a quick reminder that you have to pay ${request.body.reminder.name}. The total amount is ${request.body.reminder.price}`,
       html: `<div>
-          <div>Hey  ${request.body.reminder.username}! </div>
+          <div>Hey  ${request.body.reminder.user.username}! </div>
           Just a quick reminder that you have to pay
           ${request.body.reminder.name} soon. The total amount is
           ${request.body.reminder.price}.
@@ -89,7 +89,7 @@ export default async function emailHandler(request, response) {
       subject: `Confirmation e-mail reminder set-up `,
       text: `Hey, you successfully registered for an e-mail reminder to pay your ${request.body.reminder.name} bill.`,
       html: `<div>
-      <div>Hey  ${request.body.reminder.username}! </div>
+      <div>Hey  ${request.body.reminder.user.username}! </div>
       You successfully registered for an e-mail reminder to pay your ${request.body.reminder.name} bill.
       <div>Draku</div>
         </div>`,
