@@ -197,7 +197,7 @@ export function getDoughnutCategoriesAndExpensesData(
       },
       title: {
         display: true,
-        text: 'Categories with expenses',
+        text: 'Categories with expenses this month',
         color: '#26325b',
         font: {
           size: 16,
