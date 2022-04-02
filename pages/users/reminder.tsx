@@ -56,7 +56,7 @@ const formStyle = css`
   color: white;
   width: 280px;
   height: 260px;
-  margin: 10px auto 20px auto;
+  margin: 10px auto 10px auto;
   padding: 10px 15px;
   border-radius: 15px;
   text-align: center;
@@ -155,6 +155,19 @@ const reminderDayStyle = css`
   text-align: start;
 `;
 
+const messageStyle = css`
+  width: 250px;
+  margin: auto;
+  color: green;
+  margin-bottom: 10px;
+`;
+
+const errorStyle = css`
+  color: #d51616;
+
+  text-align: center;
+`;
+
 export default function Reminder(props: Props) {
   const [userEmail, setUserEmail] = useState('');
   const [reminderName, setReminderName] = useState('');
@@ -229,8 +242,6 @@ export default function Reminder(props: Props) {
     });
 
     const allRemindersResponseBody = await allRemindersResponse.json();
-
-    console.log('allRemindersResponseBody', allRemindersResponseBody);
 
     setReminders(allRemindersResponseBody.remindersList);
 
@@ -349,6 +360,8 @@ export default function Reminder(props: Props) {
           return <div key={`error-${error.message}`}>{error.message}</div>;
         })} */}
           <button css={addButtonStyle}>Add reminder</button>
+        </form>
+        <div css={messageStyle}>
           {confirmation && (
             <div>
               Your reminder has been added! You will soon receive a confirmation
@@ -356,9 +369,13 @@ export default function Reminder(props: Props) {
             </div>
           )}
           {errors.map((error) => {
-            return <div key={`error-${error.message}`}>{error.message}</div>;
+            return (
+              <div css={errorStyle} key={`error-${error.message}`}>
+                {error.message}
+              </div>
+            );
           })}
-        </form>
+        </div>
       </div>
     </Layout>
   );
