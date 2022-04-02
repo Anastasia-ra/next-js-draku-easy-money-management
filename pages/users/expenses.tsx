@@ -283,17 +283,19 @@ const deletePriceStyle = css`
 const singleExpenseStyle = css`
   display: flex;
   flex-wrap: nowrap;
+  font-size: 14px;
+  padding-left: 15px;
 `;
 
 const expenseNameStyle = css`
   padding: 0 2px;
   text-align: start;
-  width: 130px;
+  width: 120px;
 `;
 
 const expenseDateStyle = css`
   text-align: start;
-  width: 65px;
+  width: 55px;
 `;
 
 const expensePriceStyle = css`
@@ -352,9 +354,9 @@ const chartDoughnutCategoriesStyle = css`
 `;
 
 const chartStyle = css`
-  background-color: #fbf9f9;
+  /* background-color: #fbf9f9; */
   border-radius: 5px;
-  box-shadow: 0 0 8px #ccc;
+  /* box-shadow: 0 0 8px #ccc; */
   /* display: block; */
   /* margin: auto; */
 `;
@@ -362,10 +364,12 @@ const chartStyle = css`
 const latestExpensesListStyle = css`
   width: 250px;
   height: 270px;
+  text-align: start;
   /* margin: auto; */
   background-color: #fbf9f9;
-  border-radius: 5px;
-  box-shadow: 0 0 8px #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 6px #ccc;
+
   h2 {
     margin-top: 10px;
   }
@@ -376,7 +380,7 @@ const flexChartStyle = css`
   flex-wrap: wrap;
   justify-content: space-around;
   /* column-gap: 20px; */
-  margin: auto;
+  margin: 30px auto 20px auto;
   max-width: 600px;
 `;
 

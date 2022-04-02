@@ -32,7 +32,7 @@ const mainStyle = css`
   box-shadow: 0 0 8px #cccccc;
   color: #26325b;
   max-width: 480px;
-  padding-bottom: 10px;
+  padding: 10px;
   margin: 2vh auto;
   h1 {
     font-size: 26px;
@@ -120,11 +120,16 @@ const titleReminderStyle = css`
   flex-direction: row;
   padding-left: 10px;
   font-weight: bold;
+  margin-bottom: 6px;
 `;
 
 const remindersListStyle = css`
-  margin: 5px auto 25px auto;
+  margin: 30px auto 35px auto;
   width: 270px;
+  background-color: #fbfbfb;
+  border-radius: 10px;
+  box-shadow: 0 0 6px #e0e0e0;
+  padding: 1px 5px 15px 15px;
 
   h2 {
     font-size: 18px;
@@ -137,12 +142,17 @@ const reminderNameStyle = css`
 
 const reminderPriceStyle = css`
   width: 60px;
-  text-align: center;
+  text-align: start;
+`;
+const titleReminderDayStyle = css`
+  width: 110px;
+  text-align: start;
 `;
 
 const reminderDayStyle = css`
   width: 110px;
-  text-align: center;
+  /* padding-left: 40px; */
+  text-align: start;
 `;
 
 export default function Reminder(props: Props) {
@@ -236,17 +246,17 @@ export default function Reminder(props: Props) {
       <div css={mainStyle}>
         <h1>Reminders to pay your bills</h1>
         <p>
-          Set up email reminders. Draku will send you an email once a month to
-          remind you to pay this expense.
+          Set up monthly email reminders. Draku will send you an email on the
+          chosen day of the month to remind you to pay this expense.
         </p>
         <div css={remindersListStyle}>
           {reminders.length > 0 && (
             <>
-              <h2>Your current reminders are: </h2>{' '}
+              <h2>Your current reminders </h2>{' '}
               <div css={titleReminderStyle}>
                 <div css={reminderNameStyle}>Name</div>{' '}
                 <div css={reminderPriceStyle}>Price</div>{' '}
-                <div css={reminderDayStyle}>Reminder day</div>
+                <div css={titleReminderDayStyle}>Day of Month</div>
               </div>
             </>
           )}
@@ -322,7 +332,7 @@ export default function Reminder(props: Props) {
             </label>
 
             <label>
-              Reminder Day
+              Day of the Month
               <br />
               <input
                 css={dayInput}
