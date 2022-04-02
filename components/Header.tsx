@@ -2,6 +2,7 @@ import { css, Interpolation, Theme } from '@emotion/react';
 import Link from 'next/link';
 import { AnchorHTMLAttributes } from 'react';
 import { User } from '../util/database';
+import Image from 'next/image';
 
 const mainStyle = css`
   background: #01aca3;
@@ -28,6 +29,13 @@ const textStyle = css`
   display: flex;
   justify-content: space-between;
   align-self: center;
+  position: relative;
+`;
+
+const imageStyle = css`
+  top: 1px;
+  /* left: 8px; */
+  position: relative;
 `;
 
 const rightLinksStyle = css`
@@ -66,10 +74,12 @@ export default function Header(props: Props) {
   return (
     <header css={mainStyle}>
       <div css={textStyle}>
+        <div css={imageStyle}>
+          <Image src="/draku-favicon-4.png" width="20px" height="20px" />
+        </div>
         {props.userObject && (
           <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
         )}
-
         <div css={rightLinksStyle}>
           {props.userObject ? (
             <>

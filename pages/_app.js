@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="description" content="Draku: easy money management" />
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" href="/draku-favicon-1.svg" type="image/svg+xml" />
+        <link rel="icon" href="/draku-favicon-4.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-apple-touch.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#01aca3" />
