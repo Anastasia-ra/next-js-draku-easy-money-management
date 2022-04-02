@@ -82,11 +82,12 @@ const mainStyle = css`
   margin: 2vh auto;
   text-align: left;
   max-width: 800px;
-  height: 780px;
+  /* height: 780px; */
   box-shadow: 0 0 8px #cccccc;
-  ${mediaQueryHeight[0]} {
+  padding-bottom: 20px;
+  /* ${mediaQueryHeight[0]} {
     height: 780px;
-  }
+  } */
   ${mediaQueryWidth[1]} {
     box-shadow: 0 0 0 white;
     border-radius: 0;
@@ -369,6 +370,9 @@ const latestExpensesListStyle = css`
   background-color: #fbf9f9;
   border-radius: 10px;
   box-shadow: 0 0 6px #ccc;
+  ${mediaQueryWidth[0]} {
+    margin-top: 20px;
+  }
 
   h2 {
     margin-top: 10px;

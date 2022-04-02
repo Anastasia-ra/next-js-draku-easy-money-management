@@ -81,11 +81,12 @@ const mainStyle = css`
   margin: 2vh auto;
   text-align: left;
   max-width: 800px;
-  height: 70vh;
+  /* height: 70vh; */
   box-shadow: 0 0 8px #cccccc;
-  ${mediaQueryHeight[0]} {
+  padding-bottom: 10px;
+  /* ${mediaQueryHeight[0]} {
     height: 95vh;
-  }
+  } */
 
   h1 {
     /* font-size: 26px; */
