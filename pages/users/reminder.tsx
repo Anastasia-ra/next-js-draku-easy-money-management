@@ -47,7 +47,7 @@ const mainStyle = css`
   p {
     font-size: 18px;
     text-align: left;
-    margin: 5px 0 3vh 35px;
+    margin: 5px 35px 3vh 35px;
   }
 `;
 
@@ -235,7 +235,10 @@ export default function Reminder(props: Props) {
       </Head>
       <div css={mainStyle}>
         <h1>Reminders to pay your bills</h1>
-        {/* <p>You can add an email reminder to pay your bills.</p> */}
+        <p>
+          Set up email reminders. Draku will send you an email once a month to
+          remind you to pay this expense.
+        </p>
         <div css={remindersListStyle}>
           {reminders.length > 0 && (
             <>
