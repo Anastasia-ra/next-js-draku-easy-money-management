@@ -381,7 +381,8 @@ export default function Home(props: Props) {
             <div css={textLoggedOutStyle}>
               Draku makes managing personal finances as easy as sleeping! With
               Draku you can easily record your financial transactions, set
-              budgets and review your monthly and yearly spendings.
+              budgets and review your monthly and yearly spendings. <br /> You
+              can also set monthly email reminders to pay your bills.
             </div>
             <div css={signUpLink}>
               <Link href="/signup">
