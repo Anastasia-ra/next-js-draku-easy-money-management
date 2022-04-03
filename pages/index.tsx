@@ -318,6 +318,9 @@ const imageFlexStyle = css`
   ${mediaQueryWidth[3]} {
     top: 0px;
   }
+  ${mediaQueryWidth[0]} {
+    top: 40px;
+  }
 `;
 
 const textLoggedOutStyle = css`
