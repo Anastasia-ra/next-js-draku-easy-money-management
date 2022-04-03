@@ -74,11 +74,13 @@ export default function Header(props: Props) {
   return (
     <header css={mainStyle}>
       <div css={textStyle}>
-        <div css={imageStyle}>
-          <Image src="/draku-favicon-4.png" width="20px" height="20px" />
-        </div>
         {props.userObject && (
-          <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
+          <>
+            <div css={imageStyle}>
+              <Image src="/draku-favicon-4.png" width="20px" height="20px" />
+            </div>
+            <div css={usernameStyle}>Hi, {props.userObject.username}!</div>
+          </>
         )}
         <div css={rightLinksStyle}>
           {props.userObject ? (
