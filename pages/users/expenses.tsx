@@ -579,17 +579,16 @@ export default function Expenses(props: Props) {
           filteredArray = filteredArray.filter((expense) =>
             expense.name.toLowerCase().includes(expenseName.toLowerCase()),
           );
+        }
 
-          if (categoryId) {
-            filteredArray = filteredArray.filter(
-              (expense) => expense.categoryId === categoryId,
-            );
-            setFilteredExpenses(filteredArray);
-            return filteredArray;
-          }
+        if (categoryId) {
+          filteredArray = filteredArray.filter(
+            (expense) => expense.categoryId === categoryId,
+          );
           setFilteredExpenses(filteredArray);
           return filteredArray;
         }
+
         setFilteredExpenses(filteredArray);
         return filteredArray;
       } else if (expenseName !== '') {
