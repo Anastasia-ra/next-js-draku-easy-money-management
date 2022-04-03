@@ -62,7 +62,7 @@ type Props =
     }
   | { error: string };
 
-const breakPointsWidth = [480, 800, 725];
+const breakPointsWidth = [408, 480, 800, 725];
 const mediaQueryWidth = breakPointsWidth.map(
   (bp) => `@media (max-width: ${bp}px)`,
 );
@@ -210,7 +210,7 @@ const chartLineStyle = css`
   height: 200px;
   margin: 0 auto;
 
-  ${mediaQueryWidth[0]} {
+  ${mediaQueryWidth[1]} {
     width: 90%;
   }
 
@@ -221,7 +221,7 @@ const chartLineStyle = css`
 
 const linksStyle = css`
   background: #01aca3;
-  width: 220px;
+  width: 190px;
   height: 160px;
   text-align: left;
   border-radius: 8px;
@@ -315,7 +315,7 @@ const imageFlexStyle = css`
   height: 350px;
   top: 80px;
 
-  ${mediaQueryWidth[2]} {
+  ${mediaQueryWidth[3]} {
     top: 0px;
   }
 `;
@@ -342,12 +342,12 @@ const mainLoggedOutStyle = css`
   max-width: 800px;
 
   box-shadow: 0 0 8px #cccccc;
-  ${mediaQueryWidth[1]} {
+  ${mediaQueryWidth[2]} {
     box-shadow: 0 0 0 #cccccc;
     border-radius: 0;
     min-height: 85vh;
   }
-  ${mediaQueryWidth[2]} {
+  ${mediaQueryWidth[3]} {
     padding: 0px;
   }
 
@@ -356,7 +356,7 @@ const mainLoggedOutStyle = css`
     text-align: left;
     padding: 3vh 0 2vh 20px;
     /* margin: 15px 0 5px 20px; */
-    ${mediaQueryWidth[0]} {
+    ${mediaQueryWidth[1]} {
       padding: 0vh 0 1vh 20px;
     }
   }
@@ -606,7 +606,7 @@ export default function Home(props: Props) {
                   height="25px"
                   alt="wallet"
                 />{' '}
-                <span css={spanTextStyle}> Manage your expenses </span>
+                <span css={spanTextStyle}> Expenses </span>
               </a>
             </Link>
             <br />
@@ -619,7 +619,7 @@ export default function Home(props: Props) {
                   height="25px"
                   alt="wallet"
                 />{' '}
-                <span> Manage your categories </span>
+                <span> Categories </span>
               </a>
             </Link>
             <br />
@@ -632,7 +632,7 @@ export default function Home(props: Props) {
                   height="25px"
                   alt="piggy"
                 />{' '}
-                <span> Check your budget </span>
+                <span> Budget </span>
               </a>
             </Link>
             <br />
