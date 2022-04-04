@@ -59,12 +59,12 @@
 
 ### Desktop version
 
-![Loggedout](https://user-images.githubusercontent.com/92568005/160659770-76f3c905-313d-441f-9df4-289d0611b117.JPG)
-![homev2](https://user-images.githubusercontent.com/92568005/160872664-7b81e56e-2c7f-4346-94f8-aed895be7f41.JPG)
-![Categories](https://user-images.githubusercontent.com/92568005/160659537-0ec56746-11b6-44ac-91bc-f4abe565e746.JPG)
-![Expenses](https://user-images.githubusercontent.com/92568005/160659550-42bbf65c-7ca8-4991-8922-76bfafdc7fff.JPG)
-![Budget](https://user-images.githubusercontent.com/92568005/160659560-8289644f-f34c-4a9a-a26a-310fd771994f.JPG)
-![reminder](https://user-images.githubusercontent.com/92568005/160872865-f45284c0-e608-4b38-8475-fa2b4c2455b6.JPG)
+![logged-out](https://user-images.githubusercontent.com/92568005/161565134-b0e18197-4f11-4bd1-b2f8-cdd3d00ed2a8.JPG)
+![home](https://user-images.githubusercontent.com/92568005/161565160-052ca48a-4994-47e0-ad63-f51071e512a0.JPG)
+![expenses](https://user-images.githubusercontent.com/92568005/161565189-0167d103-7abe-4cee-9ca7-0388489c0f77.JPG)
+![categories](https://user-images.githubusercontent.com/92568005/161565208-19bcf7b7-8a1b-4ff8-ad45-5ba7cf5f8811.JPG)
+![budget](https://user-images.githubusercontent.com/92568005/161565226-7e96c91e-bd42-4043-be26-31a27ce08883.JPG)
+![reminders](https://user-images.githubusercontent.com/92568005/161565247-77aee150-74d3-4222-8529-49674aebfedb.JPG)
 
 
 
