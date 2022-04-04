@@ -45,13 +45,16 @@
 
 ### Mobile version 
 
-![loggeout](https://user-images.githubusercontent.com/92568005/160872041-0cb22d5b-b331-4bc7-9104-ddf0dcb31119.JPG)
-![home1](https://user-images.githubusercontent.com/92568005/160872055-0d0126f6-af27-43bc-9993-39fd4c170487.JPG)
-![home2](https://user-images.githubusercontent.com/92568005/160872086-0eb463d0-cf88-4443-94bb-0dcbc70033d6.JPG)
-![expenses1](https://user-images.githubusercontent.com/92568005/160872109-f630d3bb-3c35-46bc-94a5-21376224aa04.JPG)
-![categories](https://user-images.githubusercontent.com/92568005/160872119-161df281-ff04-404a-b054-72f9531fccd2.JPG)
-![Budget](https://user-images.githubusercontent.com/92568005/160872127-409c5cff-5378-4d00-a20b-b5495a2d7d16.JPG)
-![Reminder](https://user-images.githubusercontent.com/92568005/160872135-df6c4f2c-3f44-42ab-9326-0767766d01bb.JPG)
+![home1](https://user-images.githubusercontent.com/92568005/161499422-bc8769d1-93ec-4a4e-8239-03de0aa4af72.JPG)
+
+![home2](https://user-images.githubusercontent.com/92568005/161499429-53f8610d-c53e-4601-a895-d6e278da5933.JPG)
+
+![exepenses1](https://user-images.githubusercontent.com/92568005/161499456-d72d29dc-6657-48dc-b693-47dbcdc8ce3f.JPG)
+![expenses2](https://user-images.githubusercontent.com/92568005/161499462-e0200f05-53ae-4b54-8755-914d07dbfcb0.JPG)
+
+![Categories](https://user-images.githubusercontent.com/92568005/161499484-d81aa3f2-0f9d-4727-b212-2de8efac19e1.JPG)
+![Budget](https://user-images.githubusercontent.com/92568005/161499496-e7085dc1-8ef3-4d0d-adb3-ef21de09e55d.JPG)
+![Reminders](https://user-images.githubusercontent.com/92568005/161499505-4340a705-5c9f-4fc2-bb96-a7e720ebb2ae.JPG)
 
 
 
