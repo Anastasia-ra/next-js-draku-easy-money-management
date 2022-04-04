@@ -6,6 +6,7 @@
 
 - Next.js
 - TypeScript
+- PWA (progressive web app)
 - API routes
 - Authentication: CSRF tokens, bcrypt
 - PostgreSQL
@@ -37,23 +38,21 @@
 - After signing up, start by creating your first categories in the section "Manage your categories". You cannot add expenses until you have added categories. <br />
 - You can now add your first expenses in the section "Manage your expenses". 
 - ✨ You can now track your expenses and check your budget progress! 
+- You can also add a reminder to pay your bills in the "Set up a reminder" section. Fill in the form, after submitting the form, you will receive a confirmation email. Your reminder has been successfully set up, you will now receive a reminder every month on the chosen day
 
-
-## Just want to have a quick look? Check out the demo account
 
 ## Screenshots
 
 ### Mobile version 
 
 ![home1](https://user-images.githubusercontent.com/92568005/161499422-bc8769d1-93ec-4a4e-8239-03de0aa4af72.JPG)
-
 ![home2](https://user-images.githubusercontent.com/92568005/161499429-53f8610d-c53e-4601-a895-d6e278da5933.JPG)
 
 ![exepenses1](https://user-images.githubusercontent.com/92568005/161499456-d72d29dc-6657-48dc-b693-47dbcdc8ce3f.JPG)
 ![expenses2](https://user-images.githubusercontent.com/92568005/161499462-e0200f05-53ae-4b54-8755-914d07dbfcb0.JPG)
 
 ![Categories](https://user-images.githubusercontent.com/92568005/161499484-d81aa3f2-0f9d-4727-b212-2de8efac19e1.JPG)
-![Budget](https://user-images.githubusercontent.com/92568005/161499496-e7085dc1-8ef3-4d0d-adb3-ef21de09e55d.JPG)
+![Budget](https://user-images.githubusercontent.com/92568005/161551637-b203a396-f4b0-4f17-af50-2c4606dc712d.jpg)
 ![Reminders](https://user-images.githubusercontent.com/92568005/161499505-4340a705-5c9f-4fc2-bb96-a7e720ebb2ae.JPG)
 
 
