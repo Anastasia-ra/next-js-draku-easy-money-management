@@ -25,7 +25,7 @@ export function getSumPerDay(
 
   const daysInMonth = [];
 
-  for (let i = 0; i <= currentDay; i++) {
+  for (let i = 0; i < currentDay; i++) {
     daysInMonth.push({ dayId: i, dayExpenses: [0] });
   }
 
