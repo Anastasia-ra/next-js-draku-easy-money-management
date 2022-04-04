@@ -390,7 +390,7 @@ export function getLineData(
         radius: 0,
       },
       line: {
-        tension: 0.3,
+        tension: 0.2,
       },
     },
     scales: {
@@ -405,8 +405,25 @@ export function getLineData(
           display: false,
         },
       },
-      yAxis: {
+      // yAxis: {
+      //   ticks: {
+      //     beginAtZero: true,
+      //     color: '#26325b',
+      //     font: {
+      //       size: 12,
+      //     },
+      //     callback: (value: number | string) => {
+      //       return value + ' €';
+      //     },
+      //   },
+      //   grid: {
+      //     display: false,
+      //   },
+      // },
+      y: {
+        beginAtZero: true,
         ticks: {
+          beginAtZero: true,
           color: '#26325b',
           font: {
             size: 12,
@@ -511,8 +528,10 @@ export function getLineDataByDay(
           display: false,
         },
       },
-      yAxis: {
+      y: {
+        beginAtZero: true,
         ticks: {
+          beginAtZero: true,
           color: '#26325b',
           font: {
             size: 12,
